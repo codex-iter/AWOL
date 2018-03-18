@@ -51,6 +51,7 @@
         android:layout_weight="1"
         android:background="@drawable/edit"
         android:maxLines="1"
+        android:inputType="textPassword"
         android:paddingHorizontal="5dp"
         android:layout_marginHorizontal="20dp"/>
 

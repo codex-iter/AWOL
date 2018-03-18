@@ -8,5 +8,10 @@
 <ListView
     android:id="@+id/rl"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+    android:layout_height="match_parent"
+    android:textColor="#000"
+    android:layout_marginTop="15dp"
+    android:textSize="25dp"
+    android:textStyle="bold"
+    android:lineSpacingExtra="15dp"/>
 </LinearLayout>
