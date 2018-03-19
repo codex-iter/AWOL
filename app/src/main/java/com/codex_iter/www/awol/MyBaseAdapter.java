@@ -35,7 +35,7 @@ public class MyBaseAdapter extends ArrayAdapter<ListData> {
         mViewHolder.th.setText(myList.get(position).getTheory());
         mViewHolder.prac.setText(myList.get(position).getLab());
         mViewHolder.ab.setText(myList.get(position).getAbsent());
-//        mViewHolder.status.setText(myList.get(position).getStatus());
+        mViewHolder.status.setText(myList.get(position).getStatus());
         return convertView;
     }
 

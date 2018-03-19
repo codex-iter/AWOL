@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -22,6 +23,7 @@ import java.net.URL;
 public class MainActivity extends AppCompatActivity {
 EditText user, pass;
 Button btn;
+int i;
 ProgressDialog pd;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,9 +88,13 @@ ProgressDialog pd;
                                 pd.setCanceledOnTouchOutside(true);
                                 pd.dismiss();
 
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            } finally {
+                            } catch (FileNotFoundException e) {
+                                i=0;
+                                pd.dismiss();
+                                Toast.makeText(getApplicationContext(), "cannot establish connection!", Toast.LENGTH_SHORT).show();
+                            }
+                            catch (IOException e){}
+                            finally {
                                 if (connection != null) {
                                     connection.disconnect();
                                 }
@@ -110,8 +116,9 @@ ProgressDialog pd;
                         @Override
                         protected void onPostExecute(String result) {
                             super.onPostExecute(result);
-                            if (pd.isShowing())
-                                pd.dismiss();
+                            if(i!=1) {
+                                if (pd.isShowing())
+                                    pd.dismiss();
                                 if (result.equals("{}")) {
                                     user.setText("");
                                     pass.setText("");
@@ -126,6 +133,8 @@ ProgressDialog pd;
                                     startActivity(intent);
 
                                 }
+                            }
+
                             }
                         }
                     }

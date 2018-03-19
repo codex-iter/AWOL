@@ -8,7 +8,7 @@ import java.util.Scanner;
 public class ListData {
 
     String sub,code,upd,theory,lab,percent;
-    int thT,thp,lat,lap;
+    double thT,thp,lat,lap;
 
 
     public String getSub() {
@@ -70,7 +70,7 @@ public class ListData {
         }
     }
     public String getAbsent()
-    {   int i=lat+thT-thp-lap;
+    {   int i=(int)Math.floor(lat+thT-thp-lap);
         return Integer.toString(i);
     }
     public String getPercent() {
@@ -78,7 +78,7 @@ public class ListData {
     }
     public String getStatus()
     {
-        int n= new Scanner(percent).nextInt();
+        double n= new Scanner(percent).nextDouble();
                 if(0<n && n<40)
                     return "very poor";
                 else if(40<=n && n<60)
