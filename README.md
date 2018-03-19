@@ -1,3 +1,4 @@
 # AWOL
-(Absent without leave)
+(Absent Without Leave)
+
 Shows current attendance
