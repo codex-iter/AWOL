@@ -1,21 +1,25 @@
 package com.codex_iter.www.awol;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 public class MyBaseAdapter extends ArrayAdapter<ListData> {
     private ArrayList<ListData> myList = new ArrayList<ListData>();
     LayoutInflater inflater;
+    Context context;
 
     public MyBaseAdapter(Context context, ArrayList<ListData> myList) {
         super(context, -1, myList);
         inflater=LayoutInflater.from(context);
         this.myList=myList;
+        this.context=context;
     }
 
 
@@ -35,21 +39,32 @@ public class MyBaseAdapter extends ArrayAdapter<ListData> {
         mViewHolder.th.setText(myList.get(position).getTheory());
         mViewHolder.prac.setText(myList.get(position).getLab());
         mViewHolder.ab.setText(myList.get(position).getAbsent());
-        mViewHolder.status.setText(myList.get(position).getStatus());
+        mViewHolder.tc.setText(myList.get(position).getClasses());
+        mViewHolder.btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context.getApplicationContext(), Bunk.class);
+                intent.putExtra("pos", position);
+                context.startActivity(intent);
+            }
+        });
         return convertView;
     }
 
     private class MyViewHolder {
-        TextView sub,at,status,lu,th,prac,ab;
+        TextView sub,at,lu,th,prac,ab,tc;
+        Button btn;
+
 
         private MyViewHolder(View view) {
-            sub = (TextView) view.findViewById(R.id.sub);
-            at = (TextView) view.findViewById(R.id.at);
-            status= (TextView) view.findViewById(R.id.status);
-            lu= (TextView) view.findViewById(R.id.lu);
-            th= (TextView) view.findViewById(R.id.th);
-            prac= (TextView) view.findViewById(R.id.prac);
-            ab= (TextView) view.findViewById(R.id.ab);
+            sub =  view.findViewById(R.id.sub);
+            at =   view.findViewById(R.id.att);
+            lu=   view.findViewById(R.id.lu);
+            th= view.findViewById(R.id.theory);
+            prac= view.findViewById(R.id.prac);
+            ab= view.findViewById(R.id.ta);
+            tc=view.findViewById(R.id.tc);
+            btn= view.findViewById(R.id.btn);
 
 
         }

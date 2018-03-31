@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">AWOL</string>
-    <string name="att"><u><b>Attendance</b></u></string>
+    <string name="awol"><u><b><i>AWOL</i></b></u></string>
 </resources>
 

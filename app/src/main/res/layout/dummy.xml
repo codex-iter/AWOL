@@ -6,202 +6,191 @@
     <LinearLayout
         android:id="@+id/p"
         android:layout_width="match_parent"
-        android:layout_height="180dp"
-        android:orientation="horizontal"
-        android:weightSum="3"
+        android:layout_height="170dp"
+        android:orientation="vertical"
+        android:weightSum="5.5"
+        android:layout_margin="14dp"
         android:layout_centerVertical="true"
-
-        >
-    <LinearLayout
-      android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:weightSum="5"
         android:background="@drawable/dmy">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:text="@string/att"
-            android:textSize="18dp"
-            android:textAlignment="center"
-
-            android:textColor="#000"
-            />
-        <TextView
-            android:id="@+id/at"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="2"
-            android:text="100%"
-            android:textSize="42dp"
-            android:textAlignment="center"
-            android:textColor="#000"
-            />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.8"
-            android:text="Status:"
-            android:textSize="18dp"
-            android:textAlignment="center"
-
-            android:textColor="#000"
-            />
-
-        <TextView
-            android:id="@+id/status"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:text="Excellent"
-            android:textAlignment="center"
-            android:textColor="#000"
-            android:textSize="22dp"
-            android:textStyle="bold" />
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="2"
-        android:weightSum="8"
-        android:paddingHorizontal="5dp"
-        android:orientation="vertical"
-        >
         <TextView
             android:id="@+id/sub"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="2.2"
-            android:text="Computer Organisation and Architecture"
-            android:textSize="19dp"
-            android:textAlignment="center"
-            android:textColor="@color/colorPrimaryDark"
-            android:textStyle="bold"
-            />
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textSize="17dp"
+            android:textColor="@color/colorPrimary"
+            android:text="Number Theory"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="#000"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:weightSum="2"
-            android:orientation="horizontal">
-            <TextView
+            android:orientation="horizontal"
+            android:layout_weight="3.4"
+            android:weightSum="3">
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="0.9"
-                android:text="Last Updated:"
-                android:textSize="16dp"
-                android:gravity="center"
-                android:textColor="@color/colorPrimary"
-
-                />
-
-            <TextView
-                android:id="@+id/lu"
+                android:layout_weight="1"
+                >
+                <TextView
+                    android:id="@+id/att"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/circ"
+                    android:layout_marginHorizontal="14dp"
+                    android:layout_marginVertical="10dp"
+                    android:text="100.0%"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:textSize="25dp"
+                    android:textColor="#000"
+                    />
+            </LinearLayout>
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1.1"
-                android:text="0 Seconds Ago"
-                android:textSize="16dp"
-                android:paddingLeft="2dp"
-                android:gravity="center_vertical"
-                android:textColor="#000"
-
-                />
+                android:layout_weight="1.9"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:orientation="vertical"
+                android:weightSum="5">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.9"
+                        android:text="Updated On:"
+                        android:textColor="#000000"
+                        android:textStyle="bold"
+                        android:gravity="center_vertical"/>
+                    <TextView
+                        android:id="@+id/lu"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1.1"
+                        android:text="22/12/2017"
+                        android:textColor="#000000"
+                        android:textStyle="bold"
+                        android:gravity="center_vertical"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.9"
+                        android:text="Theory :"
+                        android:textColor="#000000"
+                        android:textStyle="bold"
+                        android:gravity="center_vertical"/>
+                    <TextView
+                        android:id="@+id/theory"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1.1"
+                        android:text="Not Applicable"
+                        android:textColor="@color/colorPrimary"
+                        android:textStyle="bold"
+                        android:gravity="center_vertical"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.9"
+                        android:text="Practical :"
+                        android:textColor="#000000"
+                        android:textStyle="bold"
+                        android:gravity="center_vertical"/>
+                    <TextView
+                        android:id="@+id/prac"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1.1"
+                        android:text="Not Applicable"
+                        android:textColor="@color/colorPrimary"
+                        android:textStyle="bold"
+                        android:gravity="center_vertical"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.9"
+                        android:text="Classes :"
+                        android:textColor="#000000"
+                        android:textStyle="bold"
+                        android:gravity="center_vertical"/>
+                    <TextView
+                        android:id="@+id/tc"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1.1"
+                        android:text="Not Applicable"
+                        android:textColor="@color/colorPrimary"
+                        android:textStyle="bold"
+                        android:gravity="center_vertical"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.9"
+                        android:text="Absents :"
+                        android:textColor="#000000"
+                        android:textStyle="bold"
+                        android:gravity="center_vertical"/>
+                    <TextView
+                        android:id="@+id/ta"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1.1"
+                        android:text="Not Applicable"
+                        android:textColor="@color/colorPrimary"
+                        android:textStyle="bold"
+                        android:gravity="center_vertical"/>
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
-        <LinearLayout
+        <Button
+            android:id="@+id/btn"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:weightSum="2"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.9"
-                android:text="Theory :"
-                android:textSize="17dp"
-                android:gravity="right"
-                android:textColor="@color/colorPrimary"
-
-                />
-            <TextView
-                android:id="@+id/th"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1.1"
-                android:text="22/16 (15%)"
-                android:textSize="17dp"
-                android:paddingLeft="2dp"
-                android:gravity="center_vertical"
-                android:textColor="#000"
-
-                />
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:weightSum="2"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.9"
-                android:text="Practical:"
-                android:textSize="17dp"
-                android:gravity="right"
-                android:textColor="@color/colorPrimary"
-
-                />
-            <TextView
-                android:id="@+id/prac"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1.1"
-                android:text="0 Seconds Ago"
-                android:textSize="17dp"
-                android:paddingLeft="2dp"
-                android:gravity="center_vertical"
-                android:textColor="#000"
-
-                />
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:weightSum="2"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.9"
-                android:text="Absents:"
-                android:textSize="17dp"
-                android:gravity="right"
-                android:textColor="@color/colorPrimary"
-
-                />
-            <TextView
-                android:id="@+id/ab"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1.1"
-                android:text="0 Seconds Ago"
-                android:textSize="17dp"
-                android:paddingLeft="2dp"
-                android:gravity="center_vertical"
-                android:textColor="#000"
-
-                />
-        </LinearLayout>
+            android:layout_marginHorizontal="100dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/edit"
+            android:text="Plan a bunk  ;)"
+            android:textSize="14dp"
+            android:textStyle="italic"
+            android:textColor="@color/colorPrimaryDark"/>
     </LinearLayout>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_above="@+id/p"
-        android:layout_width="match_parent"
-        android:layout_height="15dp"
-        android:background="@drawable/dmy"/>
 </RelativeLayout>
