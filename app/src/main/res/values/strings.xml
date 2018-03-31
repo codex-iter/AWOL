@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">AWOL</string>
+    <string name="awol"><u><b><i>AWOL</i></b></u></string>
 </resources>
+
