@@ -1,4 +1,3 @@
-package com.codex_iter.www.awol;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -52,4 +51,8 @@ public class home extends AppCompatActivity {
             rl.setAdapter(adapter);
         }
  }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> aa670df80379d1203a9971450035f6cedbe75335
