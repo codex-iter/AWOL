@@ -7,65 +7,175 @@
     android:orientation="vertical"
     android:weightSum="10"
     tools:context="com.codex_iter.www.awol.Bunk">
+
     <TextView
         android:id="@+id/sub"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:gravity="center"
-        android:textSize="18dp"
+        android:text="Number Theory"
         android:textColor="@color/colorPrimary"
-        android:text="Number Theory"/>
+        android:textSize="18dp" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:background="#000"
-        android:layout_marginHorizontal="10dp"/>
+        android:layout_marginHorizontal="10dp"
+        android:background="#000" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="15dp"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:weightSum="4">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2.8"
+            android:gravity="center"
+            android:text="Your Target Attendance:"
+            android:textColor="#000"
+            android:textSize="16dp" />
+
+        <EditText
+            android:id="@+id/taredt"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.8"
+            android:maxLines="1"
+            android:inputType="numberDecimal"
+            android:gravity="center"
+            android:text=""
+
+            android:textColor="@color/colorPrimaryDark" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/target"
+        android:layout_width="100dp"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:layout_weight="0.75"
+        android:background="@drawable/btnr"
+        android:text="Result"
+        android:textColor="#ffffff" />
+
     <TextView
-        android:id="@+id/bnk1"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:gravity="center"
-        android:textSize="18dp"
-        android:textColor="@color/colorPrimary"
-        android:text="Number Theory"/>
+        android:text="OR"
+        android:textSize="15dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:weightSum="4">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2.8"
+            android:gravity="center"
+            android:text="Classes you wanna bunk:"
+            android:textColor="#000"
+            android:textSize="16dp" />
+
+        <EditText
+            android:id="@+id/bnkedt"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.8"
+            android:gravity="center"
+            android:text=""
+            android:maxLines="1"
+            android:inputType="number"
+            android:textColor="@color/colorPrimaryDark" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/bunk"
+        android:layout_width="100dp"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:layout_weight="0.75"
+        android:background="@drawable/btnr"
+        android:text="Bunk"
+        android:textColor="#ffffff" />
+
     <TextView
-        android:id="@+id/bnk2"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:gravity="center"
-        android:textSize="18dp"
-        android:textColor="@color/colorPrimary"
-        android:text="Number Theory"/>
-    <TextView
-        android:id="@+id/bnk3"
+        android:text="OR"
+        android:textSize="15dp" />
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:gravity="center"
-        android:textSize="18dp"
-        android:textColor="@color/colorPrimary"
-        android:text="Number Theory"/>
-    <TextView
-        android:id="@+id/bnk"
-        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:weightSum="4">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2.8"
+            android:gravity="center"
+            android:text="Classes you gonna attend:"
+            android:textColor="#000"
+            android:textSize="16dp" />
+
+        <EditText
+            android:id="@+id/atndedt"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.8"
+            android:gravity="center"
+            android:text=""
+            android:maxLines="1"
+            android:inputType="number"
+            android:textColor="@color/colorPrimaryDark" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/attend"
+        android:layout_width="100dp"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:textSize="18dp"
-        android:textColor="@color/colorPrimary"
-        android:text="Number Theory"/>
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:layout_weight="0.75"
+        android:background="@drawable/btnr"
+        android:text="Attend"
+        android:textColor="#ffffff" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:background="#000"
-        android:layout_marginHorizontal="10dp"/>
-    <LinearLayout
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="10dp"
+        android:background="#000" />
+
+    <TextView
+        android:id="@+id/result"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="4" />
+        android:layout_marginTop="20dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text=""
+        android:textColor="@color/colorPrimary"
+        android:textSize="18dp" />
 
 
 </LinearLayout>

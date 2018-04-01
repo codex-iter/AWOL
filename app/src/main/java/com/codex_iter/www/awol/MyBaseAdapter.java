@@ -46,7 +46,10 @@ public class MyBaseAdapter extends ArrayAdapter<ListData> {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context.getApplicationContext(), Bunk.class);
-                intent.putExtra("pos", position);
+                intent.putExtra("percent",myList.get(position).getPercent() );
+                intent.putExtra("absent",myList.get(position).getAbsent() );
+                intent.putExtra("total",myList.get(position).getClasses() );
+                intent.putExtra("sub",myList.get(position).getSub());
                 context.startActivity(intent);
             }
         });
