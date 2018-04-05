@@ -46,7 +46,7 @@ public class Bunk extends AppCompatActivity {
         result=findViewById(R.id.result);
         sub=findViewById(R.id.sub);
         sub.setText(subject);
-        String s[]={"","60","65","70","75","80","85","90"};
+        String s[]={""," 60 "," 65 "," 70 "," 75 "," 80 "," 85 "," 90 "};
         ArrayAdapter a= new ArrayAdapter(this,R.layout.view, s);
         a.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         taredt.setAdapter(a);

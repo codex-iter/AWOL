@@ -39,9 +39,9 @@ public class MyBaseAdapter extends ArrayAdapter<ListData> {
         mViewHolder.at.setText(myList.get(position).getPercent());
         if(myList.get(position).getStatus()==1)
             mViewHolder.at.setBackgroundResource(R.drawable.circp);
-        if(myList.get(position).getStatus()==2)
+        else if(myList.get(position).getStatus()==2)
             mViewHolder.at.setBackgroundResource(R.drawable.circs);
-        if(myList.get(position).getStatus()==3)
+        else if(myList.get(position).getStatus()==3)
             mViewHolder.at.setBackgroundResource(R.drawable.circo);
         else
             mViewHolder.at.setBackgroundResource(R.drawable.circe);
