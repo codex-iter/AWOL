@@ -10,21 +10,22 @@
         android:orientation="vertical"
         android:weightSum="5.5"
         android:layout_margin="14dp"
-        android:layout_centerVertical="true">
-        <!--android:background="@drawable/dmy">-->
+        android:layout_centerVertical="true"
+        android:background="#eeeeee">
         <TextView
             android:id="@+id/sub"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:gravity="center"
+            android:textStyle="bold"
             android:textSize="17dp"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/colorPrimaryDark"
             android:text="Number Theory"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="2dp"
-            android:background="#000"/>
+            android:background="#000000"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -34,15 +35,15 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_weight="1.2"
                 >
                 <TextView
                     android:id="@+id/att"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/circ"
-                    android:layout_marginHorizontal="14dp"
-                    android:layout_marginVertical="10dp"
+                    android:layout_marginHorizontal="18dp"
+                    android:layout_marginVertical="5dp"
                     android:text="100.0%"
                     android:gravity="center"
                     android:textStyle="bold"

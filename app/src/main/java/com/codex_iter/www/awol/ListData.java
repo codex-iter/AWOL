@@ -9,6 +9,7 @@ public class ListData {
 
     String sub,code,upd,theory,lab,percent,classes;
     double thT,thp,lat,lap,tc;
+    int status;
 
     public String getClasses() {
         return Double.toString(thT+lat);
@@ -24,6 +25,17 @@ public class ListData {
 
     public String getCode() {
         return code;
+    }
+
+    public int getStatus(){
+        double d = new Scanner(percent).nextDouble();
+        if(d<65)
+            return 1;
+        else if(d>=65 && d<75)
+            return 2;
+        else if(d>=75 && d<90)
+            return 3;
+        else return 4;
     }
 
     public void setCode(String code) {

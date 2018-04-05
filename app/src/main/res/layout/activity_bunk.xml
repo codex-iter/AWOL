@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="10"
+    android:background="#eeeeee"
     tools:context="com.codex_iter.www.awol.Bunk">
 
     <TextView
@@ -14,9 +15,10 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:gravity="center"
+        android:textStyle="bold"
         android:text="Number Theory"
         android:textColor="@color/colorPrimary"
-        android:textSize="18dp" />
+        android:textSize="19dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -41,16 +43,12 @@
             android:textColor="#000"
             android:textSize="16dp" />
 
-        <EditText
+        <Spinner
             android:id="@+id/taredt"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.8"
-            android:maxLines="1"
-            android:inputType="numberDecimal"
             android:gravity="center"
-            android:text=""
-
             android:textColor="@color/colorPrimaryDark" />
     </LinearLayout>
 

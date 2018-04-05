@@ -6,8 +6,10 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,7 +17,8 @@ import java.util.Scanner;
 
 public class Bunk extends AppCompatActivity {
 
-    EditText atndedt,bnkedt,taredt;
+    EditText atndedt,bnkedt;
+    Spinner taredt;
     TextView result,sub;
     Button target,bunk,attend;
     double absent,total,percent,present;
@@ -43,14 +46,15 @@ public class Bunk extends AppCompatActivity {
         result=findViewById(R.id.result);
         sub=findViewById(R.id.sub);
         sub.setText(subject);
+        String s[]={"","60","65","70","75","80","85","90"};
+        ArrayAdapter a= new ArrayAdapter(this,R.layout.view, s);
+        a.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        taredt.setAdapter(a);
 
         target.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String s= taredt.getText().toString().trim();
-                if(s.equals(""))
-                    Toast.makeText(getApplicationContext(),"enter some value",Toast.LENGTH_SHORT).show();
-                else {
+                String s= taredt.getSelectedItem().toString();
                     double tp = new Scanner(s).nextDouble();
                     InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     if (getCurrentFocus() != null)
@@ -72,7 +76,7 @@ public class Bunk extends AppCompatActivity {
                     }
                 }
             }
-        });
+        );
 
         attend.setOnClickListener(new View.OnClickListener() {
 
@@ -114,7 +118,7 @@ public class Bunk extends AppCompatActivity {
        bnkedt.setOnTouchListener(new View.OnTouchListener() {
            @Override
            public boolean onTouch(View v, MotionEvent event) {
-               taredt.setText("");
+               taredt.setSelection(0);
                atndedt.setText("");
                return false;
            }
@@ -124,7 +128,7 @@ public class Bunk extends AppCompatActivity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 bnkedt.setText("");
-                taredt.setText("");
+                taredt.setSelection(0);
                 return false;
             }
         });

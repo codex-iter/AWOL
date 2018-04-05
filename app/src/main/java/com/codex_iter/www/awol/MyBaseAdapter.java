@@ -37,6 +37,15 @@ public class MyBaseAdapter extends ArrayAdapter<ListData> {
         }
         mViewHolder.sub.setText(myList.get(position).getSub());
         mViewHolder.at.setText(myList.get(position).getPercent());
+        if(myList.get(position).getStatus()==1)
+            mViewHolder.at.setBackgroundResource(R.drawable.circp);
+        if(myList.get(position).getStatus()==2)
+            mViewHolder.at.setBackgroundResource(R.drawable.circs);
+        if(myList.get(position).getStatus()==3)
+            mViewHolder.at.setBackgroundResource(R.drawable.circo);
+        else
+            mViewHolder.at.setBackgroundResource(R.drawable.circe);
+
         mViewHolder.lu.setText(myList.get(position).getUpd());
         mViewHolder.th.setText(myList.get(position).getTheory());
         mViewHolder.prac.setText(myList.get(position).getLab());
@@ -56,6 +65,7 @@ public class MyBaseAdapter extends ArrayAdapter<ListData> {
 
         return convertView;
     }
+
 
     private class MyViewHolder {
 
