@@ -24,7 +24,8 @@
         <activity
             android:name=".home"
             android:screenOrientation="portrait" />
-        <activity android:name=".Bunk"></activity>
+        <activity android:name=".Bunk" />
+        <activity android:name=".Abt"></activity>
     </application>
 
 </manifest>

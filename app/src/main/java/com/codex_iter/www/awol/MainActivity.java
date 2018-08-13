@@ -10,9 +10,12 @@ import android.os.AsyncTask;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -30,12 +33,20 @@ public class MainActivity extends AppCompatActivity {
     ProgressDialog pd;
     SharedPreferences userm;
     SharedPreferences.Editor edit;
-
+    LinearLayout ll;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+ll=findViewById(R.id.ll);
+ll.setOnTouchListener(new View.OnTouchListener() {
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+    return false;
+    }
+});
         user = findViewById(R.id.user);
         pass = findViewById(R.id.pass);
         btn = findViewById(R.id.btn);
@@ -50,13 +61,15 @@ public class MainActivity extends AppCompatActivity {
                 edit.putString("user",u);
                 edit.putString("pass",p);
                 edit.commit();
-                if(u.equals("")||p.equals(""))
-                    Toast.makeText(getApplicationContext(),"empty credentials",Toast.LENGTH_SHORT).show();
+                if(u.equals(""))
+                   user.setError("Enter a username");
+                if(p.equals(""))
+                    pass.setError("password cannot be empty");
                 else {
 
 
                     if (haveNetworkConnection()) {
-                        String web = "https://codex-bunk.herokuapp.com/?username=" + u + "&password=" + p;
+                        String web = "https://codex-bunk.herokuapp.com/attendance/?username=" + u + "&password=" + p;
                         new JsonTask().execute(web,u);
                     } else{
                         Toast.makeText(getApplicationContext(), "no network connection", Toast.LENGTH_SHORT).show();
@@ -72,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-                }  }  }
+                    }  }  }
         });
         if (userm.contains("user")&&userm.contains("pass")) {
             user.setText(userm.getString("user", ""));
@@ -86,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private class JsonTask extends AsyncTask<String, String, String> {
-         String u;
+        String u;
         protected void onPreExecute() {
             super.onPreExecute();
             pd = new ProgressDialog(MainActivity.this);
@@ -132,7 +145,14 @@ public class MainActivity extends AppCompatActivity {
                 pd.dismiss();
                 Toast.makeText(getApplicationContext(), "cannot establish connection!", Toast.LENGTH_SHORT).show();
             } catch (IOException e) {
-            } finally {
+                Toast.makeText(getApplicationContext(), "cannot establish connection!", Toast.LENGTH_SHORT).show();
+            }
+            catch(Exception e) {
+                Toast.makeText(getApplicationContext(), "cannot establish connection!", Toast.LENGTH_SHORT).show();
+
+
+            }finally
+            {
                 if (connection != null) {
                     connection.disconnect();
                 } else {
@@ -144,6 +164,11 @@ public class MainActivity extends AppCompatActivity {
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
+                }
+                catch(Exception e) {
+                    Toast.makeText(getApplicationContext(), "cannot establish connection!", Toast.LENGTH_SHORT).show();
+
+
                 }
             }
             return null;
@@ -165,6 +190,7 @@ public class MainActivity extends AppCompatActivity {
 
                 Toast.makeText(getApplicationContext(), "Success!", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(MainActivity.this, home.class);
+                result+="kkk"+u;
                 intent.putExtra("result", result);
                 edit.putString(u,result);
                 edit.commit();
@@ -193,5 +219,4 @@ public class MainActivity extends AppCompatActivity {
         }
         return haveConnectedWifi || haveConnectedMobile;
     }
-
 }

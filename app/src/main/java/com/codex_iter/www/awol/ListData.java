@@ -37,7 +37,6 @@ public class ListData {
             return 3;
         else return 4;
     }
-
     public void setCode(String code) {
         this.code = code;
     }
@@ -64,8 +63,8 @@ public class ListData {
             thp = in.nextInt();
             char c = in.next().charAt(0);
             thT = in.nextInt();
-            String res = String.format("%.2f",((thp / thT) * 100) );
-            this.theory = theory + "(" + res + " %)";
+            String res = String.format("%.1f",((thp / thT) * 100) );
+            this.theory = theory + "(" + res + "%)";
         }
     }
     public String getLab() {
@@ -82,7 +81,7 @@ public class ListData {
             lap = in.nextInt();
             char c = in.next().charAt(0);
             lat = in.nextInt();
-            this.lab = lab + "(" + String.format("%.2f",((lap / lat) * 100)).substring(0,3) + " %)";
+            this.lab = lab + "(" + String.format("%.1f",((lap / lat) * 100)).substring(0,3) + "%)";
         }
     }
 

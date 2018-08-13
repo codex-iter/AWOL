@@ -1,24 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    android:id="@+id/ll"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:weightSum="10"
-    android:background="#eeeeee"
+    android:weightSum="11"
+    android:background="@color/colorPrimaryDark"
     tools:context="com.codex_iter.www.awol.Bunk">
 
     <TextView
         android:id="@+id/sub"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight="2"
         android:gravity="center"
         android:textStyle="bold"
+        android:fontFamily="cursive"
+        android:maxLines="2"
         android:text="Number Theory"
         android:textColor="@color/colorPrimary"
-        android:textSize="19dp" />
+        android:textSize="30dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -40,16 +44,19 @@
             android:layout_weight="2.8"
             android:gravity="center"
             android:text="Your Target Attendance:"
-            android:textColor="#000"
+            android:textColor="@color/colorAccent"
             android:textSize="16dp" />
 
-        <Spinner
+        <EditText
             android:id="@+id/taredt"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.8"
             android:gravity="center"
-            android:textColor="@color/colorPrimaryDark" />
+            android:text=""
+            android:maxLines="1"
+            android:inputType="number"
+            android:textColor="@color/colorPrimary" />
     </LinearLayout>
 
     <Button
@@ -60,8 +67,7 @@
         android:layout_marginTop="10dp"
         android:layout_weight="0.75"
         android:background="@drawable/btnr"
-        android:text="Result"
-        android:textColor="#ffffff" />
+        android:text="Result" />
 
     <TextView
         android:layout_width="match_parent"
@@ -69,6 +75,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:text="OR"
+        android:textColor="#999999"
         android:textSize="15dp" />
 
     <LinearLayout
@@ -84,7 +91,7 @@
             android:layout_weight="2.8"
             android:gravity="center"
             android:text="Classes you wanna bunk:"
-            android:textColor="#000"
+            android:textColor="@color/colorAccent"
             android:textSize="16dp" />
 
         <EditText
@@ -96,7 +103,7 @@
             android:text=""
             android:maxLines="1"
             android:inputType="number"
-            android:textColor="@color/colorPrimaryDark" />
+            android:textColor="@color/colorPrimary" />
     </LinearLayout>
 
     <Button
@@ -107,8 +114,7 @@
         android:layout_marginTop="10dp"
         android:layout_weight="0.75"
         android:background="@drawable/btnr"
-        android:text="Bunk"
-        android:textColor="#ffffff" />
+        android:text="Bunk" />
 
     <TextView
         android:layout_width="match_parent"
@@ -116,7 +122,8 @@
         android:layout_weight="1"
         android:gravity="center"
         android:text="OR"
-        android:textSize="15dp" />
+        android:textSize="15dp"
+        android:textColor="#999999"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -131,7 +138,7 @@
             android:layout_weight="2.8"
             android:gravity="center"
             android:text="Classes you gonna attend:"
-            android:textColor="#000"
+            android:textColor="@color/colorAccent"
             android:textSize="16dp" />
 
         <EditText
@@ -143,7 +150,7 @@
             android:text=""
             android:maxLines="1"
             android:inputType="number"
-            android:textColor="@color/colorPrimaryDark" />
+            android:textColor="@color/colorPrimary" />
     </LinearLayout>
 
     <Button
@@ -154,8 +161,7 @@
         android:layout_marginTop="10dp"
         android:layout_weight="0.75"
         android:background="@drawable/btnr"
-        android:text="Attend"
-        android:textColor="#ffffff" />
+        android:text="Attend" />
 
     <LinearLayout
         android:layout_width="match_parent"

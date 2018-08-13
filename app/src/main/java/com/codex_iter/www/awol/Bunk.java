@@ -9,6 +9,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,8 +18,7 @@ import java.util.Scanner;
 
 public class Bunk extends AppCompatActivity {
 
-    EditText atndedt,bnkedt;
-    Spinner taredt;
+    EditText atndedt,bnkedt,taredt;
     TextView result,sub;
     Button target,bunk,attend;
     double absent,total,percent,present;
@@ -36,6 +36,15 @@ public class Bunk extends AppCompatActivity {
             absent=new Scanner(bundle.getString("absent")).nextDouble();
             total=new Scanner(bundle.getString("total")).nextDouble();
         }
+       LinearLayout ll=findViewById(R.id.ll);
+        ll.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                return false;
+            }
+        });
         present = total-absent;
         atndedt=findViewById(R.id.atndedt);
         bnkedt=findViewById(R.id.bnkedt);
@@ -46,15 +55,14 @@ public class Bunk extends AppCompatActivity {
         result=findViewById(R.id.result);
         sub=findViewById(R.id.sub);
         sub.setText(subject);
-        String s[]={""," 60 "," 65 "," 70 "," 75 "," 80 "," 85 "," 90 "};
-        ArrayAdapter a= new ArrayAdapter(this,R.layout.view, s);
-        a.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        taredt.setAdapter(a);
 
         target.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String s= taredt.getSelectedItem().toString();
+                String s = taredt.getText().toString().trim();
+                if (s.equals(""))
+                    Toast.makeText(getApplicationContext(), "enter some value", Toast.LENGTH_SHORT).show();
+                else {
                     double tp = new Scanner(s).nextDouble();
                     InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     if (getCurrentFocus() != null)
@@ -75,7 +83,7 @@ public class Bunk extends AppCompatActivity {
                         result.setText("Attend " + i + " classes for req attendance");
                     }
                 }
-            }
+            }}
         );
 
         attend.setOnClickListener(new View.OnClickListener() {
@@ -118,7 +126,7 @@ public class Bunk extends AppCompatActivity {
        bnkedt.setOnTouchListener(new View.OnTouchListener() {
            @Override
            public boolean onTouch(View v, MotionEvent event) {
-               taredt.setSelection(0);
+               taredt.setText("");
                atndedt.setText("");
                return false;
            }
@@ -128,7 +136,7 @@ public class Bunk extends AppCompatActivity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 bnkedt.setText("");
-                taredt.setSelection(0);
+                taredt.setText("");
                 return false;
             }
         });

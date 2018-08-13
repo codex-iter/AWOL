@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorPrimaryDark"
+    android:paddingHorizontal="10dp"
+    android:paddingTop="70dp"
+    android:paddingBottom="10dp"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark"
+    android:orientation="vertical"
+    android:gravity="center_horizontal">
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Mohit Agarwal"
+        android:textColor="@color/colorAccent"
+        android:textStyle="bold"
+        android:gravity="center_horizontal"
+        android:paddingLeft="8dp"
+        android:textSize="20dp"
+        android:fontFamily="sans-serif"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+    <TextView
+        android:id="@+id/reg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="1641017271"
+        android:gravity="center_horizontal"
+        android:paddingLeft="8dp"
+        android:textColor="@color/colorAccent"
+        android:textStyle="bold"
+        android:textSize="20dp"
+        android:fontFamily="sans-serif"/>
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="2dp"
+    android:layout_marginVertical="8dp"
+    android:layout_marginHorizontal="15dp"
+    android:background="@color/colorAccent"/>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:weightSum="2"
+    android:orientation="horizontal">
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:weightSum="2"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:padding="8dp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/avgat"
+            android:textColor="@color/colorPrimary"
+            android:textSize="13dp"
+            android:maxLines="2"
+            android:gravity="center_horizontal"
+            android:fontFamily="sans-serif"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+        <TextView
+            android:id="@+id/avat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="98.76%"
+            android:gravity="center_horizontal"
+            android:textColor="@color/colorAccent"
+            android:textStyle="bold"
+            android:textSize="17dp"
+            android:layout_marginTop="2dp"
+            android:fontFamily="sans-serif"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:weightSum="2"
+        android:layout_weight="1"
+        android:orientation="vertical"
+
+        android:layout_marginHorizontal="8dp"
+        android:padding="8dp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/avgab"
+            android:textColor="@color/colorPrimary"
+            android:textSize="13dp"
+            android:gravity="center_horizontal"
+            android:fontFamily="sans-serif"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+        <TextView
+            android:id="@+id/avab"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="98.76%"
+            android:gravity="center_horizontal"
+            android:textColor="@color/colorAccent"
+            android:textStyle="bold"
+            android:layout_marginTop="2dp"
+            android:textSize="17dp"
+            android:fontFamily="sans-serif"/>
+
+    </LinearLayout>
+</LinearLayout>
+</LinearLayout>

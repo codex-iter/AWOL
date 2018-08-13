@@ -2,16 +2,16 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark"
     >
     <LinearLayout
-        android:id="@+id/p"
         android:layout_width="match_parent"
         android:layout_height="170dp"
         android:orientation="vertical"
         android:weightSum="5.5"
         android:layout_margin="14dp"
         android:layout_centerVertical="true"
-        android:background="#eeeeee">
+        android:background="@color/colorPrimaryDark">
         <TextView
             android:id="@+id/sub"
             android:layout_width="match_parent"
@@ -20,12 +20,12 @@
             android:gravity="center"
             android:textStyle="bold"
             android:textSize="17dp"
-            android:textColor="@color/colorPrimaryDark"
+            android:textColor="@color/colorPrimary"
             android:text="Number Theory"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="2dp"
-            android:background="#000000"/>
+            android:background="@color/colorAccent"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -34,20 +34,20 @@
             android:weightSum="3">
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1.2"
                 >
                 <TextView
                     android:id="@+id/att"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/circ"
-                    android:layout_marginHorizontal="18dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
                     android:layout_marginVertical="5dp"
                     android:text="100.0%"
                     android:gravity="center"
                     android:textStyle="bold"
                     android:textSize="25dp"
+                    android:background="@drawable/circs"
                     android:textColor="#000"
                     />
             </LinearLayout>
@@ -70,7 +70,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="0.9"
                         android:text="Updated On:"
-                        android:textColor="#000000"
+                        android:textColor="@color/colorAccent"
                         android:textStyle="bold"
                         android:gravity="center_vertical"/>
                     <TextView
@@ -79,7 +79,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1.1"
                         android:text="22/12/2017"
-                        android:textColor="#000000"
+                        android:textColor="@color/colorAccent"
                         android:textStyle="bold"
                         android:gravity="center_vertical"/>
                 </LinearLayout>
@@ -94,7 +94,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="0.9"
                         android:text="Theory :"
-                        android:textColor="#000000"
+                        android:textColor="@color/colorAccent"
                         android:textStyle="bold"
                         android:gravity="center_vertical"/>
                     <TextView
@@ -103,7 +103,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1.1"
                         android:text="Not Applicable"
-                        android:textColor="@color/colorPrimary"
+                        android:textColor="@color/colorAccent"
                         android:textStyle="bold"
                         android:gravity="center_vertical"/>
                 </LinearLayout>
@@ -118,7 +118,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="0.9"
                         android:text="Practical :"
-                        android:textColor="#000000"
+                        android:textColor="@color/colorAccent"
                         android:textStyle="bold"
                         android:gravity="center_vertical"/>
                     <TextView
@@ -127,7 +127,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1.1"
                         android:text="Not Applicable"
-                        android:textColor="@color/colorPrimary"
+                        android:textColor="@color/colorAccent"
                         android:textStyle="bold"
                         android:gravity="center_vertical"/>
                 </LinearLayout>
@@ -142,7 +142,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="0.9"
                         android:text="Classes :"
-                        android:textColor="#000000"
+                        android:textColor="@color/colorAccent"
                         android:textStyle="bold"
                         android:gravity="center_vertical"/>
                     <TextView
@@ -151,7 +151,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1.1"
                         android:text="Not Applicable"
-                        android:textColor="@color/colorPrimary"
+                        android:textColor="@color/colorAccent"
                         android:textStyle="bold"
                         android:gravity="center_vertical"/>
                 </LinearLayout>
@@ -166,7 +166,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="0.9"
                         android:text="Absents :"
-                        android:textColor="#000000"
+                        android:textColor="@color/colorAccent"
                         android:textStyle="bold"
                         android:gravity="center_vertical"/>
                     <TextView
@@ -175,7 +175,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1.1"
                         android:text="Not Applicable"
-                        android:textColor="@color/colorPrimary"
+                        android:textColor="@color/colorAccent"
                         android:textStyle="bold"
                         android:gravity="center_vertical"/>
                 </LinearLayout>
@@ -190,8 +190,8 @@
             android:layout_marginTop="10dp"
             android:background="@drawable/edit"
             android:text="Plan a bunk  ;)"
-            android:textSize="14dp"
+            android:textSize="15dp"
             android:textStyle="italic"
-            android:textColor="@color/colorPrimaryDark"/>
+            android:textColor="@color/colorPrimary"/>
     </LinearLayout>
 </RelativeLayout>
