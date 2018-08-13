@@ -133,17 +133,5 @@ public class home extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-    @Override
-    public void onBackPressed() {
-
-
-        if (this.dl.isDrawerOpen(GravityCompat.START)) {
-            this.dl.closeDrawer(GravityCompat.START);
-        } else {
-            //super.onBackPressed();
-            moveTaskToBack(false);
-        }
-
-    }
         }
 
