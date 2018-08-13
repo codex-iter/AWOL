@@ -98,7 +98,7 @@ public class home extends AppCompatActivity {
                                 case R.id.sa:
                                     Intent sendIntent = new Intent();
                                     sendIntent.setAction(Intent.ACTION_SEND);
-                                    sendIntent.putExtra(Intent.EXTRA_TEXT, "Hey check this out: bit.do/awol \n ");
+                                    sendIntent.putExtra(Intent.EXTRA_TEXT, "Hey check this out: bit.do/Awol \n ");
                                     sendIntent.setType("text/plain");
                                     startActivity(sendIntent);
                                     break;

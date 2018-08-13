@@ -75,11 +75,15 @@ ll.setOnTouchListener(new View.OnTouchListener() {
                         Toast.makeText(getApplicationContext(), "no network connection", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(MainActivity.this, home.class);
                         if(userm.contains(u)) {
+                            if(p.equals(userm.getString("pass", ""))){
                             String s = userm.getString(u, "");
                             intent.putExtra("result", s);
                             Toast.makeText(getApplicationContext(), "showing offline value for this user", Toast.LENGTH_SHORT).show();
                             startActivity(intent);
                         }
+                        else{
+                                Toast.makeText(getApplicationContext(), "invalid credentials", Toast.LENGTH_SHORT).show();
+                            }}
                         else
                             Toast.makeText(getApplicationContext(), "no offline info for this user", Toast.LENGTH_SHORT).show();
 
@@ -100,6 +104,7 @@ ll.setOnTouchListener(new View.OnTouchListener() {
 
     private class JsonTask extends AsyncTask<String, String, String> {
         String u;
+
         protected void onPreExecute() {
             super.onPreExecute();
             pd = new ProgressDialog(MainActivity.this);
@@ -116,47 +121,41 @@ ll.setOnTouchListener(new View.OnTouchListener() {
 
             try {
                 URL url = new URL(params[0]);
-                u=params[1];
+                u = params[1];
                 connection = (HttpURLConnection) url.openConnection();
-
+                connection.setReadTimeout(5000);
+                connection.setConnectTimeout(5000);
                 connection.connect();
+                if(connection.getResponseCode()==400)
+                    throw new MalformedURLException();
+                    InputStream stream = connection.getInputStream();
+
+                    reader = new BufferedReader(new InputStreamReader(stream));
 
 
-                InputStream stream = connection.getInputStream();
+                    StringBuffer buffer = new StringBuffer();
+                    String line = "";
 
-                reader = new BufferedReader(new InputStreamReader(stream));
+                    while ((line = reader.readLine()) != null) {
+                        buffer.append(line + "\n");
 
-                StringBuffer buffer = new StringBuffer();
-                String line = "";
+                    }
 
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line + "\n");
-
-                }
-
-                return buffer.toString();
+                    return buffer.toString();
 
 
             } catch (MalformedURLException e) {
-                pd.setCanceledOnTouchOutside(true);
-                pd.dismiss();
+                return "invalid credentials";
 
-            } catch (FileNotFoundException e) {
-                pd.dismiss();
-                Toast.makeText(getApplicationContext(), "cannot establish connection!", Toast.LENGTH_SHORT).show();
             } catch (IOException e) {
-                Toast.makeText(getApplicationContext(), "cannot establish connection!", Toast.LENGTH_SHORT).show();
-            }
-            catch(Exception e) {
-                Toast.makeText(getApplicationContext(), "cannot establish connection!", Toast.LENGTH_SHORT).show();
-
-
-            }finally
-            {
+                return "Cannot connect to servers right now";
+            } catch (Exception e) {
+                return "Cannot connect to servers right now";
+            } finally {
                 if (connection != null) {
                     connection.disconnect();
                 } else {
-                    Toast.makeText(getApplicationContext(), "Network Error!", Toast.LENGTH_SHORT).show();
+                    return "cannot establish connection";
                 }
                 try {
                     if (reader != null) {
@@ -164,15 +163,12 @@ ll.setOnTouchListener(new View.OnTouchListener() {
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
-                }
-                catch(Exception e) {
-                    Toast.makeText(getApplicationContext(), "cannot establish connection!", Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    return "cannot establish connection";
 
 
                 }
-            }
-            return null;
-        }
+        }}
 
         @Override
         protected void onPostExecute(String result) {
@@ -184,15 +180,21 @@ ll.setOnTouchListener(new View.OnTouchListener() {
                 pass.setText("");
                 Toast.makeText(getApplicationContext(), "Wrong Credentials!", Toast.LENGTH_SHORT).show();
 
+            } else if (result.equals("invalid credentials")) {
+                Toast.makeText(getApplicationContext(), "invalid credentials", Toast.LENGTH_SHORT).show();
+            } else if (result.equals("cannot establish connection")) {
+                Toast.makeText(getApplicationContext(), "cannot establish connection", Toast.LENGTH_SHORT).show();
+            } else if (result.equals("Cannot connect to servers right now")) {
+                Toast.makeText(getApplicationContext(), "Cannot connect to servers right now", Toast.LENGTH_SHORT).show();
             } else {
                 user.setText("");
                 pass.setText("");
 
                 Toast.makeText(getApplicationContext(), "Success!", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(MainActivity.this, home.class);
-                result+="kkk"+u;
+                result += "kkk" + u;
                 intent.putExtra("result", result);
-                edit.putString(u,result);
+                edit.putString(u, result);
                 edit.commit();
                 startActivity(intent);
 
