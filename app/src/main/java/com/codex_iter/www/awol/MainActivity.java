@@ -57,19 +57,22 @@ ll.setOnTouchListener(new View.OnTouchListener() {
             public void onClick(View view) {
                 String u = user.getText().toString().trim();
                 String p = pass.getText().toString().trim();
-                edit= userm.edit();
-                edit.putString("user",u);
-                edit.putString("pass",p);
-                edit.commit();
-                if(u.equals("") & p.equals(""))
-                    Toast.makeText(MainActivity.this, "Enter your Details", Toast.LENGTH_SHORT).show();
 
+                if(u.equals(""))
+                   user.setError("Enter a username");
+                if(p.equals(""))
+                    pass.setError("password cannot be empty");
                 else {
 
 
                     if (haveNetworkConnection()) {
                         String web = "https://codex-bunk.herokuapp.com/attendance/?username=" + u + "&password=" + p;
                         new JsonTask().execute(web,u);
+                        edit= userm.edit();
+                        edit.putString("user",u);
+                        edit.putString("pass",p);
+                        edit.commit();
+
                     } else{
                         Toast.makeText(getApplicationContext(), "no network connection", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(MainActivity.this, home.class);
@@ -186,6 +189,7 @@ ll.setOnTouchListener(new View.OnTouchListener() {
             } else if (result.equals("Cannot connect to servers right now")) {
                 Toast.makeText(getApplicationContext(), "Cannot connect to servers right now", Toast.LENGTH_SHORT).show();
             } else {
+
                 user.setText("");
                 pass.setText("");
 
