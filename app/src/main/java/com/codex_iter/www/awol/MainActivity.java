@@ -61,10 +61,9 @@ ll.setOnTouchListener(new View.OnTouchListener() {
                 edit.putString("user",u);
                 edit.putString("pass",p);
                 edit.commit();
-                if(u.equals(""))
-                   user.setError("Enter a username");
-                if(p.equals(""))
-                    pass.setError("password cannot be empty");
+                if(u.equals("") & p.equals(""))
+                    Toast.makeText(MainActivity.this, "Enter your Details", Toast.LENGTH_SHORT).show();
+
                 else {
 
 
