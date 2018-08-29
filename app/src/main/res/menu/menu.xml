@@ -3,18 +3,28 @@
         <item
             android:id="@+id/sa"
             android:title="Share app"
+            android:icon="@drawable/ic_send"
             />
         <item
             android:id="@+id/abt"
             android:title="About Developer"
+            android:icon="@drawable/ic_local"
+
             />
         <item
             android:id="@+id/cd"
             android:title="Open Source Geek?"
+            android:icon="@drawable/ic_code"
             />
         <item
             android:id="@+id/lgout"
             android:title="Logout"
+            android:icon="@drawable/ic_home"
             />
+        <item
+                android:id="@+id/pab"
+                android:title="Plan@Bunk"
+            android:icon="@drawable/ic_hotel"
+                />
 
 </menu>

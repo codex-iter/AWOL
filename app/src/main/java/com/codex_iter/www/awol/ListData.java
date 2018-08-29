@@ -10,7 +10,7 @@ public class ListData {
     String sub,code,upd,theory,lab,percent,classes;
     double thT,thp,lat,lap,tc;
     int status;
-
+     static ListData[] ld;
     public String getClasses() {
         return Double.toString(thT+lat);
     }
@@ -46,7 +46,7 @@ public class ListData {
     }
 
     public void setUpd(String upd) {
-        this.upd = upd.substring(0,11);
+        this.upd = upd;
     }
 
     public String getTheory() {

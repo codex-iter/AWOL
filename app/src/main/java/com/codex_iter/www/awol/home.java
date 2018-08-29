@@ -1,23 +1,30 @@
 package com.codex_iter.www.awol;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.format.DateUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 
 public class home extends AppCompatActivity {
@@ -28,6 +35,8 @@ public class home extends AppCompatActivity {
     public ListView rl;
     public ArrayList<ListData> myList;
     TextView name,reg,avat,avab;
+    SharedPreferences sub;
+    SharedPreferences.Editor edit;
     MyBaseAdapter adapter;
     DrawerLayout dl;
     @Override
@@ -42,6 +51,8 @@ public class home extends AppCompatActivity {
          result=r[0];
          avgab=0;
          avgat=0;
+        sub = getSharedPreferences("sub",
+                Context.MODE_PRIVATE);
         try {
             JSONObject jObj1 = new JSONObject(result);
             JSONArray arr = jObj1.getJSONArray("griddata");
@@ -50,11 +61,13 @@ public class home extends AppCompatActivity {
             for (int i = 0; i < l; i++) {
                 JSONObject jObj = arr.getJSONObject(i);
                 ld[i]=new ListData();
-                ld[i].setCode(jObj.getString("subjectcode"));
+                String code=jObj.getString("subjectcode");
+                String ck=Updated(jObj,sub,code);
+                ld[i].setCode(code);
                 ld[i].setSub(jObj.getString("subject"));
                 ld[i].setTheory(jObj.getString("Latt"));
                 ld[i].setLab(jObj.getString("Patt"));
-                ld[i].setUpd(jObj.getString("lastupdatedon"));
+                ld[i].setUpd(ck);
                 ld[i].setPercent(jObj.getString("TotalAttandence"));
                 avgat+=Double.parseDouble(jObj.getString("TotalAttandence").trim());
                 avgab+=Integer.parseInt(ld[i].getAbsent());
@@ -65,9 +78,10 @@ public class home extends AppCompatActivity {
             e.printStackTrace();
         } finally {
             rl = findViewById(R.id.rl);
+            ListData.ld=ld;
             for (int i = 0; i < l; i++) {
                 myList.add(ld[i]);
-            }
+                  }
 
            adapter = new MyBaseAdapter(getApplicationContext(), myList);
             rl.setAdapter(adapter);
@@ -112,6 +126,10 @@ public class home extends AppCompatActivity {
                                 case R.id.lgout:
                                     finish();
                                     break;
+                                case R.id.pab:
+                                            Intent intent = new Intent(getApplicationContext(), Bunk.class);
+                                            startActivity(intent);
+                                    break;
                             }
 
                             return true;
@@ -124,6 +142,32 @@ public class home extends AppCompatActivity {
 
 
             }
+    private String Updated(JSONObject jObj, SharedPreferences sub, String code) throws JSONException {
+      if(sub.contains(code)) {
+          JSONObject old = new JSONObject(sub.getString(code, ""));
+          if ((!old.getString("Latt").equals(jObj.getString("Latt")))||(!old.getString("Patt").equals(jObj.getString("Patt")))) {
+              jObj.put("updated", new Date().getTime());
+              edit = sub.edit();
+              Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+              v.vibrate(400);
+              edit.putString(code, jObj.toString());
+              edit.commit();
+              return "just now";
+          } else return DateUtils.getRelativeTimeSpanString(old.getLong("updated"), new Date().getTime(), 0).toString();
+      }
+
+          else
+          {
+              jObj.put("updated", new Date().getTime());
+              edit = sub.edit();
+              Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+              v.vibrate(400);
+              edit.putString(code, jObj.toString());
+              edit.commit();
+              return "just now";
+          }
+      }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -140,12 +184,10 @@ public class home extends AppCompatActivity {
         if (this.dl.isDrawerOpen(GravityCompat.START)) {
             this.dl.closeDrawer(GravityCompat.START);
         } else {
-            //super.onBackPressed();
-            moveTaskToBack(false);
-
-
+           moveTaskToBack(true);
         }
 
     }
         }
+
 

@@ -35,33 +35,33 @@ public class MyBaseAdapter extends ArrayAdapter<ListData> {
         } else {
             mViewHolder = (MyViewHolder) convertView.getTag();
         }
-        mViewHolder.sub.setText(myList.get(position).getSub());
-        mViewHolder.at.setText(myList.get(position).getPercent());
-        if(myList.get(position).getStatus()==1)
-            mViewHolder.at.setBackgroundResource(R.drawable.circp);
-        else if(myList.get(position).getStatus()==2)
-            mViewHolder.at.setBackgroundResource(R.drawable.circs);
-        else if(myList.get(position).getStatus()==3)
-            mViewHolder.at.setBackgroundResource(R.drawable.circo);
-        else
-            mViewHolder.at.setBackgroundResource(R.drawable.circe);
+         mViewHolder.sub.setText(myList.get(position).getSub());
+//        mViewHolder.at.setText(myList.get(position).getPercent());
+//        if(myList.get(position).getStatus()==1)
+//            mViewHolder.at.setBackgroundResource(R.drawable.circp);
+//        else if(myList.get(position).getStatus()==2)
+//            mViewHolder.at.setBackgroundResource(R.drawable.circs);
+//        else if(myList.get(position).getStatus()==3)
+//            mViewHolder.at.setBackgroundResource(R.drawable.circo);
+//        else
+//            mViewHolder.at.setBackgroundResource(R.drawable.circe);
 
         mViewHolder.lu.setText(myList.get(position).getUpd());
         mViewHolder.th.setText(myList.get(position).getTheory());
         mViewHolder.prac.setText(myList.get(position).getLab());
         mViewHolder.ab.setText(myList.get(position).getAbsent());
         mViewHolder.tc.setText(myList.get(position).getClasses());
-        mViewHolder.btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context.getApplicationContext(), Bunk.class);
-                intent.putExtra("percent",myList.get(position).getPercent() );
-                intent.putExtra("absent",myList.get(position).getAbsent() );
-                intent.putExtra("total",myList.get(position).getClasses() );
-                intent.putExtra("sub",myList.get(position).getSub());
-                context.startActivity(intent);
-            }
-        });
+//        mViewHolder.btn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(context.getApplicationContext(), Bunk.class);
+//                intent.putExtra("percent",myList.get(position).getPercent() );
+//                intent.putExtra("absent",myList.get(position).getAbsent() );
+//                intent.putExtra("total",myList.get(position).getClasses() );
+//                intent.putExtra("sub",myList.get(position).getSub());
+//                context.startActivity(intent);
+//            }
+//        });
 
         return convertView;
     }
@@ -70,22 +70,14 @@ public class MyBaseAdapter extends ArrayAdapter<ListData> {
     private class MyViewHolder {
 
         TextView sub,at,lu,th,prac,ab,tc;
-        Button btn;
-
 
         private MyViewHolder(View view) {
             sub =  view.findViewById(R.id.sub);
-            at =   view.findViewById(R.id.att);
             lu=   view.findViewById(R.id.lu);
             th= view.findViewById(R.id.theory);
             prac= view.findViewById(R.id.prac);
             ab= view.findViewById(R.id.ta);
             tc=view.findViewById(R.id.tc);
-
-
-            btn= view.findViewById(R.id.btn);
-
-
         }
     }
 }

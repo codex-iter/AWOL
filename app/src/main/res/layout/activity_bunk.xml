@@ -11,18 +11,14 @@
     android:background="@color/colorPrimaryDark"
     tools:context="com.codex_iter.www.awol.Bunk">
 
-    <TextView
+    <Spinner
         android:id="@+id/sub"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2"
-        android:gravity="center"
-        android:textStyle="bold"
-        android:fontFamily="cursive"
-        android:maxLines="2"
-        android:text="Number Theory"
-        android:textColor="@color/colorPrimary"
-        android:textSize="30dp" />
+        android:layout_weight="1.5"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -175,6 +171,16 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="20dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text=""
+        android:textColor="@color/colorPrimary"
+        android:textSize="18dp" />
+    <TextView
+        android:id="@+id/left"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="5dp"
         android:layout_weight="1"
         android:gravity="center"
         android:text=""
