@@ -128,6 +128,7 @@ public class Bunk extends AppCompatActivity {
            public boolean onTouch(View v, MotionEvent event) {
                taredt.setText("");
                atndedt.setText("");
+               result.setText(" ");
                return false;
            }
        });
@@ -137,6 +138,7 @@ public class Bunk extends AppCompatActivity {
             public boolean onTouch(View v, MotionEvent event) {
                 bnkedt.setText("");
                 taredt.setText("");
+                result.setText(" ");
                 return false;
             }
         });
@@ -146,6 +148,7 @@ public class Bunk extends AppCompatActivity {
             public boolean onTouch(View v, MotionEvent event) {
                 bnkedt.setText("");
                 atndedt.setText("");
+                result.setText(" ");
                 return false;
             }
         });
