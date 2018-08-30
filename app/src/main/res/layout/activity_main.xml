@@ -49,9 +49,10 @@
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/password_visibility"
-            android:layout_width="295dp"
-            android:layout_height="50dp"
-            android:layout_marginLeft="35dp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1.1"
+            android:layout_marginHorizontal="35dp"
             android:layout_marginTop="15dp"
             app:hintEnabled="false"
             app:passwordToggleEnabled="true">
@@ -60,7 +61,6 @@
                 android:id="@+id/pass"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1.1"
                 android:hint="PASSWORD"
                 android:focusedByDefault="true"
                 android:fontFamily="sans-serif"

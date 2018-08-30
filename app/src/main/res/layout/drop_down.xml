@@ -7,8 +7,8 @@
     android:textStyle="bold"
     android:singleLine="true"
     android:gravity="center"
-    android:paddingVertical="6dp"
+    android:paddingVertical="8dp"
     android:paddingHorizontal="3dp"
     android:textColor="@color/colorPrimary"
-    android:textSize="22dp"
+    android:textSize="18dp"
     />

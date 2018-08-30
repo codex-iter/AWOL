@@ -25,6 +25,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Scanner;
 
 
 public class home extends AppCompatActivity {
@@ -62,7 +63,7 @@ public class home extends AppCompatActivity {
                 JSONObject jObj = arr.getJSONObject(i);
                 ld[i]=new ListData();
                 String code=jObj.getString("subjectcode");
-                String ck=Updated(jObj,sub,code);
+                String ck=Updated(jObj,sub,code,i);
                 ld[i].setCode(code);
                 ld[i].setSub(jObj.getString("subject"));
                 ld[i].setTheory(jObj.getString("Latt"));
@@ -142,11 +143,12 @@ public class home extends AppCompatActivity {
 
 
             }
-    private String Updated(JSONObject jObj, SharedPreferences sub, String code) throws JSONException {
+    private String Updated(JSONObject jObj, SharedPreferences sub, String code,int i) throws JSONException {
       if(sub.contains(code)) {
           JSONObject old = new JSONObject(sub.getString(code, ""));
           if ((!old.getString("Latt").equals(jObj.getString("Latt")))||(!old.getString("Patt").equals(jObj.getString("Patt")))) {
               jObj.put("updated", new Date().getTime());
+              ld[i].setOld(old.getString("TotalAttandence"));
               edit = sub.edit();
               Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
               v.vibrate(400);

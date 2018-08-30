@@ -17,6 +17,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -51,7 +52,6 @@ public class MainActivity extends AppCompatActivity {
     Button btn;
     ProgressDialog pd;
     SharedPreferences userm;
-    String name="";
     SharedPreferences.Editor edit;
     LinearLayout ll;
     @Override
@@ -146,8 +146,8 @@ ll.setOnTouchListener(new View.OnTouchListener() {
 
                             Toast.makeText(getApplicationContext(), "Success!", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(MainActivity.this, home.class);
+                            //getname(param);
                             response += "kkk" + param[1];
-                            System.out.print(response);
                             intent.putExtra("result", response);
                             edit.putString(param[1], response);
                             edit.commit();
@@ -191,18 +191,19 @@ ll.setOnTouchListener(new View.OnTouchListener() {
 
 
         }
-//    private String getname(final String... param){
+//    private void getname(final String... param){
 //        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
 //        StringRequest postRequest = new StringRequest(Request.Method.POST, param[0]+"/studentinfo",
 //                new Response.Listener<String>()
 //                {
 //                    @Override
 //                    public void onResponse(String response)  {
-//                        try {
-//                           JSONObject jobj = new JSONObject(response);
-//                            JSONArray jarr= jobj.getJSONArray("detail");
-//                                    jobj=jarr.getJSONObject(0);
-//                                    name=jobj.getString("name");
+//
+//                     try {
+//                           JSONObject jobj  = new JSONObject(response);
+//                           JSONArray jarr   = jobj.getJSONArray("detail");
+//                           JSONObject jobj1 = jarr.getJSONObject(0);
+//                           name = jobj1.getString("name");
 //                        } catch (JSONException e) {
 //                            Toast.makeText(getApplicationContext(), "cannot fetch name!!", Toast.LENGTH_SHORT).show();
 //                        }
@@ -226,9 +227,6 @@ ll.setOnTouchListener(new View.OnTouchListener() {
 //            }
 //        };
 //        queue.add(postRequest);
-//
-//       return name;
-//
 //
 //    }
 

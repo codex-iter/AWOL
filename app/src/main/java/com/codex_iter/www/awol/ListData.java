@@ -7,8 +7,8 @@ import java.util.Scanner;
  * */
 public class ListData {
 
-    String sub,code,upd,theory,lab,percent,classes;
-    double thT,thp,lat,lap,tc;
+    String sub,code,upd,theory,lab,percent,that="N/A",labt="N/A",old="";
+    double thT,thp,lat,lap,tc,tha,la;
     int status;
      static ListData[] ld;
     public String getClasses() {
@@ -23,11 +23,36 @@ public class ListData {
         this.sub = sub;
     }
 
+    public String getOld() {
+        return old;
+    }
+
+    public void setOld(String old) {
+        this.old = old;
+    }
+
     public String getCode() {
         return code;
     }
 
+    public String getThat() {
+        return that;
+    }
+
+    public void setThat(String that) {
+        this.that = that;
+    }
+
+    public String getLabt() {
+        return labt;
+    }
+
+    public void setLabt(String labt) {
+        this.labt = labt;
+    }
+
     public int getStatus(){
+
         double d = new Scanner(percent).nextDouble();
         if(d<65)
             return 1;
@@ -64,7 +89,8 @@ public class ListData {
             char c = in.next().charAt(0);
             thT = in.nextInt();
             String res = String.format("%.1f",((thp / thT) * 100) );
-            this.theory = theory + "(" + res + "%)";
+            this.theory = theory;
+            setThat(res);
         }
     }
     public String getLab() {
@@ -81,7 +107,8 @@ public class ListData {
             lap = in.nextInt();
             char c = in.next().charAt(0);
             lat = in.nextInt();
-            this.lab = lab + "(" + String.format("%.1f",((lap / lat) * 100)).substring(0,3) + "%)";
+            this.lab = lab ;
+                    setLabt(String.format("%.1f",((lap / lat) * 100)));
         }
     }
 

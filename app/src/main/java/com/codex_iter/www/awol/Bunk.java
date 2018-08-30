@@ -73,6 +73,7 @@ public class Bunk extends AppCompatActivity{
                     }
                     result.setText("Attend " + (i-1) + " classes for 75%");
                 }
+                left.setText("");
             }
 
             @Override
@@ -96,6 +97,7 @@ public class Bunk extends AppCompatActivity{
                     }
                     result.setText("Attend " + (i-1) + " classes for 75%");
                 }
+                left.setText("");
             }
         });
         present = total-absent;
@@ -131,23 +133,25 @@ public class Bunk extends AppCompatActivity{
                         result.setText("Bunk " + (i-1) + " classes for req attendance");
                         if((int)tp!=75)
                         {
-                            int bunk=i;
+                            int bunk=i-1;
                             if (75 < tp) {
 
-                                for (i = 0; i != -99; i++) {
-                                     p = (present-bunk / (total + i)) * 100;
+                                for (i = 0; i!=99; i++) {
+                                     p = (present / (total+bunk + i)) * 100;
                                     if (p < 75) break;
                                 }
                                 left.setText("Bunk " + (i-1) + " more classes for 75% ");
                             } else if (75 > tp) {
                                 for (i = 0; i != -99; i++) {
-                                     p = ((present-bunk + i) / (total + i) * 100);
+                                     p = ((present + i) / (total+bunk + i)) * 100;
                                     if (p > 75) break;
                                 }
                                 left.setText("Attend " + (i-1) + " classes after bunk for 75%");
                             }
 
                         }
+                        else
+                            left.setText("");
                     } else if (tp > percent) {
                         int i;
                         for (i = 0; i != -99; i++) {
@@ -156,18 +160,17 @@ public class Bunk extends AppCompatActivity{
                         }
                         result.setText("Attend " + i + " classes for req attendance");
                         if((int)tp!=75) {
-                            int attend = i;
+                            double attend = i;
                                 double  p;
                                 if (75 < tp) {
-
                                     for (i = 0; i != -99; i++) {
-                                        p = (present+attend / (total + i)) * 100;
+                                        p = ((present+attend) / (total+attend+ i)) * 100;
                                         if (p < 75) break;
                                     }
                                     left.setText("Bunk " + (i-1) + " classes afterwards for 75% ");
                                 } else if (75 > tp) {
                                     for (i = 0; i != -99; i++) {
-                                        p = ((present+attend + i) / (total + i) * 100);
+                                        p = ((present+attend + i) / (total+attend + i) * 100);
                                         if (p > 75) break;
                                     }
                                     left.setText("Attend " + (i-1) + " more classes for 75%");
@@ -200,13 +203,13 @@ public class Bunk extends AppCompatActivity{
                     if (75 < p) {
 
                         for (i = 0; i != -99; i++) {
-                            pr = (present+attend / (total + i)) * 100;
+                            pr = ((present+attend )/ (total+attend + i)) * 100;
                             if (pr < 75) break;
                         }
                         left.setText("Bunk " + (i-1) + " classes afterwards for 75% ");
                     } else if (75 > p) {
                         for (i = 0; i != -99; i++) {
-                            pr = ((present+attend + i) / (total + i) * 100);
+                            pr = ((present+attend + i) / (total+attend+ i) * 100);
                             if (pr > 75) break;
                         }
                         left.setText("Attend " + (i-1) + " more classes for 75%");
@@ -238,13 +241,13 @@ public class Bunk extends AppCompatActivity{
                     if (75 < p) {
 
                         for (i = 0; i != -99; i++) {
-                            pr = (present-bunk / (total + i)) * 100;
+                            pr = (present / (total+bunk + i)) * 100;
                             if (pr < 75) break;
                         }
                         left.setText("Bunk " + (i-1) + " more classes for 75% ");
                     } else if (75 > p) {
                         for (i = 0; i != -99; i++) {
-                            pr = ((present-bunk + i) / (total + i) * 100);
+                            pr = ((present + i) / (total+bunk + i) * 100);
                             if (pr > 75) break;
                         }
                         left.setText("Attend " + (i-1) + " classes after bunk for 75%");

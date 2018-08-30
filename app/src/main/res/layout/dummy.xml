@@ -5,27 +5,116 @@
     android:id="@+id/card_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    card_view:cardCornerRadius="4dp"
-     card_view:cardBackgroundColor="@color/colorAccent"
-    android:layout_margin="5dp">
+    card_view:cardCornerRadius="8dp"
+     card_view:cardElevation="@dimen/cardview_compat_inset_shadow"
+     card_view:cardBackgroundColor="@color/cardview_shadow_start_color"
+     android:paddingVertical="15dp">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="170dp"
+        android:layout_height="190dp"
         android:orientation="vertical"
-        android:weightSum="5.5"
-        android:layout_margin="14dp"
-        android:layout_centerVertical="true"
-        android:background="@color/colorPrimaryDark">
+        android:weightSum="6.5"
+        android:layout_marginVertical="10dp"
+        android:layout_centerVertical="true">
+     <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="0dp"
+         android:layout_weight="1"
+         android:layout_gravity="center"
+         android:orientation="horizontal"
+         android:weightSum="8"
+         android:layout_marginBottom="8dp">
+         <ImageView
+             android:id="@+id/up"
+             android:layout_width="0dp"
+             android:layout_weight="1"
+             android:padding="2dp"
+             android:layout_height="match_parent"
+             android:src="@drawable/up"
+             android:visibility="invisible"/>
         <TextView
             android:id="@+id/sub"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_weight="6"
+            android:layout_height="match_parent"
             android:gravity="center"
             android:textStyle="bold"
             android:textSize="17dp"
             android:textColor="@color/colorPrimary"
             android:text="Number Theory"/>
+         <ImageView
+             android:id="@+id/down"
+             android:layout_width="0dp"
+             android:layout_weight="1"
+             android:padding="2dp"
+             android:src="@drawable/down"
+             android:visibility="invisible"
+             android:layout_height="match_parent" />
+     </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:orientation="horizontal"
+            android:weightSum="6"
+            android:paddingHorizontal="5dp">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Total:"
+                android:textColor="@color/colorAccent"
+                android:textStyle="bold"
+                android:gravity="center"/>
+            <TextView
+                android:id="@+id/ta"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.8"
+                android:text="99.9"
+                android:textColor="@color/colorAccent"
+                android:textStyle="bold"
+                android:gravity="center_vertical"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Theory:"
+                android:textColor="@color/colorAccent"
+                android:textStyle="bold" />
+            <TextView
+                android:id="@+id/tha"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.8"
+                android:text="57.6"
+                android:textColor="@color/colorAccent"
+                android:textStyle="bold"
+                android:gravity="center"/>
+
+            <TextView
+                android:layout_height="match_parent"
+                android:layout_weight="1.2"
+                android:layout_width="0dp"
+                android:gravity="center"
+                android:text="Practical:"
+                android:textColor="@color/colorAccent"
+                android:textStyle="bold" />
+            <TextView
+                android:id="@+id/la"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.8"
+                android:text="99.9"
+                android:textColor="@color/colorAccent"
+                android:textStyle="bold"
+                android:gravity="center"/>
+
+        </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="2dp"
@@ -157,7 +246,7 @@
                         android:textStyle="bold"
                         android:gravity="center_vertical"/>
                     <TextView
-                        android:id="@+id/ta"
+                        android:id="@+id/ab"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1.1"
