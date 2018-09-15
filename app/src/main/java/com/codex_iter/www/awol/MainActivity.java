@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     EditText user, pass;
     Button btn;
     ProgressDialog pd;
-    SharedPreferences userm;
+    SharedPreferences userm,logout;
     SharedPreferences.Editor edit;
     LinearLayout ll;
     @Override
@@ -71,6 +71,8 @@ ll.setOnTouchListener(new View.OnTouchListener() {
         pass = findViewById(R.id.pass);
         btn = findViewById(R.id.btn);
         userm = getSharedPreferences("user",
+                Context.MODE_PRIVATE);
+        logout= getSharedPreferences("sub",
                 Context.MODE_PRIVATE);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,32 +94,44 @@ ll.setOnTouchListener(new View.OnTouchListener() {
                         edit.putString(u+"pass",p);
                         edit.putString("pass",p);
                         edit.commit();
+                        edit=logout.edit();
+                        edit.putBoolean("logout",false);
+                        edit.commit();
 
                     } else{
-                        Toast.makeText(getApplicationContext(), "no network connection", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(MainActivity.this, home.class);
-                        if(userm.contains(u)) {
-                            if(p.equals(userm.getString(u+"pass", ""))){
-                            String s = userm.getString(u, "");
-                            intent.putExtra("result", s);
-                            Toast.makeText(getApplicationContext(), "showing offline value for this user", Toast.LENGTH_SHORT).show();
-                            startActivity(intent);
-                        }
-                        else{
-                                Toast.makeText(getApplicationContext(), "invalid credentials", Toast.LENGTH_SHORT).show();
-                            }}
-                        else
-                            Toast.makeText(getApplicationContext(), "no offline info for this user", Toast.LENGTH_SHORT).show();
-
-
-
+                    showData(u,p);
                     }  }  }
         });
-        if (userm.contains("user")&&userm.contains("pass")) {
+
+        if (userm.contains("user")&&userm.contains("pass")&&logout.contains("logout")&&!logout.getBoolean("logout",false)) {
             user.setText(userm.getString("user", ""));
             pass.setText(userm.getString("pass", ""));
             btn.performClick();
         }
+
+
+
+    }
+
+    private void showData(String u,String p) {
+        Toast.makeText(getApplicationContext(), "no network connection", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(MainActivity.this, home.class);
+        if(userm.contains(u)) {
+            if(p.equals(userm.getString(u+"pass", ""))){
+                edit=logout.edit();
+                edit.putBoolean("logout",false);
+                edit.commit();
+                String s = userm.getString(u, "");
+                intent.putExtra("result", s);
+                Toast.makeText(getApplicationContext(), "showing offline value for this user", Toast.LENGTH_SHORT).show();
+                startActivity(intent);
+            }
+            else{
+                Toast.makeText(getApplicationContext(), "invalid credentials", Toast.LENGTH_SHORT).show();
+            }}
+        else
+            Toast.makeText(getApplicationContext(), "no offline info for this user", Toast.LENGTH_SHORT).show();
+
 
 
 
@@ -164,6 +178,7 @@ ll.setOnTouchListener(new View.OnTouchListener() {
                                 pd.dismiss();
                             user.setText("");
                             pass.setText("");
+                            showData(param[1],param[2]);
                           if(error instanceof AuthFailureError)
                               Toast.makeText(getApplicationContext(), "Wrong Credentials!", Toast.LENGTH_SHORT).show();
                           else if(error instanceof ServerError)

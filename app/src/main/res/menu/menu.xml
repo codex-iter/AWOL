@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
         <item
+            android:id="@+id/pab"
+            android:title="Plan@Bunk"
+            android:icon="@drawable/ic_hotel"
+            />
+        <item
             android:id="@+id/sa"
             android:title="Share app"
             android:icon="@drawable/ic_send"
@@ -21,10 +26,6 @@
             android:title="Logout"
             android:icon="@drawable/ic_home"
             />
-        <item
-                android:id="@+id/pab"
-                android:title="Plan@Bunk"
-            android:icon="@drawable/ic_hotel"
-                />
+
 
 </menu>

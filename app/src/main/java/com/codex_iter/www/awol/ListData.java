@@ -7,12 +7,12 @@ import java.util.Scanner;
  * */
 public class ListData {
 
-    String sub,code,upd,theory,lab,percent,that="N/A",labt="N/A",old="";
+    String sub,code,upd,theory,lab,percent,that="",labt="",old="";
     double thT,thp,lat,lap,tc,tha,la;
     int status;
      static ListData[] ld;
     public String getClasses() {
-        return Double.toString(thT+lat);
+        return Integer.toString((int)(thT+lat));
     }
 
     public String getSub() {
@@ -88,7 +88,7 @@ public class ListData {
             thp = in.nextInt();
             char c = in.next().charAt(0);
             thT = in.nextInt();
-            String res = String.format("%.1f",((thp / thT) * 100) );
+            String res = " ("+String.format("%.0f",((thp / thT) * 100) )+"%)";
             this.theory = theory;
             setThat(res);
         }
@@ -108,7 +108,7 @@ public class ListData {
             char c = in.next().charAt(0);
             lat = in.nextInt();
             this.lab = lab ;
-                    setLabt(String.format("%.1f",((lap / lat) * 100)));
+                    setLabt(" ("+String.format("%.0f",((lap / lat) * 100))+"%)");
         }
     }
 
@@ -123,7 +123,7 @@ public class ListData {
     }
 
     public void setPercent(String percent) {
-        this.percent = percent;
+        this.percent = String.format("%.1f",new Scanner(percent).nextDouble());
     }
 }
 

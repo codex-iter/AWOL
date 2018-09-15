@@ -29,7 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:text="Ver. 2.0"
+        android:text="Ver. 4.0"
         android:textColor="@color/colorAccent"
         android:layout_marginTop="7dp"
         android:textSize="18dp"
@@ -105,15 +105,15 @@
             android:layout_marginHorizontal="4dp"
             />
 </LinearLayout>
-
     <TextView
         android:id="@+id/cdx"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="MADE WITH LOVE AS A PROJECT FOR CODEX"
+        android:text="MADE WITH  💚  AS A PROJECT FOR CODEX"
         android:textColor="@color/colorPrimary"
         android:layout_marginTop="15dp"
+        android:fontFamily="sans-serif-condensed"
         android:layout_marginHorizontal="25dp"
         android:background="@drawable/edit"
         android:textSize="16dp"

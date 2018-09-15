@@ -125,6 +125,9 @@ public class home extends AppCompatActivity {
                                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().getString(R.string.github_url))));
                                     break;
                                 case R.id.lgout:
+                                    edit=sub.edit();
+                                    edit.putBoolean("logout",true);
+                                    edit.commit();
                                     finish();
                                     break;
                                 case R.id.pab:

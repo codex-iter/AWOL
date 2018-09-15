@@ -46,9 +46,9 @@ public class MyBaseAdapter extends ArrayAdapter<ListData> {
         convertView.startAnimation(animation);
         animation = null;
          mViewHolder.sub.setText(myList.get(position).getSub());
-        mViewHolder.ta.setText(myList.get(position).getPercent());
-        mViewHolder.tha.setText(myList.get(position).getThat());
-        mViewHolder.la.setText(myList.get(position).getLabt());
+        mViewHolder.ta.setText(myList.get(position).getPercent()+"%");
+//        mViewHolder.tha.setText(myList.get(position).getThat());
+//        mViewHolder.la.setText(myList.get(position).getLabt());
         String s=myList.get(position).getOld();
         if(!s.equals(""))
         {
@@ -69,8 +69,8 @@ public class MyBaseAdapter extends ArrayAdapter<ListData> {
 //            mViewHolder.at.setBackgroundResource(R.drawable.circe);
 
         mViewHolder.lu.setText(myList.get(position).getUpd());
-        mViewHolder.th.setText(myList.get(position).getTheory());
-        mViewHolder.prac.setText(myList.get(position).getLab());
+        mViewHolder.th.setText(myList.get(position).getTheory()+myList.get(position).getThat());
+        mViewHolder.prac.setText(myList.get(position).getLab()+myList.get(position).getLabt());
         mViewHolder.ab.setText(myList.get(position).getAbsent());
         mViewHolder.tc.setText(myList.get(position).getClasses());
         return convertView;
@@ -90,8 +90,8 @@ public class MyBaseAdapter extends ArrayAdapter<ListData> {
             ab= view.findViewById(R.id.ab);
             tc=view.findViewById(R.id.tc);
             ta=view.findViewById(R.id.ta);
-            tha=view.findViewById(R.id.tha);
-            la=view.findViewById(R.id.la);
+//            tha=view.findViewById(R.id.tha);
+//            la=view.findViewById(R.id.la);
             up=view.findViewById(R.id.up);
             down=view.findViewById(R.id.down);
         }
