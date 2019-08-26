@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/pab"
+        android:icon="@drawable/ic_hotel"
+        android:title="@string/plan_bunk" />
+    <item
+        android:id="@+id/sa"
+        android:icon="@drawable/ic_send"
+        android:title="@string/share_app" />
+    <item
+        android:id="@+id/setting"
+        android:title="@string/settings"
+        android:icon="@drawable/settings"/>
+    <item
+        android:id="@+id/abt"
+        android:icon="@drawable/ic_local"
+        android:title="@string/about_us" />
+    <item
+        android:id="@+id/cd"
+        android:icon="@drawable/ic_code"
+        android:title="@string/open_source_geek" />
+    <item
+        android:title="@string/privacy_policy"
+        android:icon="@drawable/lock"
+        android:id="@+id/policy"/>
+
+    <item
+        android:id="@+id/lgout"
+        android:icon="@drawable/ic_home"
+        android:title="@string/logout" />
+
+</menu>

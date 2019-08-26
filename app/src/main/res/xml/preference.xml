@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="Display">
+        <SwitchPreference
+            android:key="pref_dark_mode"
+            android:summary="Swtich Theme"
+            android:title="Dark Mode" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Mobile Notifications">
+        <SwitchPreference
+            android:key="pref_notification"
+            android:summary="Daily get notification at 7 AM."
+            android:title="Enable Notification" />
+    </PreferenceCategory>
+</androidx.preference.PreferenceScreen>
