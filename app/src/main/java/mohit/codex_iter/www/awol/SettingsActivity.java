@@ -10,8 +10,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
-import com.codex_iter.www.awol.R;
-
 import java.util.Objects;
 
 public class SettingsActivity extends AppCompatActivity {

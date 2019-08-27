@@ -15,9 +15,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-
-import com.codex_iter.www.awol.R;
-
 import java.util.ArrayList;
 import java.util.Scanner;
 

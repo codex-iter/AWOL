@@ -3,11 +3,11 @@ apply plugin: 'io.fabric'
 android {
     compileSdkVersion 29
     defaultConfig {
-        applicationId "com.codex_iter.www.awol"
+        applicationId "mohit.codex_iter.www.awol"
         minSdkVersion 19
         targetSdkVersion 29
         versionCode 6
-        versionName "4.0"
+        versionName "5.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

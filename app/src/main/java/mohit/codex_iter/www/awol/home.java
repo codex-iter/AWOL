@@ -20,8 +20,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-
-import com.codex_iter.www.awol.R;
 import com.google.android.material.navigation.NavigationView;
 
 import org.json.JSONArray;

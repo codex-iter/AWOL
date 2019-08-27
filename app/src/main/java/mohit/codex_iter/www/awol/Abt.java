@@ -12,13 +12,12 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.codex_iter.www.awol.R;
-
 public class Abt extends AppCompatActivity {
     private static final String PREFS_NAME = "prefs";
     private static final String PREF_DARK_THEME = "dark_theme";
     @SuppressWarnings("FieldCanBeLocal")
     private TextView  dis, para, dev, mo, pa, neh;
+    @SuppressWarnings("FieldCanBeLocal")
     private LinearLayout ll;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

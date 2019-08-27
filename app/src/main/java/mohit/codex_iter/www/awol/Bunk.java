@@ -19,8 +19,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.codex_iter.www.awol.R;
-
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Scanner;
