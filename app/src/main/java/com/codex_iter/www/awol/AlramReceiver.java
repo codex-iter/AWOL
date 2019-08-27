@@ -50,7 +50,7 @@ public class AlramReceiver extends BroadcastReceiver {
             SharedPreferences set_time = context.getSharedPreferences("Set_time", 0);
             int set_t = set_time.getInt("Set_Time", 0);
             if (present_time > set_t) {
-                Toast.makeText(context, "Alram set for tommorrow!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Notifications set for tomorrow!", Toast.LENGTH_SHORT).show();
             } else {
                 NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 

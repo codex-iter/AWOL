@@ -1,16 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory android:title="Display">
-        <SwitchPreference
+    <androidx.preference.PreferenceCategory
+        android:title="Display"
+        app:iconSpaceReserved="false">
+        <androidx.preference.SwitchPreference
             android:key="pref_dark_mode"
             android:summary="Swtich Theme"
-            android:title="Dark Mode" />
-    </PreferenceCategory>
-    <PreferenceCategory android:title="Mobile Notifications">
-        <SwitchPreference
+            android:title="Dark Mode"
+            app:iconSpaceReserved="false" />
+    </androidx.preference.PreferenceCategory>
+    <androidx.preference.PreferenceCategory
+        android:title="Mobile Notifications"
+        app:iconSpaceReserved="false">
+        <androidx.preference.SwitchPreference
             android:key="pref_notification"
             android:summary="Daily get notification at 7 AM."
-            android:title="Enable Notification" />
-    </PreferenceCategory>
+            android:title="Enable Notification"
+            app:iconSpaceReserved="false" />
+    </androidx.preference.PreferenceCategory>
+    <androidx.preference.PreferenceCategory android:title="
+          Not getting Push notifications?\n   Go to Settings and Allow the app to run in\n
+                            background."
+        />
 </androidx.preference.PreferenceScreen>

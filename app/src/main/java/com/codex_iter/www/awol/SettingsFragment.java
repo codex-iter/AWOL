@@ -5,10 +5,12 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.widget.Toast;
+
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragment;
 import androidx.preference.SwitchPreference;
-import android.widget.Toast;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -22,6 +24,7 @@ public class SettingsFragment extends PreferenceFragment {
     private static final String PREFS_NAME = "prefs";
     private static final String PREF_DARK_THEME = "dark_theme";
     private boolean flag = true;
+
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         SharedPreferences preferences = getActivity().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
@@ -71,7 +74,7 @@ public class SettingsFragment extends PreferenceFragment {
                         editor1.putBoolean("STOP_NOTIFICATION", false);
                         editor1.apply();
                         if (!flag) {
-                             Toast.makeText(getActivity(), "Notifications Enabled", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "Notifications Enabled", Toast.LENGTH_SHORT).show();
                             Calendar calendar = Calendar.getInstance();
                             Date alram_time = new Date();
                             calendar.set(Calendar.HOUR_OF_DAY, 7);
@@ -81,18 +84,21 @@ public class SettingsFragment extends PreferenceFragment {
                             String present_d = present_date.format(alram_time);
 
                             String fired_date = sharedPreferences.getString("Date", null);
-                            assert fired_date != null;
-                            if (!fired_date.equals(present_d)) {
-                                // Toast.makeText(getActivity(), "Next Day", Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(getActivity(), AlramReceiver.class);
-                                PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                                AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
-                                if (alarmManager != null) {
-                                    alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+                            if (!fired_date.equals(null)) {
+                                if (!fired_date.equals(present_d)) {
+                                 //   Toast.makeText(getActivity(), "Next Day", Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(getActivity(), AlramReceiver.class);
+                                    PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                                    AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
+                                    if (alarmManager != null) {
+                                        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+                                    }
+                                }else {
+                                    Toast.makeText(getActivity(), "Notifications set for tomorrow!", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         } else {
-                             Toast.makeText(getActivity(), "Notifications Enabled", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "Notifications Enabled", Toast.LENGTH_SHORT).show();
                             /*Alram time*/
                             Calendar calendar = Calendar.getInstance();
                             calendar.set(Calendar.HOUR_OF_DAY, 7);
@@ -108,7 +114,7 @@ public class SettingsFragment extends PreferenceFragment {
 
                             String fired_date = sharedPreferences.getString("Date", null);
                             if (fired_date == null) {
-                                // Toast.makeText(getActivity(), "First fire", Toast.LENGTH_SHORT).show();
+                              //  Toast.makeText(getActivity(), "First fire", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(getActivity(), AlramReceiver.class);
                                 PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                                 AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
@@ -116,7 +122,7 @@ public class SettingsFragment extends PreferenceFragment {
                                     alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
                                 }
                             } else if (!fired_date.equals(present_d)) {
-                                // Toast.makeText(getActivity(), "Next Day", Toast.LENGTH_SHORT).show();
+                              //  Toast.makeText(getActivity(), "Next Day", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(getActivity(), AlramReceiver.class);
                                 PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                                 AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
@@ -125,7 +131,7 @@ public class SettingsFragment extends PreferenceFragment {
                                 }
 
                             } else {
-                                Toast.makeText(getActivity(), "Alram set for tommorrow!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), "Notifications set for tomorrow!", Toast.LENGTH_SHORT).show();
                             }
                         }
                     } else {
