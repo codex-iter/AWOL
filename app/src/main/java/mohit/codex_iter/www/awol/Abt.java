@@ -1,4 +1,4 @@
-package com.codex_iter.www.awol;
+package mohit.codex_iter.www.awol;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,6 +11,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.codex_iter.www.awol.R;
 
 public class Abt extends AppCompatActivity {
     private static final String PREFS_NAME = "prefs";

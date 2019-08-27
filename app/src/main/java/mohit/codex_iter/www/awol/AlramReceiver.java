@@ -1,4 +1,4 @@
-package com.codex_iter.www.awol;
+package mohit.codex_iter.www.awol;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -14,6 +14,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
+
+import com.codex_iter.www.awol.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -33,14 +35,7 @@ public class AlramReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if ("android.intent.action.BOOT_COMPLETED".equals(intent.getAction())) {
-            setAlram(context, intent);
-        }
-
-        setAlram(context, intent);
-    }
-    public void setAlram(Context context, Intent intent){
-        Toast.makeText(context, "Alram Received", Toast.LENGTH_SHORT).show();
+       // Toast.makeText(context, "Alram Received", Toast.LENGTH_SHORT).show();
         SharedPreferences stop = context.getSharedPreferences("STOP", 0);
         boolean notification_stop = stop.getBoolean("STOP_NOTIFICATION", false);
         final SharedPreferences sharedPreferences = context.getSharedPreferences("Notification_date", 0);
@@ -51,10 +46,13 @@ public class AlramReceiver extends BroadcastReceiver {
             TimeZone tz = TimeZone.getTimeZone("GMT+05:30");
             localTime.setTimeZone(tz);
             Date date = localTime.getTime();
+
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH", Locale.US);
             int present_time = Integer.parseInt(simpleDateFormat.format(date));
+            //Toast.makeText(context, String.valueOf(present_time), Toast.LENGTH_SHORT).show();
             SharedPreferences set_time = context.getSharedPreferences("Set_time", 0);
             int set_t = set_time.getInt("Set_Time", 0);
+          //  Toast.makeText(context, String.valueOf(set_t), Toast.LENGTH_SHORT).show();
             if (present_time > set_t) {
                 Toast.makeText(context, "Notifications set for tomorrow!", Toast.LENGTH_SHORT).show();
             } else {

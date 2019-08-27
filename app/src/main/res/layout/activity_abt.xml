@@ -10,7 +10,7 @@
     android:paddingVertical="20dp"
     android:paddingHorizontal="5dp"
     android:gravity="center_horizontal"
-    tools:context="com.codex_iter.www.awol.MainActivity"
+    tools:context="com.codex_iter.www.awol.mohit.codex_iter.www.awol.MainActivity"
     tools:targetApi="o">
 
     <ImageView

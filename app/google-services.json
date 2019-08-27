@@ -8,17 +8,17 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:334392427707:android:b649786938cf173e",
+        "mobilesdk_app_id": "1:334392427707:android:21c8aa88e441b068",
         "android_client_info": {
-          "package_name": "com.codex_iter.www.awol"
+          "package_name": "mohit.codex_iter.www.awol"
         }
       },
       "oauth_client": [
         {
-          "client_id": "334392427707-sifpoipiosu6v3elss3cfdc5ojd2jgkh.apps.googleusercontent.com",
+          "client_id": "334392427707-dis11tet7830se8lmi9acso9ah86b7l5.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.codex_iter.www.awol",
+            "package_name": "mohit.codex_iter.www.awol",
             "certificate_hash": "2ecb499e4260a542f956655a23c5ed53de8e28c7"
           }
         },

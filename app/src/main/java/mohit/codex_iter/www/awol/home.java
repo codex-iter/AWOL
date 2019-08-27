@@ -1,4 +1,4 @@
-package com.codex_iter.www.awol;
+package mohit.codex_iter.www.awol;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,12 +9,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -23,6 +21,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.codex_iter.www.awol.R;
 import com.google.android.material.navigation.NavigationView;
 
 import org.json.JSONArray;
@@ -30,7 +29,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+
 import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
@@ -39,14 +38,19 @@ import java.util.Objects;
 public class home extends AppCompatActivity {
     private String result;
     private ListData[] ld;
+    @SuppressWarnings("FieldCanBeLocal")
     private int l, avgab;
+    @SuppressWarnings("FieldCanBeLocal")
     private double avgat;
     public ListView rl;
+    @SuppressWarnings("FieldCanBeLocal")
     private String[] r;
     public ArrayList<ListData> myList;
+    @SuppressWarnings("FieldCanBeLocal")
     private TextView name, reg, avat, avab;
     private SharedPreferences sub;
     private SharedPreferences.Editor edit;
+    @SuppressWarnings("FieldCanBeLocal")
     private MyBaseAdapter adapter;
     private DrawerLayout dl;
     private static final String PREFS_NAME = "prefs";

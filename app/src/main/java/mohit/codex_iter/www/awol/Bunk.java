@@ -1,4 +1,4 @@
-package com.codex_iter.www.awol;
+package mohit.codex_iter.www.awol;
 import android.annotation.SuppressLint;
 import android.content.Context;
 
@@ -18,6 +18,8 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.codex_iter.www.awol.R;
 
 import java.util.Locale;
 import java.util.Objects;

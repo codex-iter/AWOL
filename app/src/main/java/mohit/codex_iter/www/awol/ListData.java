@@ -1,4 +1,4 @@
-package com.codex_iter.www.awol;
+package mohit.codex_iter.www.awol;
 import java.util.Locale;
 import java.util.Scanner;
 

@@ -1,4 +1,4 @@
-package com.codex_iter.www.awol;
+package mohit.codex_iter.www.awol;
 
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -10,12 +10,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
+import com.codex_iter.www.awol.R;
+
 import java.util.Objects;
 
 public class SettingsActivity extends AppCompatActivity {
     private static final String PREFS_NAME = "prefs";
     private static final String PREF_DARK_THEME = "dark_theme";
-
+    @SuppressWarnings("FieldCanBeLocal")
     private CoordinatorLayout coordinatorLayout;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

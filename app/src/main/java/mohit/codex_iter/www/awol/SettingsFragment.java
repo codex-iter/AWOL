@@ -1,4 +1,4 @@
-package com.codex_iter.www.awol;
+package mohit.codex_iter.www.awol;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -10,6 +10,8 @@ import android.widget.Toast;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragment;
 import androidx.preference.SwitchPreference;
+
+import com.codex_iter.www.awol.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -80,24 +82,33 @@ public class SettingsFragment extends PreferenceFragment {
                             calendar.set(Calendar.HOUR_OF_DAY, 7);
                             calendar.set(Calendar.MINUTE, 0);
                             calendar.set(Calendar.SECOND, 0);
+                            int set_t = calendar.get(Calendar.HOUR_OF_DAY);
+                            set_time.putInt("Set_Time", set_t);
+                            set_time.apply();
                             SimpleDateFormat present_date = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
                             String present_d = present_date.format(alram_time);
 
                             String fired_date = sharedPreferences.getString("Date", "");
                             if (!fired_date.equals(null) && !fired_date.isEmpty()) {
                                 if (!fired_date.equals(present_d)) {
-                                 //   Toast.makeText(getActivity(), "Next Day", Toast.LENGTH_SHORT).show();
+                                    //   Toast.makeText(getActivity(), "Next Day", Toast.LENGTH_SHORT).show();
                                     Intent intent = new Intent(getActivity(), AlramReceiver.class);
                                     PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                                     AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
                                     if (alarmManager != null) {
                                         alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
                                     }
-                                }else {
+                                } else {
                                     Toast.makeText(getActivity(), "Notifications set for tomorrow!", Toast.LENGTH_SHORT).show();
                                 }
                             } else {
                                 Toast.makeText(getActivity(), "Notifications set", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(getActivity(), AlramReceiver.class);
+                                PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                                AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
+                                if (alarmManager != null) {
+                                    alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+                                }
                             }
                         } else {
                             Toast.makeText(getActivity(), "Notifications Enabled", Toast.LENGTH_SHORT).show();
@@ -106,7 +117,7 @@ public class SettingsFragment extends PreferenceFragment {
                             calendar.set(Calendar.HOUR_OF_DAY, 7);
                             calendar.set(Calendar.MINUTE, 0);
                             calendar.set(Calendar.SECOND, 0);
-                            int set_t = calendar.get(Calendar.HOUR);
+                            int set_t = calendar.get(Calendar.HOUR_OF_DAY);
                             set_time.putInt("Set_Time", set_t);
                             set_time.apply();
 
@@ -116,7 +127,7 @@ public class SettingsFragment extends PreferenceFragment {
 
                             String fired_date = sharedPreferences.getString("Date", null);
                             if (fired_date == null) {
-                              //  Toast.makeText(getActivity(), "First fire", Toast.LENGTH_SHORT).show();
+                                // Toast.makeText(getActivity(), "First fire", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(getActivity(), AlramReceiver.class);
                                 PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                                 AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
@@ -124,7 +135,7 @@ public class SettingsFragment extends PreferenceFragment {
                                     alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
                                 }
                             } else if (!fired_date.equals(present_d)) {
-                              //  Toast.makeText(getActivity(), "Next Day", Toast.LENGTH_SHORT).show();
+                                // Toast.makeText(getActivity(), "Next Day", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(getActivity(), AlramReceiver.class);
                                 PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                                 AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);

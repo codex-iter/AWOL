@@ -18,7 +18,7 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
         <activity
-            android:name=".MainActivity"
+            android:name="mohit.codex_iter.www.awol.MainActivity"
             android:configChanges="uiMode"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -29,31 +29,27 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".home"
+            android:name="mohit.codex_iter.www.awol.home"
             android:configChanges="uiMode"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Bunk"
+            android:name="mohit.codex_iter.www.awol.Bunk"
             android:configChanges="uiMode"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Abt"
+            android:name="mohit.codex_iter.www.awol.Abt"
             android:configChanges="uiMode"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
-            android:name=".SettingsActivity"
+            android:name="mohit.codex_iter.www.awol.SettingsActivity"
             android:configChanges="uiMode"
             android:screenOrientation="portrait" />
         <receiver
-            android:name=".AlramReceiver"
+            android:name="mohit.codex_iter.www.awol.AlramReceiver"
             android:enabled="true"
             android:exported="false">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-
         </receiver>
 
     </application>
