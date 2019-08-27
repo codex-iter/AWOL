@@ -83,8 +83,8 @@ public class SettingsFragment extends PreferenceFragment {
                             SimpleDateFormat present_date = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
                             String present_d = present_date.format(alram_time);
 
-                            String fired_date = sharedPreferences.getString("Date", null);
-                            if (!fired_date.equals(null)) {
+                            String fired_date = sharedPreferences.getString("Date", "");
+                            if (!fired_date.equals(null) && !fired_date.isEmpty()) {
                                 if (!fired_date.equals(present_d)) {
                                  //   Toast.makeText(getActivity(), "Next Day", Toast.LENGTH_SHORT).show();
                                     Intent intent = new Intent(getActivity(), AlramReceiver.class);
@@ -96,6 +96,8 @@ public class SettingsFragment extends PreferenceFragment {
                                 }else {
                                     Toast.makeText(getActivity(), "Notifications set for tomorrow!", Toast.LENGTH_SHORT).show();
                                 }
+                            } else {
+                                Toast.makeText(getActivity(), "Notifications set", Toast.LENGTH_SHORT).show();
                             }
                         } else {
                             Toast.makeText(getActivity(), "Notifications Enabled", Toast.LENGTH_SHORT).show();
