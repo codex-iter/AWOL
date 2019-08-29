@@ -20,8 +20,10 @@
             android:title="Enable Notification"
             app:iconSpaceReserved="false" />
     </androidx.preference.PreferenceCategory>
-    <androidx.preference.PreferenceCategory android:title="
-          Not getting Push notifications?\n   Go to Settings and Allow the app to run in\n
-                            background."
-        />
+
+    <androidx.preference.PreferenceCategory
+        android:layout="@layout/heading" >
+    </androidx.preference.PreferenceCategory>
+
+
 </androidx.preference.PreferenceScreen>

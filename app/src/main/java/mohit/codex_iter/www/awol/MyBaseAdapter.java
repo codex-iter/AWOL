@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -53,14 +54,14 @@ public class MyBaseAdapter extends ArrayAdapter<ListData> {
         String p = myList.get(position).getPercent();
         double percent = Double.valueOf(p);
 
-        if (percent > 75){
+        if (percent > (float)80){
             mViewHolder.ta.setBackgroundResource(R.drawable.percent_back_green);
-        } else if (percent < 65){
-            if (percent > 55){
+        } else if (percent <= (float)65){
+            if (percent >= (float)55){
                 mViewHolder.ta.setBackgroundResource(R.drawable.percent_back_yellow);
             }
-        } else if (percent > 65) {
-            if (percent < 75) {
+        } else if (percent > (float)65) {
+            if (percent <= (float)80) {
                 mViewHolder.ta.setBackgroundResource(R.drawable.percent_back_yellow);
             }
         } else {

@@ -143,10 +143,12 @@ public class ListData {
                 if (p < 75) break;
             }
             i--;
-            if (i != 1) {
-                this.bunk_text_str = "BUNK " + i + " classes for 75%";
-            }else {
-                this.bunk_text_str = "BUNK " + i + " class for 75%";
+            if (i > 0) {
+                if (i != 1) {
+                    this.bunk_text_str = "BUNK " + i + " classes for 75%";
+                } else {
+                    this.bunk_text_str = "BUNK " + i + " class for 75%";
+                }
             }
         }
         else
@@ -156,10 +158,12 @@ public class ListData {
                 if (p > 75) break;
             }
             i--;
-            if (i != 1) {
-                this.bunk_text_str = "Attend " + i + " classes for 75%";
-            } else {
-                this.bunk_text_str = "Attend " + i + " class for 75%";
+            if (i > 0) {
+                if (i != 1) {
+                    this.bunk_text_str = "Attend " + i + " classes for 75%";
+                } else {
+                    this.bunk_text_str = "Attend " + i + " class for 75%";
+                }
             }
         }
     }

@@ -10,6 +10,9 @@ import android.widget.Toast;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragment;
 import androidx.preference.SwitchPreference;
+
+import com.judemanutd.autostarter.AutoStartPermissionHelper;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -73,6 +76,7 @@ public class SettingsFragment extends PreferenceFragment {
                         editor1.putBoolean("STOP_NOTIFICATION", false);
                         editor1.apply();
                         if (!flag) {
+
                             Toast.makeText(getActivity(), "Notifications Enabled", Toast.LENGTH_SHORT).show();
                             Calendar calendar = Calendar.getInstance();
                             Date alram_time = new Date();
@@ -124,6 +128,7 @@ public class SettingsFragment extends PreferenceFragment {
 
                             String fired_date = sharedPreferences.getString("Date", null);
                             if (fired_date == null) {
+                                AutoStartPermissionHelper.getInstance().getAutoStartPermission(getActivity());
                                 // Toast.makeText(getActivity(), "First fire", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(getActivity(), AlramReceiver.class);
                                 PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
