@@ -78,9 +78,10 @@ public class MyBaseAdapter extends ArrayAdapter<ListData> {
                 mViewHolder.up.setVisibility(View.VISIBLE);
                 mViewHolder.up.setBackgroundResource(R.drawable.up);
             }
-            else
+            else {
                 mViewHolder.up.setVisibility(View.VISIBLE);
-            mViewHolder.up.setBackgroundResource(R.drawable.down);
+                mViewHolder.up.setBackgroundResource(R.drawable.down);
+            }
         }
 //        if(myList.get(position).getStatus()==1)
 //            mViewHolder.at.setBackgroundResource(R.drawable.circp);
