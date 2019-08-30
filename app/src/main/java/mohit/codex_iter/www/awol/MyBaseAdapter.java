@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import java.util.ArrayList;
@@ -73,14 +74,12 @@ public class MyBaseAdapter extends ArrayAdapter<ListData> {
         String s=myList.get(position).getOld();
         if(!s.equals(""))
         {
-            double n= new Scanner(myList.get(position).getPercent()).nextDouble();
-            double o= new Scanner(s).nextDouble();
-            if(n>o) {
-                mViewHolder.up.setVisibility(View.VISIBLE);
+            double n = Double.valueOf(myList.get(position).getPercent());
+            double o = Double.valueOf(s);
+            if(n>=o) {
                 mViewHolder.up.setBackgroundResource(R.drawable.up);
             }
             else {
-                mViewHolder.up.setVisibility(View.VISIBLE);
                 mViewHolder.up.setBackgroundResource(R.drawable.down);
             }
         }

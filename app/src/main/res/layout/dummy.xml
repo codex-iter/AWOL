@@ -34,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginStart="10dp"
-                android:visibility="gone" />
+                 />
 
             <TextView
                 android:id="@+id/sub"
@@ -54,7 +54,7 @@
                 android:layout_width="70sp"
                 android:layout_height="40sp"
                 android:text="@string/_95_5"
-                android:layout_marginEnd="-85sp"
+                android:layout_marginEnd="-78sp"
                 android:background="@drawable/percent_back_yellow"
                 android:shadowColor="@color/darkColorPrimary"
                 android:layout_gravity="center"

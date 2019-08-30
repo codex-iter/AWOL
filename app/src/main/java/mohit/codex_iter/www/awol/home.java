@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -220,7 +221,7 @@ public class home extends AppCompatActivity {
                 }
                 edit.putString(code, jObj.toString());
                 edit.apply();
-                return "just now";
+                return "Just now";
             } else
                 return DateUtils.getRelativeTimeSpanString(old.getLong("updated"), new Date().getTime(), 0).toString();
         } else {
@@ -232,7 +233,7 @@ public class home extends AppCompatActivity {
             }
             edit.putString(code, jObj.toString());
             edit.commit();
-            return "just now";
+            return "Just now";
         }
     }
 
