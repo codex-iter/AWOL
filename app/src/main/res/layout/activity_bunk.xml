@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="11"
-    tools:context="com.codex_iter.www.awol.mohit.codex_iter.www.awol.Bunk">
+    tools:context="mohit.codex_iter.www.awol.Bunk">
 
     <Spinner
         android:id="@+id/sub"

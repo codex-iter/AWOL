@@ -57,14 +57,8 @@ public class MyBaseAdapter extends ArrayAdapter<ListData> {
 
         if (percent > (float)80){
             mViewHolder.ta.setBackgroundResource(R.drawable.percent_back_green);
-        } else if (percent <= (float)65){
-            if (percent >= (float)55){
+        } else if (percent >= (float)60 && percent <=80){
                 mViewHolder.ta.setBackgroundResource(R.drawable.percent_back_yellow);
-            }
-        } else if (percent > (float)65) {
-            if (percent <= (float)80) {
-                mViewHolder.ta.setBackgroundResource(R.drawable.percent_back_yellow);
-            }
         } else {
             mViewHolder.ta.setBackgroundResource(R.drawable.percent_back_red);
         }
@@ -72,10 +66,12 @@ public class MyBaseAdapter extends ArrayAdapter<ListData> {
 //        mViewHolder.tha.setText(myList.get(position).getThat());
 //        mViewHolder.la.setText(myList.get(position).getLabt());
         String s=myList.get(position).getOld();
+      //  Toast.makeText(context, "Old Attendance : " + s, Toast.LENGTH_SHORT).show();
         if(!s.equals(""))
         {
             double n = Double.valueOf(myList.get(position).getPercent());
             double o = Double.valueOf(s);
+        //    Toast.makeText(context, "New Attendance : " + n, Toast.LENGTH_SHORT).show();
             if(n>=o) {
                 mViewHolder.up.setBackgroundResource(R.drawable.up);
             }

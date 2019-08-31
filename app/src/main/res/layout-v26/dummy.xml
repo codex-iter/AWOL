@@ -10,82 +10,90 @@
     card_view:cardUseCompatPadding="true"
     card_view:cardBackgroundColor="@color/cardview_shadow_end_color"
     >
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
-        android:layout_height="190dp"
+        android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:orientation="vertical"
-        android:paddingVertical="5dp"
         android:weightSum="6.5">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/title_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom="8dp"
-            android:layout_weight="1"
             android:orientation="horizontal"
-            android:weightSum="8">
+            android:layout_marginStart="5sp"
+            card_view:layout_constraintBottom_toBottomOf="parent"
+            card_view:layout_constraintTop_toTopOf="parent"
+            card_view:layout_constraintVertical_bias="0.046"
+            tools:layout_editor_absoluteX="0dp">
+
+            <Button
+                android:id="@+id/ta"
+                android:layout_width="70sp"
+                android:layout_height="40sp"
+                android:layout_gravity="center"
+                android:background="@drawable/percent_back_yellow"
+                android:clickable="false"
+                android:gravity="center"
+                android:shadowColor="@color/darkColorPrimary"
+                android:text="@string/_95_5"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                card_view:layout_constraintEnd_toEndOf="parent"
+                card_view:layout_constraintHorizontal_bias="0.951"
+                card_view:layout_constraintStart_toStartOf="@+id/sub"
+                card_view:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/up"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="2dp"
-                android:layout_marginStart="10sp"
-                android:layout_gravity="center"
-                android:visibility="gone" />
+                android:layout_marginEnd="3dp"
+                card_view:layout_constraintBottom_toBottomOf="parent"
+                card_view:layout_constraintEnd_toStartOf="@+id/ta"
+                card_view:layout_constraintTop_toTopOf="parent"
+                android:contentDescription="@string/todo" />
 
             <TextView
                 android:id="@+id/sub"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="6"
-                android:gravity="center"
                 android:layout_gravity="center"
+                android:layout_marginStart="5sp"
+                android:gravity="start"
                 android:text="@string/number_theory"
                 android:textColor="@color/colorPrimary"
                 android:textSize="17sp"
-                android:textStyle="bold"/>
-
-            <Button
-                android:id="@+id/ta"
-                android:layout_width="65sp"
-                android:layout_height="40sp"
-                android:text="100.0%"
-                android:layout_marginEnd="-85sp"
-                android:background="@drawable/percent_back_yellow"
-                android:shadowColor="@color/darkColorPrimary"
-                android:layout_gravity="center"
-                android:textColor="@color/black"
-                android:textSize="18sp"
                 android:textStyle="bold"
-                android:gravity="center"
-                android:clickable="false"/>
-        </LinearLayout>
+                card_view:layout_constraintBottom_toBottomOf="@+id/ta"
+                card_view:layout_constraintEnd_toStartOf="@+id/up"
+                card_view:layout_constraintHorizontal_bias="0.0"
+                card_view:layout_constraintStart_toStartOf="parent"
+                card_view:layout_constraintTop_toTopOf="parent"
+                card_view:layout_constraintVertical_bias="0.529" />
 
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/colorAccent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="4.1"
             android:gravity="center_horizontal"
+            android:layout_marginTop="8sp"
+            android:layout_marginStart="5sp"
             android:orientation="horizontal"
             android:weightSum="3"
-            android:baselineAligned="false">
+            card_view:layout_constraintBottom_toBottomOf="parent"
+            card_view:layout_constraintTop_toBottomOf="@id/title_header">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="5dp"
-                android:layout_weight="1.9"
                 android:orientation="vertical"
                 android:weightSum="5"
                 tools:ignore="NestedWeights,UselessParent">
@@ -112,13 +120,14 @@
 
                     <TextView
                         android:id="@+id/lu"
-                        android:layout_width="0dp"
+                        android:layout_width="0sp"
                         android:layout_height="match_parent"
                         android:layout_weight="1.1"
                         android:gravity="center_vertical"
                         android:text="@string/_22_12_2017"
                         android:textColor="@color/colorAccent"
                         android:textStyle="bold" />
+
                 </LinearLayout>
 
                 <LinearLayout
@@ -232,23 +241,20 @@
                         android:textColor="@color/colorAccent"
                         android:textStyle="bold" />
                 </LinearLayout>
-                <LinearLayout
+
+                <TextView
+                    android:id="@+id/bunk_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/bunk_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:gravity="center"
-                        android:textAllCaps="true"
-                        android:textColor="@color/colorAccent"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8sp"
+                    android:gravity="start"
+                    android:text="@string/don_t_bunk_anymore"
+                    android:textAllCaps="true"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
             </LinearLayout>
-        </LinearLayout>
-    </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

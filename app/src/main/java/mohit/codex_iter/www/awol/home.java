@@ -46,11 +46,14 @@ public class home extends AppCompatActivity {
     private String[] r;
     public ArrayList<ListData> myList;
     @SuppressWarnings("FieldCanBeLocal")
+    private  String code;
+    @SuppressWarnings("FieldCanBeLocal")
     private TextView name, reg, avat, avab;
     private SharedPreferences sub;
     private SharedPreferences.Editor edit;
     @SuppressWarnings("FieldCanBeLocal")
     private MyBaseAdapter adapter;
+    private JSONObject old;
     private DrawerLayout dl;
     private static final String PREFS_NAME = "prefs";
     private static final String PREF_DARK_THEME = "dark_theme";
@@ -92,7 +95,6 @@ public class home extends AppCompatActivity {
         }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
         Bundle bundle = getIntent().getExtras();
         myList = new ArrayList<>();
         rl = findViewById(R.id.rl);
@@ -118,8 +120,10 @@ public class home extends AppCompatActivity {
             for (int i = 0; i < l; i++) {
                 JSONObject jObj = arr.getJSONObject(i);
                 ld[i] = new ListData();
-                String code = jObj.getString("subjectcode");
+
+                code = jObj.getString("subjectcode");
                 String ck = Updated(jObj, sub, code, i);
+
                 ld[i].setCode(code);
                 ld[i].setSub(jObj.getString("subject"));
                 ld[i].setTheory(jObj.getString("Latt"));
@@ -153,7 +157,13 @@ public class home extends AppCompatActivity {
             name = headerView.findViewById(R.id.name);
             reg = headerView.findViewById(R.id.reg);
             name.setText("");
+
+            /**
+             *  @// FIXME: 9/1/2019
+             *  Trending Crash Issue
+             */
             reg.setText(r[1]);
+
             avat = headerView.findViewById(R.id.avat);
             avat.setText(String.format(Locale.US, "%.2f", avgat));
             avab = headerView.findViewById(R.id.avab);
@@ -183,6 +193,10 @@ public class home extends AppCompatActivity {
                                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().getString(R.string.github_url))));
                                     break;
                                 case R.id.lgout:
+                                    /**
+                                     * @// FIXME: 9/1/2019
+                                     * Clear the JSONObj data here.
+                                     */
                                     edit = sub.edit();
                                     edit.putBoolean("logout", true);
                                     edit.apply();
@@ -210,10 +224,11 @@ public class home extends AppCompatActivity {
 
     private String Updated(JSONObject jObj, SharedPreferences sub, String code, int i) throws JSONException {
         if (sub.contains(code)) {
-            JSONObject old = new JSONObject(sub.getString(code, ""));
+            old = new JSONObject(sub.getString(code, ""));
             if ((!old.getString("Latt").equals(jObj.getString("Latt"))) || (!old.getString("Patt").equals(jObj.getString("Patt")))) {
                 jObj.put("updated", new Date().getTime());
                 ld[i].setOld(old.getString("TotalAttandence"));
+
                 edit = sub.edit();
                 Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
                 if (v != null) {

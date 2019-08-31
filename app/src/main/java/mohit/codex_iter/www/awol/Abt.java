@@ -84,7 +84,7 @@ public class Abt extends AppCompatActivity {
         cdx.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/codex-iter")));
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/codex-iter/AWOL")));
             }
         });
     }

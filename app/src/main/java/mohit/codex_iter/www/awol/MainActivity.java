@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -31,7 +30,6 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.crashlytics.android.Crashlytics;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -101,8 +99,6 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Enter your Details", Toast.LENGTH_SHORT).show();
 
                 else {
-
-
                     if (haveNetworkConnection()) {
                         String web = getString(R.string.link);
                         getData(web, u, p);
@@ -116,8 +112,11 @@ public class MainActivity extends AppCompatActivity {
                         edit.apply();
 
                     } else {
-                        showData(u, p);
+                        Toast.makeText(getApplicationContext(), "Something, went wrong.Try Again", Toast.LENGTH_SHORT).show();
                     }
+//                    else {
+//                       // showData(u, p);
+//                    }
                 }
             }
         });
@@ -132,27 +131,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void showData(String u, String p) {
-        Toast.makeText(getApplicationContext(), "No network connection", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(MainActivity.this, home.class);
-        String test = userm.getString("user", "");
-        if(userm.contains(u)) {
-            if(p.equals(userm.getString(u+"pass", ""))){
-                edit=logout.edit();
-                edit.putBoolean("logout",false);
-                edit.apply();
-                String s = userm.getString(u, "");
-                intent.putExtra("result", s);
-                Toast.makeText(getApplicationContext(), "showing offline value for this user", Toast.LENGTH_SHORT).show();
-                startActivity(intent);
-            }else {
-                Toast.makeText(getApplicationContext(), "invalid credentials", Toast.LENGTH_SHORT).show();
-            }
-        }
+//    private void showData(String u, String p) {
+//        Toast.makeText(getApplicationContext(), "Something, went wrong.Try Again", Toast.LENGTH_SHORT).show();
+//        Intent intent = new Intent(MainActivity.this, home.class);
+//        String test = userm.getString("user", "");
+//        if(userm.contains(u)) {
+//            if(p.equals(userm.getString(u+"pass", ""))){
+//                edit=logout.edit();
+//                edit.putBoolean("logout",false);
+//                edit.apply();
+//                String s = userm.getString(u, "");
+//                intent.putExtra("result", s);
+//                Toast.makeText(getApplicationContext(), "showing offline value for this user", Toast.LENGTH_SHORT).show();
+//                startActivity(intent);
+//            }else {
+//                Toast.makeText(getApplicationContext(), "invalid credentials", Toast.LENGTH_SHORT).show();
+//            }
+//        }
 //        else
 //        Toast.makeText(getApplicationContext(), "No offline data for the user", Toast.LENGTH_SHORT).show();
 
-    }
+    //}
 
 
     private void getData(final String... param) {
@@ -194,17 +193,16 @@ public class MainActivity extends AppCompatActivity {
                             pd.dismiss();
                         user.setText("");
                         pass.setText("");
-                        showData(param[1], param[2]);
+                        //showData(param[1], param[2]);
                         if (error instanceof AuthFailureError)
                             Toast.makeText(getApplicationContext(), "Wrong Credentials!", Toast.LENGTH_SHORT).show();
                         else if (error instanceof ServerError)
-                            Toast.makeText(getApplicationContext(), "Cannot connect to servers right now", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Cannot connect to servers right now.Try again", Toast.LENGTH_SHORT).show();
                         else if (error instanceof NetworkError) {
                             Log.e("Volley_error", String.valueOf(error));
                             Toast.makeText(getApplicationContext(), "cannot establish connection", Toast.LENGTH_SHORT).show();
-                        }
-                            else if (error instanceof TimeoutError)
-                            Toast.makeText(getApplicationContext(), "Cannot connect to servers right now", Toast.LENGTH_SHORT).show();
+                        } else if (error instanceof TimeoutError)
+                            Toast.makeText(getApplicationContext(), "Cannot connect to servers right now.Try again", Toast.LENGTH_SHORT).show();
                     }
                 }
         ) {
