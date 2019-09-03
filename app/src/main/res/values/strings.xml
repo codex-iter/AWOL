@@ -23,6 +23,8 @@
     <string name="made_with_as_a_project_for_codex">MADE WITH 💚 AS A PROJECT FOR CODEX</string>
     <string name="disclaimer">DISCLAIMER</string>
     <string name="todo">TODO</string>
+    <string name="sharing_text">ScreenShot by AWOL-ITER\n Download it bit.do/awol_iter</string>
+    <string name="share_title">Share Screenshot</string>
     <string name="pawan_gorai">Pawan Gorai</string>
     <string name="nehal_kumar_singh">Nehal Kumar Singh</string>
     <string name="your_target_attendance">Your Target Attendance:</string>
@@ -47,5 +49,6 @@
     <string name="privacy_policy">Privacy Policy</string>
     <string name="logout">Logout</string>
     <string name="not_getting_push_notifications_n_go_to_settings_and_allow_the_app_to_run_in_background">Not getting Push notifications?\n  Go to Settings and Allow the app to run in background.</string>
+    <string name="share">Share</string>
 </resources>
 

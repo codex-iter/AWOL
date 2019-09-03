@@ -4,11 +4,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.FileUriExposedException;
 import android.os.Vibrator;
 import android.text.format.DateUtils;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
@@ -16,19 +20,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.FileProvider;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+
 import com.google.android.material.navigation.NavigationView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
-
 import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
@@ -46,14 +53,13 @@ public class home extends AppCompatActivity {
     private String[] r;
     public ArrayList<ListData> myList;
     @SuppressWarnings("FieldCanBeLocal")
-    private  String code;
+    private String code;
     @SuppressWarnings("FieldCanBeLocal")
     private TextView name, reg, avat, avab;
     private SharedPreferences sub;
     private SharedPreferences.Editor edit;
     @SuppressWarnings("FieldCanBeLocal")
     private MyBaseAdapter adapter;
-    private JSONObject old;
     private DrawerLayout dl;
     private static final String PREFS_NAME = "prefs";
     private static final String PREF_DARK_THEME = "dark_theme";
@@ -87,7 +93,7 @@ public class home extends AppCompatActivity {
         SharedPreferences preferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         final boolean useDarkTheme = preferences.getBoolean(PREF_DARK_THEME, false);
 
-        SharedPreferences theme = getSharedPreferences("theme", 0);
+        final SharedPreferences theme = getSharedPreferences("theme", 0);
         boolean dark = theme.getBoolean("dark_theme", false);
         if (useDarkTheme) {
             if (dark)
@@ -95,7 +101,10 @@ public class home extends AppCompatActivity {
         }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+
         Bundle bundle = getIntent().getExtras();
+
         myList = new ArrayList<>();
         rl = findViewById(R.id.rl);
         if (dark) {
@@ -106,7 +115,9 @@ public class home extends AppCompatActivity {
         if (bundle != null)
             result = bundle.getString("result");
 
-        r = result.split("kkk");
+        if (result != null) {
+            r = result.split("kkk");
+        }
         result = r[0];
         avgab = 0;
         avgat = 0;
@@ -157,11 +168,6 @@ public class home extends AppCompatActivity {
             name = headerView.findViewById(R.id.name);
             reg = headerView.findViewById(R.id.reg);
             name.setText("");
-
-            /**
-             *  @// FIXME: 9/1/2019
-             *  Trending Crash Issue
-             */
             reg.setText(r[1]);
 
             avat = headerView.findViewById(R.id.avat);
@@ -172,6 +178,7 @@ public class home extends AppCompatActivity {
                 navigationView.setItemTextColor(csl);
                 navigationView.setItemIconTintList(csl2);
             }
+
             navigationView.setNavigationItemSelectedListener(
                     new NavigationView.OnNavigationItemSelectedListener() {
                         @Override
@@ -181,7 +188,7 @@ public class home extends AppCompatActivity {
                                 case R.id.sa:
                                     Intent sendIntent = new Intent();
                                     sendIntent.setAction(Intent.ACTION_SEND);
-                                    sendIntent.putExtra(Intent.EXTRA_TEXT, "Hey check this out: bit.do/Awol \n ");
+                                    sendIntent.putExtra(Intent.EXTRA_TEXT, "Hey check this out: bit.do/awol_iter \n ");
                                     sendIntent.setType("text/plain");
                                     startActivity(sendIntent);
                                     break;
@@ -193,14 +200,12 @@ public class home extends AppCompatActivity {
                                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().getString(R.string.github_url))));
                                     break;
                                 case R.id.lgout:
-                                    /**
-                                     * @// FIXME: 9/1/2019
-                                     * Clear the JSONObj data here.
-                                     */
                                     edit = sub.edit();
                                     edit.putBoolean("logout", true);
                                     edit.apply();
-                                    finish();
+                                    Intent intent3 = new Intent(getApplicationContext(), MainActivity.class);
+                                    intent3.putExtra("logout_status", "0");
+                                    startActivity(intent3);
                                     break;
                                 case R.id.pab:
                                     Intent intent = new Intent(getApplicationContext(), Bunk.class);
@@ -211,7 +216,7 @@ public class home extends AppCompatActivity {
                                     startActivity(intent1);
                                     break;
                                 case R.id.policy:
-                                    Uri uri = Uri.parse("https://awol.flycricket.io/privacy.html");
+                                    Uri uri = Uri.parse("https://awol-iter.flycricket.io/privacy.html");
                                     Intent intent2 = new Intent(Intent.ACTION_VIEW, uri);
                                     startActivity(intent2);
                                     break;
@@ -221,14 +226,31 @@ public class home extends AppCompatActivity {
                     });
         }
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.share, menu);
+
+        return super.onCreateOptionsMenu(menu);
+
+    }
 
     private String Updated(JSONObject jObj, SharedPreferences sub, String code, int i) throws JSONException {
         if (sub.contains(code)) {
-            old = new JSONObject(sub.getString(code, ""));
+            JSONObject old = new JSONObject(sub.getString(code, ""));
+
+            SharedPreferences status_lg = this.getSharedPreferences("status", 0);
+            String status = status_lg.getString("status", "");
+
+            if (status.equals("0")){
+                old.put("Latt", "");
+                old.put("Patt", "");
+                old.put("TotalAttandence", "");
+            }
+
             if ((!old.getString("Latt").equals(jObj.getString("Latt"))) || (!old.getString("Patt").equals(jObj.getString("Patt")))) {
                 jObj.put("updated", new Date().getTime());
                 ld[i].setOld(old.getString("TotalAttandence"));
-
                 edit = sub.edit();
                 Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
                 if (v != null) {
@@ -251,15 +273,61 @@ public class home extends AppCompatActivity {
             return "Just now";
         }
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             dl.openDrawer(GravityCompat.START);
             return true;
         }
+        if (item.getItemId() == R.id.mShare) {
+            Bitmap bitmap = ScreenshotUtils.getScreenShot(rl);
+            if (bitmap != null){
+                File save = ScreenshotUtils.getMainDirectoryName(this);
+                File file = ScreenshotUtils.store(bitmap, "screenshot.jpg", save);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    shareScreenshot(file);
+                } else {
+                    shareScreenshot_low(file);
+                }
+            }
+
+        }
         return super.onOptionsItemSelected(item);
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private void shareScreenshot(File file) {
+        try {
+
+            Uri uri = FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() +
+                    ".my.package.name.provider", file);
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_SEND);
+            intent.setType("image/*");
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "");
+            intent.putExtra(android.content.Intent.EXTRA_TEXT, getString(R.string.sharing_text));
+            intent.putExtra(Intent.EXTRA_STREAM, uri);//pass uri here
+            startActivity(Intent.createChooser(intent, getString(R.string.share_title)));
+
+        } catch (FileUriExposedException e){
+            Toast.makeText(this, "Something, went wrong.", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    public void shareScreenshot_low(File file){
+        Uri uri = Uri.fromFile(file);//Convert file path into Uri for sharing
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_SEND);
+        intent.setType("image/*");
+        intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "");
+        intent.putExtra(android.content.Intent.EXTRA_TEXT, getString(R.string.sharing_text));
+        intent.putExtra(Intent.EXTRA_STREAM, uri);//pass uri here
+        startActivity(Intent.createChooser(intent, getString(R.string.share_title)));
+    }
+
+
 
     @Override
     public void onBackPressed() {

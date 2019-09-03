@@ -1,25 +1,33 @@
 package mohit.codex_iter.www.awol;
 
 import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.airbnb.lottie.LottieAnimationView;
+import com.airbnb.lottie.LottieProperty;
+import com.airbnb.lottie.model.KeyPath;
+import com.airbnb.lottie.value.LottieFrameInfo;
+import com.airbnb.lottie.value.SimpleLottieValueCallback;
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
 import com.android.volley.Request;
@@ -31,6 +39,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -39,12 +48,18 @@ import java.util.Objects;
 public class MainActivity extends AppCompatActivity {
     EditText user, pass;
     Button btn;
-    ProgressDialog pd;
+    //ProgressDialog pd;
     SharedPreferences userm, logout;
     SharedPreferences.Editor edit;
-    LinearLayout ll;
+    ConstraintLayout ll;
+    private LottieAnimationView animationView;
+    private LinearLayout l2;
     private static final String PREFS_NAME = "prefs";
     private static final String PREF_DARK_THEME = "dark_theme";
+    private final int frames = 9;
+    private int currentAnimationFrame = 0;
+
+    private TextView logo;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -61,20 +76,37 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Bundle extras = getIntent().getExtras();
+        String status  = "";
+        if (extras != null){
+            status = extras.getString("logout_status");
+        }
+        SharedPreferences status_lg = this.getSharedPreferences("status", 0);
+        SharedPreferences.Editor editor = status_lg.edit();
+
+        editor.putString("status", status);
+        editor.apply();
+
+        animationView = findViewById(R.id.progress_lottie);
+        resetAnimationView();
+        animationView.addValueCallback(
+                new KeyPath("**"),
+                LottieProperty.COLOR_FILTER,
+                new SimpleLottieValueCallback<ColorFilter>() {
+                    @Override
+                    public ColorFilter getValue(LottieFrameInfo<ColorFilter> frameInfo) {
+                        return new PorterDuffColorFilter(getResources().getColor(R.color.darkColorAccent ), PorterDuff.Mode.SRC_ATOP);
+                    }
+                }
+        );
+        l2 = findViewById(R.id.linearLayout2);
+        logo = findViewById(R.id.logo);
+        logo.setVisibility(View.VISIBLE);
+        l2.setVisibility(View.VISIBLE);
         ll = findViewById(R.id.ll);
         if (dark) {
             ll.setBackgroundColor(Color.parseColor("#141414"));
         }
-        ll.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                if (inputManager != null) {
-                    inputManager.hideSoftInputFromWindow(Objects.requireNonNull(getCurrentFocus()).getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-                }
-                return false;
-            }
-        });
 
         user = findViewById(R.id.user);
         pass = findViewById(R.id.pass);
@@ -83,19 +115,13 @@ public class MainActivity extends AppCompatActivity {
                 Context.MODE_PRIVATE);
         logout = getSharedPreferences("sub",
                 Context.MODE_PRIVATE);
-
-        if (!dark) {
-            user.setTextColor(Color.parseColor("#141831"));
-            pass.setTextColor(Color.parseColor("#141831"));
-        }
-
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String u = user.getText().toString().trim();
                 String p = pass.getText().toString().trim();
 
-                if (u.equals("") & p.equals(""))
+                if (u.equals("") || p.equals(""))
                     Toast.makeText(MainActivity.this, "Enter your Details", Toast.LENGTH_SHORT).show();
 
                 else {
@@ -110,13 +136,18 @@ public class MainActivity extends AppCompatActivity {
                         edit = logout.edit();
                         edit.putBoolean("logout", false);
                         edit.apply();
-
                     } else {
                         Toast.makeText(getApplicationContext(), "Something, went wrong.Try Again", Toast.LENGTH_SHORT).show();
+                        user.setText("");
+                        pass.setText("");
                     }
 //                    else {
-//                       // showData(u, p);
+                       // showData(u, p);
 //                    }
+                }
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (imm != null) {
+                    imm.hideSoftInputFromWindow(pass.getWindowToken(), 0);
                 }
             }
         });
@@ -153,33 +184,48 @@ public class MainActivity extends AppCompatActivity {
 
     //}
 
-
+    private void resetAnimationView() {
+        currentAnimationFrame = 0;
+        animationView.addValueCallback(new KeyPath("**"), LottieProperty.COLOR_FILTER,
+                new SimpleLottieValueCallback<ColorFilter>() {
+                    @Override
+                    public ColorFilter getValue(LottieFrameInfo<ColorFilter> frameInfo) {
+                        return null;
+                    }
+                }
+        );
+    }
     private void getData(final String... param) {
 
-        pd = new ProgressDialog(MainActivity.this);
-        pd.setMessage("Please wait");
-        pd.setCancelable(false);
-        pd.show();
+//        pd = new ProgressDialog(MainActivity.this);
+//        pd.setMessage("Please wait");
+//        pd.setCancelable(false);
+        animationView.setVisibility(View.VISIBLE);
+        l2.setVisibility(View.INVISIBLE);
+        logo.setVisibility(View.INVISIBLE);
+        //pd.show();
         RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
         StringRequest postRequest = new StringRequest(Request.Method.POST, param[0] + "/attendance",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        if (pd.isShowing())
-                            pd.dismiss();
                         user.setText("");
                         pass.setText("");
-                        if (response.equals("404"))
+                        if (response.equals("404")) {
+                            if(animationView.getVisibility() == View.VISIBLE)
+                                animationView.setVisibility(View.INVISIBLE);
+                            l2.setVisibility(View.VISIBLE);
+                            logo.setVisibility(View.VISIBLE);
                             Toast.makeText(getApplicationContext(), "Wrong Credentials!", Toast.LENGTH_SHORT).show();
+                        }
                         else {
-
                             Toast.makeText(getApplicationContext(), "Success!", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(MainActivity.this, home.class);
                             //getname(param);
                             response += "kkk" + param[1];
                             intent.putExtra("result", response);
                             edit.putString(param[1], response);
-                            edit.commit();
+                            edit.apply();
                             startActivity(intent);
 
                         }
@@ -189,20 +235,30 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         // error
-                        if (pd.isShowing())
-                            pd.dismiss();
+                        if (animationView.getVisibility() == View.VISIBLE)
+                            animationView.setVisibility(View.INVISIBLE);
                         user.setText("");
                         pass.setText("");
                         //showData(param[1], param[2]);
-                        if (error instanceof AuthFailureError)
-                            Toast.makeText(getApplicationContext(), "Wrong Credentials!", Toast.LENGTH_SHORT).show();
-                        else if (error instanceof ServerError)
-                            Toast.makeText(getApplicationContext(), "Cannot connect to servers right now.Try again", Toast.LENGTH_SHORT).show();
-                        else if (error instanceof NetworkError) {
+                        if (error instanceof AuthFailureError){
+                            l2.setVisibility(View.VISIBLE);
+                            logo.setVisibility(View.VISIBLE);
+                            Toast.makeText(getApplicationContext(), "Wrong Credentials!", Toast.LENGTH_SHORT).show();}
+                        else if (error instanceof ServerError) {
+                            l2.setVisibility(View.VISIBLE);
+                            logo.setVisibility(View.VISIBLE);
+                            Toast.makeText(getApplicationContext(), "Cannot connect to ITER servers right now.Try again", Toast.LENGTH_SHORT).show();
+                        }  else if (error instanceof NetworkError) {
                             Log.e("Volley_error", String.valueOf(error));
-                            Toast.makeText(getApplicationContext(), "cannot establish connection", Toast.LENGTH_SHORT).show();
-                        } else if (error instanceof TimeoutError)
-                            Toast.makeText(getApplicationContext(), "Cannot connect to servers right now.Try again", Toast.LENGTH_SHORT).show();
+                            l2.setVisibility(View.VISIBLE);
+                            logo.setVisibility(View.VISIBLE);
+                            Toast.makeText(getApplicationContext(), "Cannot establish connection", Toast.LENGTH_SHORT).show();
+                        } else if (error instanceof TimeoutError) {
+                            l2.setVisibility(View.VISIBLE);
+                            logo.setVisibility(View.VISIBLE);
+                            Toast.makeText(getApplicationContext(), "Cannot connect to ITER servers right now.Try again", Toast.LENGTH_SHORT).show();
+                        }
+
                     }
                 }
         ) {

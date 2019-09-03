@@ -9,8 +9,11 @@ import java.util.Scanner;
 public class ListData {
 
     private String sub,code,upd,theory,lab,percent,that="",labt="",old="",bunk_text_str="Don't Bunk Anymore";
-    private double thT,thp,lat,lap,tc,tha,la;
-     static ListData[] ld;
+    private double thT;
+    private double thp;
+    private double lat;
+    private double lap;
+    static ListData[] ld;
     public String getClasses() {
         return Integer.toString((int)(thT+lat));
     }

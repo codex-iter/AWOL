@@ -42,18 +42,22 @@
             android:gravity="center"
             android:text="@string/your_target_attendance"
             android:textColor="@color/colorAccent"
-            android:textSize="16sp" />
+            android:textSize="14sp"
+            tools:ignore="NestedWeights" />
 
         <EditText
             android:id="@+id/taredt"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.8"
+            android:textSize="14sp"
             android:gravity="center"
             android:text=""
+            android:focusable="true"
             android:maxLines="1"
             android:inputType="number"
-            android:textColor="@color/colorPrimary" />
+            android:textColor="@color/colorPrimary"
+            android:importantForAutofill="no" />
     </LinearLayout>
 
     <Button
@@ -63,6 +67,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
         android:layout_weight="0.75"
+        android:textSize="14sp"
         android:background="@drawable/btnr"
         android:text="@string/result" />
 
@@ -73,7 +78,7 @@
         android:gravity="center"
         android:text="@string/or"
         android:textColor="#999999"
-        android:textSize="15sp" />
+        android:textSize="14sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -90,7 +95,7 @@
             android:gravity="center"
             android:text="@string/classes_you_wanna_bunk"
             android:textColor="@color/colorAccent"
-            android:textSize="16sp" />
+            android:textSize="14sp" />
 
         <EditText
             android:id="@+id/bnkedt"
@@ -100,6 +105,7 @@
             android:gravity="center"
             android:text=""
             android:maxLines="1"
+            android:textSize="14sp"
             android:inputType="number"
             android:textColor="@color/colorPrimary"
             tools:ignore="Autofill,LabelFor" />
@@ -109,6 +115,7 @@
         android:id="@+id/bunk"
         android:layout_width="100dp"
         android:layout_height="0dp"
+        android:textSize="14sp"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
         android:layout_weight="0.75"
@@ -121,7 +128,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:text="@string/or"
-        android:textSize="15sp"
+        android:textSize="14sp"
         android:textColor="#999999"/>
 
     <LinearLayout
@@ -139,7 +146,7 @@
             android:gravity="center"
             android:text="@string/classes_you_gonna_attend"
             android:textColor="@color/colorAccent"
-            android:textSize="16sp" />
+            android:textSize="14sp" />
 
         <EditText
             android:id="@+id/atndedt"
@@ -147,6 +154,7 @@
             android:layout_height="match_parent"
             android:layout_weight="0.8"
             android:gravity="center"
+            android:textSize="14sp"
             android:text=""
             android:maxLines="1"
             android:inputType="number"
@@ -158,6 +166,7 @@
         android:id="@+id/attend"
         android:layout_width="100dp"
         android:layout_height="0dp"
+        android:textSize="14sp"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
         android:layout_weight="0.75"
@@ -181,7 +190,7 @@
         android:gravity="center"
         android:text=""
         android:textColor="@color/colorPrimary"
-        android:textSize="18sp" />
+        android:textSize="14sp" />
     <TextView
         android:id="@+id/left"
         android:layout_width="match_parent"
@@ -191,7 +200,7 @@
         android:gravity="center"
         android:text=""
         android:textColor="@color/colorPrimary"
-        android:textSize="18sp" />
+        android:textSize="14sp" />
 
 
 </LinearLayout>

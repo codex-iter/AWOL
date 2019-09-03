@@ -33,7 +33,6 @@ public class AlramReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-       // Toast.makeText(context, "Alram Received", Toast.LENGTH_SHORT).show();
         SharedPreferences stop = context.getSharedPreferences("STOP", 0);
         boolean notification_stop = stop.getBoolean("STOP_NOTIFICATION", false);
         final SharedPreferences sharedPreferences = context.getSharedPreferences("Notification_date", 0);

@@ -20,7 +20,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.Locale;
-import java.util.Objects;
 import java.util.Scanner;
 
 public class Bunk extends AppCompatActivity {
@@ -51,16 +50,7 @@ public class Bunk extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bunk);
         LinearLayout ll = findViewById(R.id.ll);
-        ll.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                if (inputManager != null) {
-                    inputManager.hideSoftInputFromWindow(Objects.requireNonNull(getCurrentFocus()).getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-                }
-                return false;
-            }
-        });
+
         target_at = findViewById(R.id.target_at);
         bunk_at = findViewById(R.id.classes_bunk);
         attend_at = findViewById(R.id.going_attend);
@@ -135,7 +125,7 @@ public class Bunk extends AppCompatActivity {
                     }
                     if (i > 1) {
                         result.setText("Bunk " + (i - 1) + " classes for 75% ");
-                    }  else {
+                    } else {
                         result.setText("No bunk");
                     }
                 } else if (75 > percent) {
@@ -168,6 +158,10 @@ public class Bunk extends AppCompatActivity {
                                       @Override
                                       public void onClick(View v) {
                                           String s = taredt.getText().toString().trim();
+                                          InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                                          if (imm != null) {
+                                              imm.hideSoftInputFromWindow(taredt.getWindowToken(), 0);
+                                          }
                                           if (s.equals("0")) {
                                               Toast.makeText(Bunk.this, "Enter Valid Value", Toast.LENGTH_SHORT).show();
                                           } else if (s.equals(""))
@@ -176,11 +170,6 @@ public class Bunk extends AppCompatActivity {
                                               Toast.makeText(getApplicationContext(), "Not Possible!!", Toast.LENGTH_SHORT).show();
                                           else {
                                               double tp = new Scanner(s).nextDouble();
-                                              InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                                              if (getCurrentFocus() != null)
-                                                  if (inputManager != null) {
-                                                      inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-                                                  }
                                               if (tp < percent) {
                                                   int i;
                                                   double p;
@@ -246,7 +235,10 @@ public class Bunk extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String s = atndedt.getText().toString().trim();
-
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (imm != null) {
+                    imm.hideSoftInputFromWindow(atndedt.getWindowToken(), 0);
+                }
                 if (s.equals(""))
                     Toast.makeText(getApplicationContext(), "enter some value", Toast.LENGTH_SHORT).show();
                 else {
@@ -286,7 +278,10 @@ public class Bunk extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String s = bnkedt.getText().toString().trim();
-
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (imm != null) {
+                    imm.hideSoftInputFromWindow(bnkedt.getWindowToken(), 0);
+                }
                 if (s.equals(""))
                     Toast.makeText(getApplicationContext(), "enter some value", Toast.LENGTH_SHORT).show();
                 else {

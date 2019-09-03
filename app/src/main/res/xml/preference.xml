@@ -12,7 +12,7 @@
             app:iconSpaceReserved="false" />
     </androidx.preference.PreferenceCategory>
     <androidx.preference.PreferenceCategory
-        android:title="Mobile Notifications"
+        android:title="Mobile Notifications (Beta)"
         app:iconSpaceReserved="false">
         <androidx.preference.SwitchPreference
             android:key="pref_notification"

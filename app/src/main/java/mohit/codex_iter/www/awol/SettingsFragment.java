@@ -4,14 +4,16 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.widget.Toast;
 
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragment;
 import androidx.preference.SwitchPreference;
 
-import com.judemanutd.autostarter.AutoStartPermissionHelper;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -20,12 +22,14 @@ import java.util.Locale;
 
 import static android.content.Context.ALARM_SERVICE;
 import static android.content.Context.MODE_PRIVATE;
+import static android.content.Context.POWER_SERVICE;
 
 @SuppressWarnings("ALL")
 public class SettingsFragment extends PreferenceFragment {
     private static final String PREFS_NAME = "prefs";
     private static final String PREF_DARK_THEME = "dark_theme";
     private boolean flag = true;
+    private FirebaseAnalytics firebaseAnalytics;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -70,13 +74,12 @@ public class SettingsFragment extends PreferenceFragment {
             notifications.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    boolean checked = (Boolean) newValue;
 
+                    boolean checked = (Boolean) newValue;
                     if (checked) {
                         editor1.putBoolean("STOP_NOTIFICATION", false);
                         editor1.apply();
                         if (!flag) {
-
                             Toast.makeText(getActivity(), "Notifications Enabled", Toast.LENGTH_SHORT).show();
                             Calendar calendar = Calendar.getInstance();
                             Date alram_time = new Date();
@@ -92,23 +95,63 @@ public class SettingsFragment extends PreferenceFragment {
                             String fired_date = sharedPreferences.getString("Date", "");
                             if (!fired_date.equals(null) && !fired_date.isEmpty()) {
                                 if (!fired_date.equals(present_d)) {
-                                    //   Toast.makeText(getActivity(), "Next Day", Toast.LENGTH_SHORT).show();
                                     Intent intent = new Intent(getActivity(), AlramReceiver.class);
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                        Intent intent1 = new Intent();
+                                        String packageName = getActivity().getPackageName();
+                                        PowerManager pm = (PowerManager) getActivity().getSystemService(POWER_SERVICE);
+                                        if (pm.isDeviceIdleMode()) {
+                                            PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                                            AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
+                                            if (alarmManager != null) {
+                                                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+                                            }
+                                        } else {
+                                            PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                                            AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
+                                            if (alarmManager != null) {
+                                                alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+                                            }
+                                        }
+                                    } else {
+                                        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                                        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
+                                        if (alarmManager != null) {
+                                            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+                                        }
+                                    }
+
+                                } else {
+                                    Toast.makeText(getActivity(), "Notifications set for tomorrow!", Toast.LENGTH_SHORT).show();
+                                }
+                            } else {
+                                Intent intent = new Intent(getActivity(), AlramReceiver.class);
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                    Intent intent1 = new Intent();
+                                    String packageName = getActivity().getPackageName();
+                                    PowerManager pm = (PowerManager) getActivity().getSystemService(POWER_SERVICE);
+                                    if (pm.isDeviceIdleMode()) {
+                                        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                                        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
+                                        if (alarmManager != null) {
+                                            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+                                        }
+                                    } else {
+                                        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                                        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
+                                        if (alarmManager != null) {
+                                            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+                                        }
+                                    }
+                                } else {
+
+                                    Toast.makeText(getActivity(), "Notifications set", Toast.LENGTH_SHORT).show();
+                                    intent = new Intent(getActivity(), AlramReceiver.class);
                                     PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                                     AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
                                     if (alarmManager != null) {
                                         alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
                                     }
-                                } else {
-                                    Toast.makeText(getActivity(), "Notifications set for tomorrow!", Toast.LENGTH_SHORT).show();
-                                }
-                            } else {
-                                Toast.makeText(getActivity(), "Notifications set", Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(getActivity(), AlramReceiver.class);
-                                PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                                AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
-                                if (alarmManager != null) {
-                                    alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
                                 }
                             }
                         } else {
@@ -128,21 +171,60 @@ public class SettingsFragment extends PreferenceFragment {
 
                             String fired_date = sharedPreferences.getString("Date", null);
                             if (fired_date == null) {
-                                AutoStartPermissionHelper.getInstance().getAutoStartPermission(getActivity());
-                                // Toast.makeText(getActivity(), "First fire", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(getActivity(), AlramReceiver.class);
-                                PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                                AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
-                                if (alarmManager != null) {
-                                    alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                    Intent intent1 = new Intent();
+                                    String packageName = getActivity().getPackageName();
+                                    PowerManager pm = (PowerManager) getActivity().getSystemService(POWER_SERVICE);
+                                    if (pm.isDeviceIdleMode()) {
+                                        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                                        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
+                                        if (alarmManager != null) {
+                                            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+                                        }
+                                    } else {
+                                        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                                        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
+                                        if (alarmManager != null) {
+                                            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+                                        }
+                                    }
+                                } else {
+                                    //AutoStartPermissionHelper.getInstance().getAutoStartPermission(getActivity();
+                                    intent = new Intent(getActivity(), AlramReceiver.class);
+                                    PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                                    AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
+                                    if (alarmManager != null) {
+                                        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+                                    }
                                 }
+
                             } else if (!fired_date.equals(present_d)) {
-                                // Toast.makeText(getActivity(), "Next Day", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(getActivity(), AlramReceiver.class);
-                                PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                                AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
-                                if (alarmManager != null) {
-                                    alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                    Intent intent1 = new Intent();
+                                    String packageName = getActivity().getPackageName();
+                                    PowerManager pm = (PowerManager) getActivity().getSystemService(POWER_SERVICE);
+                                    if (pm.isDeviceIdleMode()) {
+                                        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                                        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
+                                        if (alarmManager != null) {
+                                            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+                                        }
+                                    } else {
+                                        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                                        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
+                                        if (alarmManager != null) {
+                                            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+                                        }
+                                    }
+                                } else {
+                                    intent = new Intent(getActivity(), AlramReceiver.class);
+                                    PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                                    AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
+                                    if (alarmManager != null) {
+                                        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+                                    }
                                 }
 
                             } else {

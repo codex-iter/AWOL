@@ -47,13 +47,17 @@ public class MyBaseAdapter extends ArrayAdapter<ListData> {
         } else {
             mViewHolder = (MyViewHolder) convertView.getTag();
         }
-        Animation animation;
-        animation = AnimationUtils.loadAnimation(context, R.anim.action);
-        animation.setDuration(200);
-        convertView.startAnimation(animation);
+//        Animation animation;
+//        animation = AnimationUtils.loadAnimation(context, R.anim.action);
+//        animation.setDuration(200);
+//        convertView.startAnimation(animation);
         mViewHolder.sub.setText(myList.get(position).getSub());
         String p = myList.get(position).getPercent();
-        double percent = Double.valueOf(p);
+
+        double percent = 0;
+        if (p != null) {
+            percent = Double.valueOf(p);
+        }
 
         if (percent > (float)80){
             mViewHolder.ta.setBackgroundResource(R.drawable.percent_back_green);
@@ -118,9 +122,9 @@ public class MyBaseAdapter extends ArrayAdapter<ListData> {
 
     private class MyViewHolder {
 
-        TextView sub,lu,th,prac,ab,tc,tha,la, total, theory, updated, pract,classes,absents,bunk_text ;
+        TextView sub,lu,th,prac,ab,tc,theory, updated, pract,classes,absents,bunk_text ;
         Button ta;
-        ImageView up,down;
+        ImageView up;
         CardView cardView;
         private MyViewHolder(View view) {
             //  total = view.findViewById(R.id.total);

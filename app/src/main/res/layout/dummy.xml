@@ -66,7 +66,7 @@
                 android:gravity="start"
                 android:text="@string/number_theory"
                 android:textColor="@color/colorPrimary"
-                android:textSize="17sp"
+                android:textSize="18sp"
                 android:textStyle="bold"
                 card_view:layout_constraintBottom_toBottomOf="@+id/ta"
                 card_view:layout_constraintEnd_toStartOf="@+id/up"
@@ -114,12 +114,14 @@
                         android:layout_weight="0.9"
                         android:gravity="center_vertical"
                         android:text="@string/updated_on"
+                        android:textSize="14sp"
                         android:textColor="@color/colorAccent"
                         android:textStyle="bold"
                         tools:ignore="NestedWeights" />
 
                     <TextView
                         android:id="@+id/lu"
+                        android:textSize="14sp"
                         android:layout_width="0sp"
                         android:layout_height="match_parent"
                         android:layout_weight="1.1"
@@ -144,6 +146,7 @@
                         android:layout_weight="0.9"
                         android:gravity="center_vertical"
                         android:text="@string/theory"
+                        android:textSize="14sp"
                         android:textColor="@color/colorAccent"
                         android:textStyle="bold" />
 
@@ -152,6 +155,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1.1"
+                        android:textSize="14sp"
                         android:gravity="center_vertical"
                         android:text="@string/not_applicable"
                         android:textColor="@color/colorAccent"
@@ -161,6 +165,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
+                    android:textSize="14sp"
                     android:layout_weight="1"
                     android:orientation="horizontal"
                     android:weightSum="2">
@@ -170,6 +175,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="0.9"
+                        android:textSize="14sp"
                         android:gravity="center_vertical"
                         android:text="@string/practical"
                         android:textColor="@color/colorAccent"
@@ -178,6 +184,7 @@
                     <TextView
                         android:id="@+id/prac"
                         android:layout_width="0dp"
+                        android:textSize="14sp"
                         android:layout_height="match_parent"
                         android:layout_weight="1.1"
                         android:gravity="center_vertical"
@@ -195,6 +202,7 @@
 
                     <TextView
                         android:id="@+id/classes"
+                        android:textSize="14sp"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="0.9"
@@ -205,6 +213,7 @@
 
                     <TextView
                         android:id="@+id/tc"
+                        android:textSize="14sp"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1.1"
@@ -223,6 +232,7 @@
 
                     <TextView
                         android:id="@+id/absents"
+                        android:textSize="14sp"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="0.9"
@@ -234,6 +244,7 @@
                     <TextView
                         android:id="@+id/ab"
                         android:layout_width="0dp"
+                        android:textSize="14sp"
                         android:layout_height="match_parent"
                         android:layout_weight="1.1"
                         android:gravity="center_vertical"
@@ -249,10 +260,9 @@
                         android:layout_marginTop="8dp"
                         android:layout_marginBottom="8sp"
                         android:gravity="start"
-                        android:text="@string/don_t_bunk_anymore"
                         android:textAllCaps="true"
                         android:textColor="@color/colorAccent"
-                        android:textSize="16sp"
+                        android:textSize="14sp"
                         android:textStyle="bold" />
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>

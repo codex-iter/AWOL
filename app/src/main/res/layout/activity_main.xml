@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/ll"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -14,47 +14,71 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/a"
-        android:textSize="90sp"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/circ"
         android:fontFamily="cursive"
         android:gravity="center"
-        android:layout_marginTop="50dp"
-        android:textStyle="bold"
-        android:layout_gravity="center_horizontal"
+        android:text="@string/a"
+        android:visibility="gone"
+        android:id="@+id/logo"
         android:textColor="@color/colorPrimaryDark"
-        android:background="@drawable/circ"/>
+        android:textSize="90sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/progress_lottie"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:clickable="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_autoPlay="true"
+        app:lottie_fileName="51-preloader.json"
+        app:lottie_loop="true" />
+
     <LinearLayout
+        android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
         android:layout_height="250dp"
-        android:weightSum="4"
+        android:visibility="gone"
         android:gravity="center_vertical"
         android:orientation="vertical"
-        android:layout_marginTop="50dp"
-        >
-    <EditText
-        android:id="@+id/user"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1.1"
-        android:inputType="number"
-        android:maxLines="1"
-        android:hint="@string/username"
-        android:textColorHint="@color/colorAccent"
-        android:textColor="@color/colorAccent"
-        android:paddingHorizontal="10dp"
-        android:focusedByDefault="true"
-        android:fontFamily="sans-serif"
-        android:layout_marginHorizontal="35dp"
-        tools:ignore="Autofill,UnusedAttribute" />
+        android:weightSum="4"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/logo">
+
+        <EditText
+            android:id="@+id/user"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="35dp"
+            android:layout_weight="1.1"
+            android:focusedByDefault="true"
+            android:fontFamily="sans-serif"
+            android:hint="@string/username"
+            android:textSize="14sp"
+            android:background="@drawable/btn_edtitext"
+            android:inputType="number"
+            android:maxLines="1"
+            android:paddingHorizontal="10dp"
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/black"
+            tools:ignore="Autofill,UnusedAttribute" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/password_visibility"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1.1"
             android:layout_marginHorizontal="35dp"
             android:layout_marginTop="15dp"
+            android:layout_weight="1.1"
             app:hintEnabled="false"
+            app:passwordToggleTint="#000"
             app:passwordToggleEnabled="true"
             tools:ignore="UnusedAttribute">
 
@@ -62,27 +86,32 @@
                 android:id="@+id/pass"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="@string/password"
                 android:focusedByDefault="true"
                 android:fontFamily="sans-serif"
+                android:hint="@string/password"
+                android:background="@drawable/btn_edtitext"
                 android:inputType="textPassword"
                 android:paddingHorizontal="10dp"
-                android:textColor="@color/colorAccent"
-                android:textColorHint="@color/colorAccent"
-                tools:ignore="Autofill" />
+                android:textSize="14sp"
+                android:textColor="@android:color/black"
+                android:textColorHint="@android:color/black"
+                android:importantForAutofill="no" />
 
         </com.google.android.material.textfield.TextInputLayout>
-
+        <Button
+            android:id="@+id/btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="35dp"
+            android:background="@drawable/btnr"
+            android:paddingHorizontal="10dp"
+            android:text="@string/login"
+            android:textAllCaps="true"
+            android:layout_marginTop="15dp"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:ignore="UnusedAttribute" />
     </LinearLayout>
-    <Button
-        android:id="@+id/btn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/btnr"
-        android:layout_marginHorizontal="30dp"
-        android:text="@string/login"
-        android:textSize="20sp"
-        android:paddingVertical="15dp"
-        android:textAllCaps="false"
-        tools:ignore="UnusedAttribute" />
-</LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
