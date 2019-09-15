@@ -9,7 +9,8 @@
     style="?android:attr/spinnerItemStyle"
     android:gravity="center"
     android:paddingVertical="8dp"
-    android:paddingHorizontal="3dp"
+    android:paddingHorizontal="8dp"
     android:textColor="@color/colorPrimary"
-    android:textSize="18sp"
+    android:textSize="14sp"
+    android:background="@drawable/spinner_item"
     tools:ignore="UnusedAttribute" />

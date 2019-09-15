@@ -34,6 +34,8 @@ public class Bunk extends AppCompatActivity {
     private TextView target_at, bunk_at, attend_at;
     private static final String PREFS_NAME = "prefs";
     private static final String PREF_DARK_THEME = "dark_theme";
+    @SuppressWarnings("FieldCanBeLocal")
+    private View view2, view1;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -54,6 +56,9 @@ public class Bunk extends AppCompatActivity {
         target_at = findViewById(R.id.target_at);
         bunk_at = findViewById(R.id.classes_bunk);
         attend_at = findViewById(R.id.going_attend);
+        view1 = findViewById(R.id.view1);
+        view2 = findViewById(R.id.view2);
+
 
         if (!dark) {
             target_at.setTextColor(Color.parseColor("#141831"));
@@ -61,6 +66,9 @@ public class Bunk extends AppCompatActivity {
             attend_at.setTextColor(Color.parseColor("#141831"));
         } else {
             ll.setBackgroundColor(Color.parseColor("#141414"));
+            view1.setBackgroundColor(Color.parseColor("#A9A9A9"));
+            view2.setBackgroundColor(Color.parseColor("#A9A9A9"));
+
         }
 
         this.ld = ListData.ld;
@@ -158,17 +166,21 @@ public class Bunk extends AppCompatActivity {
                                       @Override
                                       public void onClick(View v) {
                                           String s = taredt.getText().toString().trim();
+                                          int s_t = 0;
+                                          if (!s.equals("")) {
+                                              s_t = Integer.parseInt(s);
+                                          }
                                           InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                                           if (imm != null) {
                                               imm.hideSoftInputFromWindow(taredt.getWindowToken(), 0);
                                           }
-                                          if (s.equals("0")) {
+                                          if (s.equals("0") || s_t > 100 || s.equals("00") || s.equals("000")) {
                                               Toast.makeText(Bunk.this, "Enter Valid Value", Toast.LENGTH_SHORT).show();
                                           } else if (s.equals(""))
                                               Toast.makeText(getApplicationContext(), "Enter Some Value", Toast.LENGTH_SHORT).show();
                                           else if (s.equals("100") && absent > 0)
                                               Toast.makeText(getApplicationContext(), "Not Possible!!", Toast.LENGTH_SHORT).show();
-                                          else {
+                                          else{
                                               double tp = new Scanner(s).nextDouble();
                                               if (tp < percent) {
                                                   int i;
@@ -177,50 +189,57 @@ public class Bunk extends AppCompatActivity {
                                                       p = (present / (total + i)) * 100;
                                                       if (p < tp) break;
                                                   }
-                                                  result.setText("Bunk " + (i - 1) + " classes for req attendance");
-                                                  if ((int) tp != 75) {
-                                                      int bunk = i - 1;
-                                                      if (75 < tp) {
+                                                  if (i > 1000){
+                                                      result.setText("Don't need to attend the classes.");
+                                                  } else {
+                                                      result.setText("Bunk " + (i - 1) + " classes for req attendance");
+                                                      if ((int) tp != 75) {
+                                                          int bunk = i - 1;
+                                                          if (75 < tp) {
 
-                                                          for (i = 0; i != 99; i++) {
-                                                              p = (present / (total + bunk + i)) * 100;
-                                                              if (p < 75) break;
+                                                              for (i = 0; i != 99; i++) {
+                                                                  p = (present / (total + bunk + i)) * 100;
+                                                                  if (p < 75) break;
+                                                              }
+                                                              left.setText("Bunk " + (i - 1) + " more classes for 75% ");
+                                                          } else if (75 > tp) {
+                                                              for (i = 0; i != -99; i++) {
+                                                                  p = ((present + i) / (total + bunk + i)) * 100;
+                                                                  if (p > 75) break;
+                                                              }
+                                                              left.setText("Attend " + (i - 1) + " classes after bunk for 75%");
                                                           }
-                                                          left.setText("Bunk " + (i - 1) + " more classes for 75% ");
-                                                      } else if (75 > tp) {
-                                                          for (i = 0; i != -99; i++) {
-                                                              p = ((present + i) / (total + bunk + i)) * 100;
-                                                              if (p > 75) break;
-                                                          }
-                                                          left.setText("Attend " + (i - 1) + " classes after bunk for 75%");
-                                                      }
-
-                                                  } else
-                                                      left.setText("");
+                                                      } else
+                                                          left.setText("");
+                                                  }
                                               } else if (tp > percent) {
                                                   int i;
                                                   for (i = 0; i != -99; i++) {
                                                       double p = ((present + i) / (total + i) * 100);
                                                       if (p > tp) break;
                                                   }
-                                                  result.setText("Attend " + i + " classes for req attendance");
-                                                  if ((int) tp != 75) {
-                                                      double attend = i;
-                                                      double p;
-                                                      if (75 < tp) {
-                                                          for (i = 0; i != -99; i++) {
-                                                              p = ((present + attend) / (total + attend + i)) * 100;
-                                                              if (p < 75) break;
+                                                  if (i > 1000) {
+                                                      result.setText("Don't need to attend the classes.");
+                                                  }else {
+                                                      result.setText("Attend " + i + " classes for req attendance");
+                                                      if ((int) tp != 75) {
+                                                          double attend = i;
+                                                          double p;
+                                                          if (75 < tp) {
+                                                              for (i = 0; i != -99; i++) {
+                                                                  p = ((present + attend) / (total + attend + i)) * 100;
+                                                                  if (p < 75) break;
+                                                              }
+                                                              left.setText("Bunk " + (i - 1) + " classes afterwards for 75% ");
+                                                          } else if (75 > tp) {
+                                                              for (i = 0; i != -99; i++) {
+                                                                  p = ((present + attend + i) / (total + attend + i) * 100);
+                                                                  if (p > 75) break;
+                                                              }
+                                                              left.setText("Attend " + (i - 1) + " more classes for 75%");
                                                           }
-                                                          left.setText("Bunk " + (i - 1) + " classes afterwards for 75% ");
-                                                      } else if (75 > tp) {
-                                                          for (i = 0; i != -99; i++) {
-                                                              p = ((present + attend + i) / (total + attend + i) * 100);
-                                                              if (p > 75) break;
-                                                          }
-                                                          left.setText("Attend " + (i - 1) + " more classes for 75%");
-                                                      }
 
+                                                      }
                                                   }
                                               }
                                           }
@@ -249,22 +268,26 @@ public class Bunk extends AppCompatActivity {
                             inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
                         }
                     double p = ((present + c) / (total + c)) * 100;
-                    result.setText("You attendance will be " + String.format(Locale.US, "%.2f", p));
-                    int i;
-                    double pr;
-                    if (75 < p) {
+                    if (p > 0) {
+                        result.setText("Your attendance will be " + String.format(Locale.US, "%.2f", p) + "%");
+                        int i;
+                        double pr;
+                        if (75 < p) {
 
-                        for (i = 0; i != -99; i++) {
-                            pr = ((present + c) / (total + c + i)) * 100;
-                            if (pr < 75) break;
+                            for (i = 0; i != -99; i++) {
+                                pr = ((present + c) / (total + c + i)) * 100;
+                                if (pr < 75) break;
+                            }
+                            left.setText("Bunk " + (i - 1) + " classes afterwards for 75% ");
+                        } else if (75 > p) {
+                            for (i = 0; i != -99; i++) {
+                                pr = ((present + c + i) / (total + c + i) * 100);
+                                if (pr > 75) break;
+                            }
+                            left.setText("Attend " + (i - 1) + " more classes for 75%");
                         }
-                        left.setText("Bunk " + (i - 1) + " classes afterwards for 75% ");
-                    } else if (75 > p) {
-                        for (i = 0; i != -99; i++) {
-                            pr = ((present + c + i) / (total + c + i) * 100);
-                            if (pr > 75) break;
-                        }
-                        left.setText("Attend " + (i - 1) + " more classes for 75%");
+                    } else {
+                        Toast.makeText(Bunk.this, "Enter Valid value", Toast.LENGTH_SHORT).show();
                     }
 
                 }
@@ -292,26 +315,29 @@ public class Bunk extends AppCompatActivity {
                         }
                     int c = new Scanner(bnkedt.getText().toString().trim()).nextInt();
                     double p = ((present) / (total + c)) * 100;
-                    result.setText("You attendance will be " + String.format(Locale.US, "%.2f", p));
-                    int i;
-                    double pr;
+                    if (p > 0) {
+                        result.setText("Your attendance will be " + String.format(Locale.US, "%.2f", p) + "%");
+                        int i;
+                        double pr;
+                        if (75 < p) {
 
-                    if (75 < p) {
+                            for (i = 0; i != -99; i++) {
+                                pr = (present / (total + c + i)) * 100;
+                                if (pr < 75) break;
+                            }
+                            left.setText("Bunk " + (i - 1) + " more classes for 75% ");
+                        } else if (75 > p) {
+                            for (i = 0; i != -99; i++) {
+                                pr = ((present + i) / (total + c + i) * 100);
+                                if (pr > 75) break;
+                            }
+                            left.setText("Attend " + (i - 1) + " classes after bunk for 75%");
+                        }
 
-                        for (i = 0; i != -99; i++) {
-                            pr = (present / (total + c + i)) * 100;
-                            if (pr < 75) break;
-                        }
-                        left.setText("Bunk " + (i - 1) + " more classes for 75% ");
-                    } else if (75 > p) {
-                        for (i = 0; i != -99; i++) {
-                            pr = ((present + i) / (total + c + i) * 100);
-                            if (pr > 75) break;
-                        }
-                        left.setText("Attend " + (i - 1) + " classes after bunk for 75%");
+
+                    } else {
+                        Toast.makeText(Bunk.this, "Enter Valid Value", Toast.LENGTH_SHORT).show();
                     }
-
-
                 }
             }
         });

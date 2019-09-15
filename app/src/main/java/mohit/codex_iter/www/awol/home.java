@@ -100,6 +100,7 @@ public class home extends AppCompatActivity {
                 setTheme(R.style.AppTheme_Dark_NoActionBar);
         }
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_home);
 
 
@@ -188,7 +189,7 @@ public class home extends AppCompatActivity {
                                 case R.id.sa:
                                     Intent sendIntent = new Intent();
                                     sendIntent.setAction(Intent.ACTION_SEND);
-                                    sendIntent.putExtra(Intent.EXTRA_TEXT, "Hey check this out: bit.do/awol_iter \n ");
+                                    sendIntent.putExtra(Intent.EXTRA_TEXT, "Hey check this out: bit.do/iter_awol \n ");
                                     sendIntent.setType("text/plain");
                                     startActivity(sendIntent);
                                     break;

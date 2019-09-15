@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.view.GravityCompat;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieProperty;
@@ -39,10 +40,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
-
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -58,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String PREF_DARK_THEME = "dark_theme";
     private final int frames = 9;
     private int currentAnimationFrame = 0;
+    private boolean track;
 
     private TextView logo;
 
@@ -77,8 +77,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Bundle extras = getIntent().getExtras();
-        String status  = "";
-        if (extras != null){
+        String status = "";
+        if (extras != null) {
             status = extras.getString("logout_status");
         }
         SharedPreferences status_lg = this.getSharedPreferences("status", 0);
@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
                 new SimpleLottieValueCallback<ColorFilter>() {
                     @Override
                     public ColorFilter getValue(LottieFrameInfo<ColorFilter> frameInfo) {
-                        return new PorterDuffColorFilter(getResources().getColor(R.color.darkColorAccent ), PorterDuff.Mode.SRC_ATOP);
+                        return new PorterDuffColorFilter(getResources().getColor(R.color.darkColorAccent), PorterDuff.Mode.SRC_ATOP);
                     }
                 }
         );
@@ -142,10 +142,10 @@ public class MainActivity extends AppCompatActivity {
                         pass.setText("");
                     }
 //                    else {
-                       // showData(u, p);
+                    // showData(u, p);
 //                    }
                 }
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 if (imm != null) {
                     imm.hideSoftInputFromWindow(pass.getWindowToken(), 0);
                 }
@@ -195,6 +195,7 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
     }
+
     private void getData(final String... param) {
 
 //        pd = new ProgressDialog(MainActivity.this);
@@ -209,16 +210,14 @@ public class MainActivity extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        user.setText("");
-                        pass.setText("");
+
                         if (response.equals("404")) {
-                            if(animationView.getVisibility() == View.VISIBLE)
+                            if (animationView.getVisibility() == View.VISIBLE)
                                 animationView.setVisibility(View.INVISIBLE);
                             l2.setVisibility(View.VISIBLE);
                             logo.setVisibility(View.VISIBLE);
                             Toast.makeText(getApplicationContext(), "Wrong Credentials!", Toast.LENGTH_SHORT).show();
-                        }
-                        else {
+                        } else {
                             Toast.makeText(getApplicationContext(), "Success!", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(MainActivity.this, home.class);
                             //getname(param);
@@ -237,26 +236,32 @@ public class MainActivity extends AppCompatActivity {
                         // error
                         if (animationView.getVisibility() == View.VISIBLE)
                             animationView.setVisibility(View.INVISIBLE);
-                        user.setText("");
-                        pass.setText("");
+
                         //showData(param[1], param[2]);
-                        if (error instanceof AuthFailureError){
+                        if (error instanceof AuthFailureError) {
                             l2.setVisibility(View.VISIBLE);
                             logo.setVisibility(View.VISIBLE);
-                            Toast.makeText(getApplicationContext(), "Wrong Credentials!", Toast.LENGTH_SHORT).show();}
-                        else if (error instanceof ServerError) {
+                            Toast.makeText(getApplicationContext(), "Wrong Credentials!", Toast.LENGTH_SHORT).show();
+                        } else if (error instanceof ServerError) {
                             l2.setVisibility(View.VISIBLE);
                             logo.setVisibility(View.VISIBLE);
                             Toast.makeText(getApplicationContext(), "Cannot connect to ITER servers right now.Try again", Toast.LENGTH_SHORT).show();
-                        }  else if (error instanceof NetworkError) {
+                        } else if (error instanceof NetworkError) {
                             Log.e("Volley_error", String.valueOf(error));
                             l2.setVisibility(View.VISIBLE);
                             logo.setVisibility(View.VISIBLE);
                             Toast.makeText(getApplicationContext(), "Cannot establish connection", Toast.LENGTH_SHORT).show();
                         } else if (error instanceof TimeoutError) {
-                            l2.setVisibility(View.VISIBLE);
-                            logo.setVisibility(View.VISIBLE);
-                            Toast.makeText(getApplicationContext(), "Cannot connect to ITER servers right now.Try again", Toast.LENGTH_SHORT).show();
+                            if (!track) {
+                                animationView.setVisibility(View.VISIBLE);
+                                track = true;
+                                btn.performClick();
+                            } else {
+                                l2.setVisibility(View.VISIBLE);
+                                logo.setVisibility(View.VISIBLE);
+                                Toast.makeText(getApplicationContext(), "Cannot connect to ITER servers right now.Try again", Toast.LENGTH_SHORT).show();
+                                track = false;
+                            }
                         }
 
                     }
@@ -324,7 +329,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         if (activeNetwork != null) {
-            if (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI){
+            if (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI) {
                 // connected to wifi
                 haveConnectedWifi = true;
             } else if (activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE) {
@@ -333,14 +338,10 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-//        for (NetworkInfo ni : netInfo) {
-//            if (ni.getTypeName().equalsIgnoreCase("WIFI"))
-//                if (ni.isConnected())
-//                    haveConnectedWifi = true;
-//            if (ni.getTypeName().equalsIgnoreCase("MOBILE"))
-//                if (ni.isConnected())
-//                    haveConnectedMobile = true;
-//        }
         return haveConnectedWifi || haveConnectedMobile;
+    }
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
     }
 }

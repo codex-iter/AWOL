@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +20,7 @@ public class Abt extends AppCompatActivity {
     private TextView  dis, para, dev, mo, pa, neh;
     @SuppressWarnings("FieldCanBeLocal")
     private LinearLayout ll;
+    private ScrollView scrollView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         SharedPreferences preferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
@@ -44,6 +46,7 @@ public class Abt extends AppCompatActivity {
         neh = findViewById(R.id.nehal);
         ImageView logo = findViewById(R.id.logo);
         dev = findViewById(R.id.dev);
+        scrollView = findViewById(R.id.ScrollView01);
         ll = findViewById(R.id.ll);
         if (!dark) {
             dev.setTextColor(Color.parseColor("#141831"));
@@ -56,6 +59,7 @@ public class Abt extends AppCompatActivity {
         }else {
             logo.setBackgroundResource(R.drawable.codex);
             ll.setBackgroundColor(Color.parseColor("#141414"));
+            scrollView.setBackgroundColor(Color.parseColor("#141414"));
         }
 
 

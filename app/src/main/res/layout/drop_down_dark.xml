@@ -6,11 +6,11 @@
     android:layout_width="match_parent"
     android:textStyle="bold"
     android:singleLine="true"
-    android:background="@color/colorPrimaryDark"
+    android:background="@drawable/spinner_item_dark"
     style="?android:attr/spinnerItemStyle"
     android:gravity="center"
     android:paddingVertical="8dp"
     android:paddingHorizontal="3dp"
     android:textColor="@color/colorPrimary"
-    android:textSize="18sp"
+    android:textSize="14sp"
     tools:ignore="UnusedAttribute" />

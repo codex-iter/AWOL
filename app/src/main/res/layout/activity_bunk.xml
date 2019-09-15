@@ -1,36 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    android:id="@+id/ll"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout android:id="@+id/ll"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="11"
-    tools:context="mohit.codex_iter.www.awol.Bunk">
+    tools:context="mohit.codex_iter.www.awol.Bunk"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <Spinner
         android:id="@+id/sub"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1.5"
-        android:layout_gravity="center"
-        android:spinnerMode="dropdown"
+        android:layout_weight="2"
+        android:spinnerMode="dialog"
         android:layout_marginTop="10dp"
         />
-
-    <LinearLayout
+    <View
         android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_marginHorizontal="10dp"
-        android:background="#000"
-        tools:ignore="UnusedAttribute" />
+        android:layout_height="0.5dp"
+        android:layout_gravity="center"
+        android:id="@+id/view1"
+        android:background="#000"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="20dp"
         android:layout_weight="1"
+        android:gravity="center"
         android:orientation="horizontal"
         android:weightSum="4">
 
@@ -54,19 +52,20 @@
             android:gravity="center"
             android:text=""
             android:focusable="true"
+            android:maxLength="3"
             android:maxLines="1"
             android:inputType="number"
             android:textColor="@color/colorPrimary"
-            android:importantForAutofill="no" />
+            android:importantForAutofill="no"
+            tools:ignore="LabelFor" />
     </LinearLayout>
 
     <Button
         android:id="@+id/target"
-        android:layout_width="100dp"
-        android:layout_height="0dp"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
-        android:layout_weight="0.75"
         android:textSize="14sp"
         android:background="@drawable/btnr"
         android:text="@string/result" />
@@ -75,6 +74,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:layout_gravity="center"
         android:gravity="center"
         android:text="@string/or"
         android:textColor="#999999"
@@ -85,6 +85,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:orientation="horizontal"
+        android:gravity="center"
         android:weightSum="4">
 
         <TextView
@@ -103,6 +104,7 @@
             android:layout_height="match_parent"
             android:layout_weight="0.8"
             android:gravity="center"
+            android:maxLength="4"
             android:text=""
             android:maxLines="1"
             android:textSize="14sp"
@@ -113,12 +115,11 @@
 
     <Button
         android:id="@+id/bunk"
-        android:layout_width="100dp"
-        android:layout_height="0dp"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
         android:textSize="14sp"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
-        android:layout_weight="0.75"
         android:background="@drawable/btnr"
         android:text="@string/bunk" />
 
@@ -135,6 +136,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:gravity="center"
         android:orientation="horizontal"
         android:weightSum="4">
 
@@ -155,6 +157,7 @@
             android:layout_weight="0.8"
             android:gravity="center"
             android:textSize="14sp"
+            android:maxLength="4"
             android:text=""
             android:maxLines="1"
             android:inputType="number"
@@ -164,28 +167,27 @@
 
     <Button
         android:id="@+id/attend"
-        android:layout_width="100dp"
-        android:layout_height="0dp"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
         android:textSize="14sp"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
-        android:layout_weight="0.75"
+        android:layout_marginBottom="20dp"
         android:background="@drawable/btnr"
         android:text="@string/attend" />
 
-    <LinearLayout
+    <View
         android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_marginHorizontal="10dp"
-        android:layout_marginTop="10dp"
-        android:background="#000"
-        tools:ignore="UnusedAttribute" />
+        android:layout_height="0.5dp"
+        android:layout_gravity="center"
+        android:id="@+id/view2"
+        android:background="#000"/>
 
     <TextView
         android:id="@+id/result"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="50dp"
         android:layout_weight="1"
         android:gravity="center"
         android:text=""
