@@ -27,7 +27,7 @@
             android:textSize="25sp"
             android:textStyle="bold"
             android:gravity="center"
-            android:visibility="gone";
+            android:visibility="gone"
             />
         <ListView
             android:id="@+id/rl"

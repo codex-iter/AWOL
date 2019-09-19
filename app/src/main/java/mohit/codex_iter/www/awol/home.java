@@ -126,8 +126,9 @@ public class home extends AppCompatActivity {
                 Context.MODE_PRIVATE);
         try {
             JSONObject jObj1 = new JSONObject(result);
-            JSONArray arr = jObj1.getJSONArray("griddata");
-            if(arr==null) {
+            System.out.println(result);
+
+            if(!jObj1.has("griddata")) {
                 NavigationView nv= findViewById(R.id.nav_view);
                 Menu menu=nv.getMenu();
                 MenuItem menuItem=menu.findItem(R.id.pab);
@@ -137,6 +138,7 @@ public class home extends AppCompatActivity {
                 tv.setVisibility(View.VISIBLE);
 
             }
+            JSONArray arr = jObj1.getJSONArray("griddata");
             l = arr.length();
             ld = new ListData[l];
             for (int i = 0; i < l; i++) {
