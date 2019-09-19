@@ -127,6 +127,14 @@ public class home extends AppCompatActivity {
         try {
             JSONObject jObj1 = new JSONObject(result);
             JSONArray arr = jObj1.getJSONArray("griddata");
+            if(arr==null) {
+                NavigationView nv= findViewById(R.id.nav_view);
+                Menu menu=nv.getMenu();
+                MenuItem menuItem=menu.findItem(R.id.pab);
+                menuItem.setEnabled(false);
+
+
+            }
             l = arr.length();
             ld = new ListData[l];
             for (int i = 0; i < l; i++) {
