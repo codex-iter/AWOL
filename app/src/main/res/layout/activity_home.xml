@@ -7,6 +7,7 @@
     android:fitsSystemWindows="true">
 
     <LinearLayout
+        android:id="@+id/main_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -23,8 +24,8 @@
             android:id="@+id/NA"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="OOPS! Attendance not available!"
-            android:textSize="25sp"
+            android:text="@string/oops_attendance_not_available"
+            android:textSize="14sp"
             android:textStyle="bold"
             android:gravity="center"
             android:visibility="gone"

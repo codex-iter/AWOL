@@ -6,8 +6,8 @@ android {
         applicationId "mohit.codex_iter.www.awol"
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode 9
-        versionName "9"
+        versionCode 12
+        versionName "9.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

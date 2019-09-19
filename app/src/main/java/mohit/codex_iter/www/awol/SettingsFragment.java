@@ -265,11 +265,6 @@ public class SettingsFragment extends PreferenceFragment {
         SharedPreferences.Editor editor = getActivity().getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit();
         editor.putBoolean(PREF_DARK_THEME, darkTheme);
         editor.apply();
-
-        Intent intent = getActivity().getIntent();
-        getActivity().finish();
-
-        startActivity(intent);
     }
 
 }

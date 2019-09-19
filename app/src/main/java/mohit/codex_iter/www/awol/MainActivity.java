@@ -58,8 +58,9 @@ public class MainActivity extends AppCompatActivity {
     private final int frames = 9;
     private int currentAnimationFrame = 0;
     private boolean track;
-
+    private boolean login;
     private TextView logo;
+    private String param_0, param_1, response_d;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -206,11 +207,12 @@ public class MainActivity extends AppCompatActivity {
         logo.setVisibility(View.INVISIBLE);
         //pd.show();
         RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+        param_0 = param[0];
         StringRequest postRequest = new StringRequest(Request.Method.POST, param[0] + "/attendance",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-
+                        response_d = response;
                         if (response.equals("404")) {
                             if (animationView.getVisibility() == View.VISIBLE)
                                 animationView.setVisibility(View.INVISIBLE);
@@ -218,9 +220,11 @@ public class MainActivity extends AppCompatActivity {
                             logo.setVisibility(View.VISIBLE);
                             Toast.makeText(getApplicationContext(), "Wrong Credentials!", Toast.LENGTH_SHORT).show();
                         } else {
+                            login = true;
                             Toast.makeText(getApplicationContext(), "Success!", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(MainActivity.this, home.class);
                             //getname(param);
+                            param_1 = param[1];
                             response += "kkk" + param[1];
                             intent.putExtra("result", response);
                             edit.putString(param[1], response);
@@ -343,5 +347,19 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         moveTaskToBack(true);
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        if (login){
+            Intent intent = new Intent(MainActivity.this, home.class);
+            //getname(param);
+            response_d += "kkk" + param_1;
+            intent.putExtra("result", response_d);
+            edit.putString(param_1, response_d);
+            edit.apply();
+            startActivity(intent);
+        }
     }
 }

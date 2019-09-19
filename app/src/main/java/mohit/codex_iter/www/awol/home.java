@@ -15,6 +15,7 @@ import android.text.format.DateUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -63,6 +64,7 @@ public class home extends AppCompatActivity {
     private DrawerLayout dl;
     private static final String PREFS_NAME = "prefs";
     private static final String PREF_DARK_THEME = "dark_theme";
+    private LinearLayout main_layout;
     int[][] state = new int[][]{
             new int[]{android.R.attr.state_checked}, // checked
             new int[]{-android.R.attr.state_checked}
@@ -102,7 +104,8 @@ public class home extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_home);
-
+        NavigationView navigationView= findViewById(R.id.nav_view);
+        main_layout = findViewById(R.id.main_layout);
 
         Bundle bundle = getIntent().getExtras();
 
@@ -129,13 +132,18 @@ public class home extends AppCompatActivity {
             System.out.println(result);
 
             if(!jObj1.has("griddata")) {
-                NavigationView nv= findViewById(R.id.nav_view);
-                Menu menu=nv.getMenu();
+                Menu menu=navigationView.getMenu();
                 MenuItem menuItem=menu.findItem(R.id.pab);
                 menuItem.setEnabled(false);
                 rl.setVisibility(View.GONE);
                 TextView tv=findViewById(R.id.NA);
                 tv.setVisibility(View.VISIBLE);
+                if (dark){
+                    tv.setTextColor(Color.parseColor("FFCCCCCC"));
+                    main_layout.setBackgroundColor(Color.parseColor("#141414"));
+                } else {
+                    tv.setTextColor(Color.parseColor("#141414"));
+                }
 
             }
             JSONArray arr = jObj1.getJSONArray("griddata");
@@ -176,7 +184,6 @@ public class home extends AppCompatActivity {
             Objects.requireNonNull(actionbar).setDisplayHomeAsUpEnabled(true);
             actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
             actionbar.setTitle(null);
-            NavigationView navigationView = findViewById(R.id.nav_view);
             View headerView = navigationView.getHeaderView(0);
             name = headerView.findViewById(R.id.name);
             reg = headerView.findViewById(R.id.reg);

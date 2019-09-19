@@ -81,7 +81,8 @@ public class Abt extends AppCompatActivity {
                 Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
                         "mailto", "codexiter@gmail.com", null));
                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Feedback for AWOL");
-                getApplicationContext().startActivity(Intent.createChooser(emailIntent, null));
+                emailIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(Intent.createChooser(emailIntent, null));
             }
         });
         cdx = findViewById(R.id.cdx);
