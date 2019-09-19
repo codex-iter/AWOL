@@ -13,7 +13,7 @@ public class ListData {
     private double thp;
     private double lat;
     private double lap;
-    static ListData[] ld;
+    public static ListData[] ld;
     public String getClasses() {
         return Integer.toString((int)(thT+lat));
     }
