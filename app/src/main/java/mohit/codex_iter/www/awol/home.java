@@ -132,7 +132,9 @@ public class home extends AppCompatActivity {
                 Menu menu=nv.getMenu();
                 MenuItem menuItem=menu.findItem(R.id.pab);
                 menuItem.setEnabled(false);
-
+                rl.setVisibility(View.GONE);
+                TextView tv=findViewById(R.id.NA);
+                tv.setVisibility(View.VISIBLE);
 
             }
             l = arr.length();
