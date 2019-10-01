@@ -20,3 +20,10 @@ Shows current attendance
 
 ## About Us
 <img src="./screenshots/about.jpg" width=30%>
+
+Test server credentials:
+
+```
+Username: 12345
+Password: 12345
+```
