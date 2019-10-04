@@ -34,12 +34,10 @@ public class SettingsFragment extends PreferenceFragment {
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         SharedPreferences preferences = getActivity().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        final boolean useDarkTheme = preferences.getBoolean(PREF_DARK_THEME, false);
 
         super.onCreate(savedInstanceState);
 
         addPreferencesFromResource(R.xml.preference);
-        final SwitchPreference darkmode = (SwitchPreference) findPreference("pref_dark_mode");
         final SwitchPreference notifications = (SwitchPreference) findPreference("pref_notification");
 
         final SharedPreferences stop = getActivity().getSharedPreferences("STOP", 0);
@@ -48,20 +46,6 @@ public class SettingsFragment extends PreferenceFragment {
         SharedPreferences device_time = getActivity().getSharedPreferences("Set_time", 0);
         final SharedPreferences.Editor set_time = device_time.edit();
 
-        if (darkmode != null) {
-            darkmode.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    boolean checked = (Boolean) newValue;
-
-                    toggleTheme(checked);
-                    Intent intent = new Intent(getActivity(), MainActivity.class);
-                    getActivity().recreate();
-                    startActivity(intent);
-                    return true;
-                }
-            });
-        }
         final SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Notification_date", 0);
         final SharedPreferences.Editor editor = sharedPreferences.edit();
 
@@ -250,10 +234,7 @@ public class SettingsFragment extends PreferenceFragment {
                 }
             });
         }
-        SharedPreferences theme = getActivity().getSharedPreferences("theme", 0);
-        SharedPreferences.Editor editor2 = theme.edit();
-        editor2.putBoolean("dark_theme", useDarkTheme);
-        editor2.apply();
+
     }
 
     @Override

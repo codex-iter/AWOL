@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout android:id="@+id/ll"
+    android:background="?windowColor"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -39,7 +40,7 @@
             android:layout_weight="2.8"
             android:gravity="center"
             android:text="@string/your_target_attendance"
-            android:textColor="@color/colorAccent"
+            android:textColor="?aboutTextColor"
             android:textSize="14sp"
             tools:ignore="NestedWeights" />
 
@@ -95,7 +96,7 @@
             android:layout_weight="2.8"
             android:gravity="center"
             android:text="@string/classes_you_wanna_bunk"
-            android:textColor="@color/colorAccent"
+            android:textColor="?aboutTextColor"
             android:textSize="14sp" />
 
         <EditText
@@ -147,7 +148,7 @@
             android:layout_weight="2.8"
             android:gravity="center"
             android:text="@string/classes_you_gonna_attend"
-            android:textColor="@color/colorAccent"
+            android:textColor="?aboutTextColor"
             android:textSize="14sp" />
 
         <EditText

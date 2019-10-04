@@ -25,7 +25,7 @@ import java.util.Scanner;
 
 
 
-public class Bunk extends AppCompatActivity {
+public class Bunk extends BaseThemedActivity {
 
     EditText atndedt, bnkedt, taredt;
     TextView result, left;
@@ -33,42 +33,24 @@ public class Bunk extends AppCompatActivity {
     Button target, bunk, attend;
     double absent, total, percent, present;
     ListData[] ld;
-    @SuppressWarnings("FieldCanBeLocal")
-    private TextView target_at, bunk_at, attend_at;
-    private static final String PREFS_NAME = "prefs";
-    private static final String PREF_DARK_THEME = "dark_theme";
-    @SuppressWarnings("FieldCanBeLocal")
+
     private View view2, view1;
+
+
+
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        SharedPreferences preferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        final boolean useDarkTheme = preferences.getBoolean(PREF_DARK_THEME, false);
 
-        SharedPreferences theme = getSharedPreferences("theme", 0);
-        boolean dark = theme.getBoolean("dark_theme", false);
-        if (useDarkTheme) {
-            if (dark)
-                setTheme(R.style.AppTheme_Dark_NoActionBar);
-        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bunk);
-        LinearLayout ll = findViewById(R.id.ll);
 
-        target_at = findViewById(R.id.target_at);
-        bunk_at = findViewById(R.id.classes_bunk);
-        attend_at = findViewById(R.id.going_attend);
         view1 = findViewById(R.id.view1);
         view2 = findViewById(R.id.view2);
 
 
-        if (!dark) {
-            target_at.setTextColor(Color.parseColor("#141831"));
-            bunk_at.setTextColor(Color.parseColor("#141831"));
-            attend_at.setTextColor(Color.parseColor("#141831"));
-        } else {
-            ll.setBackgroundColor(Color.parseColor("#141414"));
+        if (dark){
             view1.setBackgroundColor(Color.parseColor("#A9A9A9"));
             view2.setBackgroundColor(Color.parseColor("#A9A9A9"));
 
@@ -380,5 +362,6 @@ public class Bunk extends AppCompatActivity {
 
 
     }
+
 
 }

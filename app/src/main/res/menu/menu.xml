@@ -30,5 +30,9 @@
         android:id="@+id/lgout"
         android:icon="@drawable/ic_home"
         android:title="@string/logout" />
+    <item
+        android:id="@+id/change_theme"
+        android:icon="@drawable/ic_home"
+        android:title="@string/change_theme" />
 
 </menu>

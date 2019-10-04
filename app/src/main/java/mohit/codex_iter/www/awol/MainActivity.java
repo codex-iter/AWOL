@@ -44,17 +44,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseThemedActivity {
     EditText user, pass;
     Button btn;
-    //ProgressDialog pd;
     SharedPreferences userm, logout;
     SharedPreferences.Editor edit;
-    ConstraintLayout ll;
     private LottieAnimationView animationView;
     private LinearLayout l2;
-    private static final String PREFS_NAME = "prefs";
-    private static final String PREF_DARK_THEME = "dark_theme";
     private final int frames = 9;
     private int currentAnimationFrame = 0;
     private boolean track;
@@ -62,21 +58,15 @@ public class MainActivity extends AppCompatActivity {
     private TextView logo;
     private String param_0, param_1, response_d;
 
+
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        SharedPreferences preferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        final boolean useDarkTheme = preferences.getBoolean(PREF_DARK_THEME, false);
 
-        SharedPreferences theme = getSharedPreferences("theme", 0);
-        boolean dark = theme.getBoolean("dark_theme", false);
-        if (useDarkTheme) {
-            if (dark)
-                setTheme(R.style.AppTheme_Dark_NoActionBar);
-        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        Constants.setDarkStatusBar(this);
         Bundle extras = getIntent().getExtras();
         String status = "";
         if (extras != null) {
@@ -104,11 +94,6 @@ public class MainActivity extends AppCompatActivity {
         logo = findViewById(R.id.logo);
         logo.setVisibility(View.VISIBLE);
         l2.setVisibility(View.VISIBLE);
-        ll = findViewById(R.id.ll);
-        if (dark) {
-            ll.setBackgroundColor(Color.parseColor("#141414"));
-        }
-
         user = findViewById(R.id.user);
         pass = findViewById(R.id.pass);
         btn = findViewById(R.id.btn);
