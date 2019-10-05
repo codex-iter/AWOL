@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="toolbarColor" format="color|reference"/>
+    <attr name="toolbarTitle" format="color|reference"/>
+    <attr name="windowColor" format="color|reference"/>
+    <attr name="aboutTextColor" format="color|reference"/>
+    <attr name="logoo" format="reference"/>
+</resources>

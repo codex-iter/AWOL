@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.FileUriExposedException;
 import android.os.Vibrator;
 import android.text.format.DateUtils;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,6 +29,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.FileProvider;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import mohit.codex_iter.www.awol.theme.ThemeFragment;
 
 import com.google.android.material.navigation.NavigationView;
 
@@ -42,7 +44,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 
-public class home extends AppCompatActivity {
+public class home extends BaseThemedActivity {
     private String result;
     private ListData[] ld;
     @SuppressWarnings("FieldCanBeLocal")
@@ -62,9 +64,10 @@ public class home extends AppCompatActivity {
     @SuppressWarnings("FieldCanBeLocal")
     private MyBaseAdapter adapter;
     private DrawerLayout dl;
-    private static final String PREFS_NAME = "prefs";
-    private static final String PREF_DARK_THEME = "dark_theme";
     private LinearLayout main_layout;
+    private DrawerLayout mDrawerLayout;
+
+
     int[][] state = new int[][]{
             new int[]{android.R.attr.state_checked}, // checked
             new int[]{-android.R.attr.state_checked}
@@ -90,22 +93,17 @@ public class home extends AppCompatActivity {
     ColorStateList csl2 = new ColorStateList(state2, color2);
 
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        SharedPreferences preferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        final boolean useDarkTheme = preferences.getBoolean(PREF_DARK_THEME, false);
 
-        final SharedPreferences theme = getSharedPreferences("theme", 0);
-        boolean dark = theme.getBoolean("dark_theme", false);
-        if (useDarkTheme) {
-            if (dark)
-                setTheme(R.style.AppTheme_Dark_NoActionBar);
-        }
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_home);
-        NavigationView navigationView= findViewById(R.id.nav_view);
+        final NavigationView navigationView= findViewById(R.id.nav_view);
         main_layout = findViewById(R.id.main_layout);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
 
         Bundle bundle = getIntent().getExtras();
 
@@ -113,8 +111,7 @@ public class home extends AppCompatActivity {
         rl = findViewById(R.id.rl);
         if (dark) {
             rl.setBackgroundColor(Color.parseColor("#141414"));
-            Toolbar toolbar = findViewById(R.id.toolbar);
-            toolbar.setBackgroundColor(Color.parseColor("#141414"));
+
         }
         if (bundle != null)
             result = bundle.getString("result");
@@ -194,10 +191,10 @@ public class home extends AppCompatActivity {
             avat.setText(String.format(Locale.US, "%.2f", avgat));
             avab = headerView.findViewById(R.id.avab);
             avab.setText(String.valueOf(avgab));
-            if (dark) {
-                navigationView.setItemTextColor(csl);
-                navigationView.setItemIconTintList(csl2);
-            }
+//            if (dark) {
+//                navigationView.setItemTextColor(csl);
+//                navigationView.setItemIconTintList(csl2);
+//            }
 
             navigationView.setNavigationItemSelectedListener(
                     new NavigationView.OnNavigationItemSelectedListener() {
@@ -239,6 +236,11 @@ public class home extends AppCompatActivity {
                                     Uri uri = Uri.parse("https://awol-iter.flycricket.io/privacy.html");
                                     Intent intent2 = new Intent(Intent.ACTION_VIEW, uri);
                                     startActivity(intent2);
+                                    break;
+                                case R.id.change_theme:
+                                    mDrawerLayout.closeDrawer(GravityCompat.START);
+                                    ThemeFragment fragment = ThemeFragment.newInstance();
+                                    fragment.show(getSupportFragmentManager(),"theme_fragment");
                                     break;
                             }
                             return true;
@@ -360,6 +362,8 @@ public class home extends AppCompatActivity {
         }
 
     }
+
+
 }
 
 

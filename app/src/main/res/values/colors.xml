@@ -10,4 +10,21 @@
     <color name="mid">#F3F025</color>
     <color name="danger">#F5FC0101</color>
     <color name="black">#FF0C0C0C</color>
+
+
+    <color name="grey50">#fafafa</color>
+    <color name="red">#f44336</color>
+    <color name="redDark">#ba000d</color>
+    <color name="orange">#ff9800</color>
+    <color name="orangeDark">#c66900</color>
+    <color name="green">#4caf50</color>
+    <color name="greenDark">#087f23</color>
+    <color name="blue">#2196f3</color>
+<color name="blueDark">#0069c0</color>
+
+    <color name="lightBackground">#fafafa</color>
+    <color name="darkBackground">#141414</color>
+
+<color name="textColorDark">#141831</color>
+<color name="textColorLight">#aaaaaa</color>
 </resources>

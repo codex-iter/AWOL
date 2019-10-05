@@ -2,16 +2,29 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
+        <item name="aboutTextColor">@color/textColorDark</item>
+        <item name="logoo">@drawable/codex_l</item>
+        <item name="windowColor">@color/lightBackground</item>
+        <item name="toolbarTitle">@color/colorPrimary</item>
         <item name="colorPrimary">@color/colorPrimaryDark</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="toolbarColor">@android:color/white</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+
+
+
+
+
+
+
+
+
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
@@ -20,7 +33,11 @@
 
     <!-- Dark application theme. -->
     <style name="AppTheme.Dark" parent="Theme.AppCompat">
-        <!-- Dark theme base colours -->
+        <item name="logoo">@drawable/codex</item>
+        <item name="aboutTextColor">@color/textColorLight</item>
+        <item name="windowColor">@color/darkBackground</item>
+        <item name="toolbarColor">@color/darkColorPrimary</item>
+        <item name="toolbarTitle">@android:color/white</item>
         <item name="colorPrimary">@color/darkColorAccent</item>
         <item name="colorPrimaryDark">@color/darkColorPrimaryDark</item>
         <item name="colorAccent">@color/darkColorAccent</item>
@@ -41,4 +58,52 @@
     <style name="AppTheme.Dark.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
     <style name="AppTheme.Dark.PopupOverlay" parent="ThemeOverlay.AppCompat" />
 
+
+    <style name="AppTheme.NoActionBar.Orange">
+        <item name="colorPrimaryDark">@color/orangeDark</item>
+    <item name="toolbarColor">@color/orange</item>
+    <item name="toolbarTitle">@android:color/black</item>
+</style>
+
+    <style name="AppTheme.Dark.NoActionBar.Orange">
+        <item name="toolbarColor">@color/orange</item>
+        <item name="colorPrimaryDark">@color/orangeDark</item>
+        <item name="toolbarTitle">@android:color/black</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar.Red">
+        <item name="colorPrimaryDark">@color/redDark</item>
+        <item name="toolbarColor">@color/red</item>
+    <item name="toolbarTitle">@android:color/black</item>
+</style>
+
+    <style name="AppTheme.Dark.NoActionBar.Red">
+        <item name="colorPrimaryDark">@color/redDark</item>
+        <item name="toolbarColor">@color/red</item>
+        <item name="toolbarTitle">@android:color/black</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar.Blue">
+        <item name="colorPrimaryDark">@color/blueDark</item>
+        <item name="toolbarColor">@color/blue</item>
+        <item name="toolbarTitle">@android:color/white</item>
+    </style>
+
+    <style name="AppTheme.Dark.NoActionBar.Blue">
+        <item name="colorPrimaryDark">@color/blueDark</item>
+        <item name="toolbarColor">@color/blue</item>
+        <item name="toolbarTitle">@android:color/white</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar.Green">
+        <item name="colorPrimaryDark">@color/greenDark</item>
+        <item name="toolbarColor">@color/green</item>
+        <item name="toolbarTitle">@android:color/black</item>
+    </style>
+
+    <style name="AppTheme.Dark.NoActionBar.Green">
+        <item name="colorPrimaryDark">@color/greenDark</item>
+        <item name="toolbarColor">@color/green</item>
+        <item name="toolbarTitle">@android:color/black</item>
+    </style>
 </resources>

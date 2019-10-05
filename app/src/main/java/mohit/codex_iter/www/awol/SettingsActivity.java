@@ -12,29 +12,13 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import java.util.Objects;
 
-public class SettingsActivity extends AppCompatActivity {
-    private static final String PREFS_NAME = "prefs";
-    private static final String PREF_DARK_THEME = "dark_theme";
+public class SettingsActivity extends BaseThemedActivity {
     @SuppressWarnings("FieldCanBeLocal")
-    private CoordinatorLayout coordinatorLayout;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        SharedPreferences preferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        final boolean useDarkTheme = preferences.getBoolean(PREF_DARK_THEME, false);
 
-        SharedPreferences theme = getSharedPreferences("theme",0);
-        boolean dark = theme.getBoolean("dark_theme", false);
-        if (useDarkTheme) {
-            if (dark)
-                setTheme(R.style.AppTheme_Dark_NoActionBar);
-        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        if (dark){
-            coordinatorLayout = findViewById(R.id.coordinator);
-            coordinatorLayout.setBackgroundColor(Color.parseColor("#141414"));
-        }
-
         setupToolbar();
         setupPreferences();
     }
