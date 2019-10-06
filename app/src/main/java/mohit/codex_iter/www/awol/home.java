@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.os.FileUriExposedException;
 import android.os.Vibrator;
 import android.text.format.DateUtils;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,7 +23,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.FileProvider;
 import androidx.core.view.GravityCompat;
@@ -192,6 +190,7 @@ public class home extends BaseThemedActivity {
             avab = headerView.findViewById(R.id.avab);
             avab.setText(String.valueOf(avgab));
 //            if (dark) {
+//
 //                navigationView.setItemTextColor(csl);
 //                navigationView.setItemIconTintList(csl2);
 //            }
