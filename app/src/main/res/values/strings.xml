@@ -1,4 +1,5 @@
 <resources>
+    <string name="select_class">Select Class</string>
     <string name="app_name">AWOL</string>
     <string name="awol"><u><b><i>AWOL</i></b></u></string>
     <string name="avgat">AVERAGE\nATTENDANCE</string>

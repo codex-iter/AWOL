@@ -2,6 +2,7 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="dropdownColor">@android:color/black</item>
         <item name="aboutTextColor">@color/textColorDark</item>
         <item name="logoo">@drawable/codex_l</item>
         <item name="windowColor">@color/lightBackground</item>
@@ -35,6 +36,7 @@
 
     <!-- Dark application theme. -->
     <style name="AppTheme.Dark" parent="Theme.AppCompat">
+        <item name="dropdownColor">@android:color/white</item>
         <item name="menuIconTint">@color/colorPrimary</item>
         <item name="logoo">@drawable/codex</item>
         <item name="aboutTextColor">@color/textColorLight</item>
@@ -69,28 +71,28 @@
         <item name="menuIconTint">@android:color/white</item>
         <item name="colorPrimaryDark">@color/orangeDark</item>
     <item name="toolbarColor">@color/orange</item>
-    <item name="toolbarTitle">@android:color/black</item>
+    <item name="toolbarTitle">@android:color/white</item>
 </style>
 
     <style name="AppTheme.Dark.NoActionBar.Orange">
         <item name="menuIconTint">@android:color/white</item>
         <item name="toolbarColor">@color/orange</item>
         <item name="colorPrimaryDark">@color/orangeDark</item>
-        <item name="toolbarTitle">@android:color/black</item>
+        <item name="toolbarTitle">@android:color/white</item>
     </style>
 
     <style name="AppTheme.NoActionBar.Red">
         <item name="menuIconTint">@android:color/white</item>
         <item name="colorPrimaryDark">@color/redDark</item>
         <item name="toolbarColor">@color/red</item>
-    <item name="toolbarTitle">@android:color/black</item>
+    <item name="toolbarTitle">@android:color/white</item>
 </style>
 
     <style name="AppTheme.Dark.NoActionBar.Red">
         <item name="menuIconTint">@android:color/white</item>
         <item name="colorPrimaryDark">@color/redDark</item>
         <item name="toolbarColor">@color/red</item>
-        <item name="toolbarTitle">@android:color/black</item>
+        <item name="toolbarTitle">@android:color/white</item>
     </style>
 
     <style name="AppTheme.NoActionBar.Blue">
@@ -111,13 +113,13 @@
         <item name="menuIconTint">@android:color/white</item>
         <item name="colorPrimaryDark">@color/greenDark</item>
         <item name="toolbarColor">@color/green</item>
-        <item name="toolbarTitle">@android:color/black</item>
+        <item name="toolbarTitle">@android:color/white</item>
     </style>
 
     <style name="AppTheme.Dark.NoActionBar.Green">
         <item name="menuIconTint">@android:color/white</item>
         <item name="colorPrimaryDark">@color/greenDark</item>
         <item name="toolbarColor">@color/green</item>
-        <item name="toolbarTitle">@android:color/black</item>
+        <item name="toolbarTitle">@android:color/white</item>
     </style>
 </resources>

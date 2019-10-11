@@ -7,14 +7,36 @@
     android:orientation="vertical"
     android:weightSum="11"
     tools:context="mohit.codex_iter.www.awol.Bunk"
-    xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <Spinner
-        android:id="@+id/sub"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2"
-        android:spinnerMode="dialog"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            app:title="Plan a bunk"
+
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            android:background="?toolbarColor"
+            android:layout_gravity="center_horizontal"
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+            app:titleTextColor="?toolbarTitle">
+
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+    <TextView
+        android:gravity="center_vertical"
+        android:drawableEnd="@drawable/ic_arrow_drop_down_black_24dp"
+        android:text="@string/select_class"
+        android:layout_marginBottom="16dp"
+        android:id="@+id/sub"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginTop="10dp"
         />
     <View
