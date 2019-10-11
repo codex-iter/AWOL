@@ -5,20 +5,28 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import java.util.Locale;
 import java.util.Scanner;
@@ -29,7 +37,7 @@ public class Bunk extends BaseThemedActivity {
 
     EditText atndedt, bnkedt, taredt;
     TextView result, left;
-    Spinner sub;
+    TextView sub;
     Button target, bunk, attend;
     double absent, total, percent, present;
     ListData[] ld;
@@ -37,14 +45,141 @@ public class Bunk extends BaseThemedActivity {
     private View view2, view1;
 
 
+    public class DogsDropdownOnItemClickListener implements AdapterView.OnItemClickListener {
+
+        String TAG = "DogsDropdownOnItemClickListener.java";
+
+        @Override
+        public void onItemClick(AdapterView<?> arg0, View v, int arg2, long arg3) {
+
+            Animation fadeInAnimation = AnimationUtils.loadAnimation(v.getContext(), android.R.anim.fade_in);
+            fadeInAnimation.setDuration(10);
+            v.startAnimation(fadeInAnimation);
+
+            popupWindowDogs.dismiss();
+            Toast.makeText(Bunk.this, String.valueOf(arg2), Toast.LENGTH_SHORT).show();
+            String selectedItemText = ((TextView) v).getText().toString();
+            sub.setText(selectedItemText);
+            total = Double.parseDouble(ld[arg2].getClasses());
+                absent = Double.parseDouble(ld[arg2].getAbsent());
+                percent = Double.parseDouble(ld[arg2].getPercent());
+                present = total - absent;
+                if (75 < percent) {
+                    int i;
+                    for (i = 0; i != -99; i++) {
+                        double p = (present / (total + i)) * 100;
+                        if (p < 75) break;
+                    }
+                    if (i > 1) {
+                        result.setText("Bunk " + (i - 1) + " classes for 75% ");
+                    } else {
+                        result.setText(" ");
+                    }
+                } else if (75 > percent) {
+                    int i;
+                    for (i = 0; i != -99; i++) {
+                        double p = ((present + i) / (total + i) * 100);
+                        if (p > 75) break;
+                    }
+                    if (i > 1) {
+                        result.setText("Attend " + (i - 1) + " classes for 75%");
+                    } else {
+                        result.setText(" ");
+                    }
+                }
+                left.setText("");
+
+        }
 
 
+
+    }
+
+
+    public PopupWindow popupWindowDogs(String[] subn) {
+
+        // initialize a pop up window type
+        PopupWindow popupWindow = new PopupWindow(this);
+
+        // the drop down list is a list view
+        ListView listViewDogs = new ListView(this);
+
+        // set our adapter and pass our pop up window contents
+        listViewDogs.setAdapter(dogsAdapter(subn));
+
+        // set the item click listener
+        listViewDogs.setOnItemClickListener(new DogsDropdownOnItemClickListener());
+
+        // some other visual settings
+        popupWindow.setFocusable(true);
+        popupWindow.setWidth(WindowManager.LayoutParams.MATCH_PARENT);
+        popupWindow.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
+
+        // set the list view as pop up window content
+        popupWindow.setContentView(listViewDogs);
+
+        return popupWindow;
+    }
+
+
+    private ArrayAdapter<String> dogsAdapter(String dogsArray[]) {
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, dogsArray) {
+
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+
+                String item = getItem(position);
+
+                TextView listItem = new TextView(Bunk.this);
+
+                listItem.setText(item);
+                listItem.setTag(position);
+                listItem.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+                listItem.setBackgroundColor(Color.parseColor("#141414"));
+                int padding = Math.round(getResources().getDisplayMetrics().density*16);
+                listItem.setPadding(padding, padding, padding, padding);
+                listItem.setTextColor(Color.WHITE);
+
+                return listItem;
+            }
+        };
+
+        return adapter;
+    }
+
+    PopupWindow popupWindowDogs;
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bunk);
+        setSupportActionBar(((Toolbar) findViewById(R.id.toolbar)));
+        this.ld = ListData.ld;
+        String[] subn = new String[ld.length];
+        for (int i = 0; i < ld.length; i++)
+            subn[i] = ld[i].getSub();
+
+
+        popupWindowDogs = popupWindowDogs(subn);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         view1 = findViewById(R.id.view1);
         view2 = findViewById(R.id.view2);
@@ -56,86 +191,89 @@ public class Bunk extends BaseThemedActivity {
 
         }
 
-        this.ld = ListData.ld;
-        String[] subn = new String[ld.length];
-        for (int i = 0; i < ld.length; i++)
-            subn[i] = ld[i].getSub();
+
         sub = findViewById(R.id.sub);
-        if (dark) {
-            ArrayAdapter a = new ArrayAdapter<>(this, R.layout.drop_down_dark, subn);
-            sub.setAdapter(a);
-        } else {
-            ArrayAdapter a = new ArrayAdapter<>(this, R.layout.drop_down, subn);
-            sub.setAdapter(a);
-        }
-
-        sub.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @SuppressLint("SetTextI18n")
+        sub.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                total = Double.parseDouble(ld[position].getClasses());
-                absent = Double.parseDouble(ld[position].getAbsent());
-                percent = Double.parseDouble(ld[position].getPercent());
-                present = total - absent;
-                if (75 < percent) {
-                    int i;
-                    for (i = 0; i != -99; i++) {
-                        double p = (present / (total + i)) * 100;
-                        if (p < 75) break;
-                    }
-                    if (i > 1) {
-                        result.setText("Bunk " + (i - 1) + " classes for 75% ");
-                    } else {
-                        result.setText(" ");
-                    }
-                } else if (75 > percent) {
-                    int i;
-                    for (i = 0; i != -99; i++) {
-                        double p = ((present + i) / (total + i) * 100);
-                        if (p > 75) break;
-                    }
-                    if (i > 1) {
-                        result.setText("Attend " + (i - 1) + " classes for 75%");
-                    } else {
-                        result.setText(" ");
-                    }
-                }
-                left.setText("");
-            }
-
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                total = Double.parseDouble(ld[0].getClasses());
-                absent = Double.parseDouble(ld[0].getAbsent());
-                percent = Double.parseDouble(ld[0].getPercent());
-                present = total - absent;
-                if (75 < percent) {
-                    int i;
-                    for (i = 0; i != -99; i++) {
-                        double p = (present / (total + i)) * 100;
-                        if (p < 75) break;
-                    }
-                    if (i > 1) {
-                        result.setText("Bunk " + (i - 1) + " classes for 75% ");
-                    } else {
-                        result.setText("No bunk");
-                    }
-                } else if (75 > percent) {
-                    int i;
-                    for (i = 0; i != -99; i++) {
-                        double p = ((present + i) / (total + i) * 100);
-                        if (p > 75) break;
-                    }
-                    if (i > 1) {
-                        result.setText("Attend " + (i - 1) + " classes for 75%");
-                    } else {
-                        result.setText("");
-                    }
-                }
-                left.setText("");
+            public void onClick(View view) {
+                popupWindowDogs.showAsDropDown(view, 0, Math.round(getResources().getDisplayMetrics().density*16));
             }
         });
+//        if (dark) {
+//            ArrayAdapter a = new ArrayAdapter<>(this, R.layout.drop_down_dark, subn);
+//            sub.setAdapter(a);
+//        } else {
+//            ArrayAdapter a = new ArrayAdapter<>(this, R.layout.drop_down, subn);
+//            sub.setAdapter(a);
+//        }
+
+//        sub.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @SuppressLint("SetTextI18n")
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                total = Double.parseDouble(ld[position].getClasses());
+//                absent = Double.parseDouble(ld[position].getAbsent());
+//                percent = Double.parseDouble(ld[position].getPercent());
+//                present = total - absent;
+//                if (75 < percent) {
+//                    int i;
+//                    for (i = 0; i != -99; i++) {
+//                        double p = (present / (total + i)) * 100;
+//                        if (p < 75) break;
+//                    }
+//                    if (i > 1) {
+//                        result.setText("Bunk " + (i - 1) + " classes for 75% ");
+//                    } else {
+//                        result.setText(" ");
+//                    }
+//                } else if (75 > percent) {
+//                    int i;
+//                    for (i = 0; i != -99; i++) {
+//                        double p = ((present + i) / (total + i) * 100);
+//                        if (p > 75) break;
+//                    }
+//                    if (i > 1) {
+//                        result.setText("Attend " + (i - 1) + " classes for 75%");
+//                    } else {
+//                        result.setText(" ");
+//                    }
+//                }
+//                left.setText("");
+//            }
+//
+//            @SuppressLint("SetTextI18n")
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parent) {
+//                total = Double.parseDouble(ld[0].getClasses());
+//                absent = Double.parseDouble(ld[0].getAbsent());
+//                percent = Double.parseDouble(ld[0].getPercent());
+//                present = total - absent;
+//                if (75 < percent) {
+//                    int i;
+//                    for (i = 0; i != -99; i++) {
+//                        double p = (present / (total + i)) * 100;
+//                        if (p < 75) break;
+//                    }
+//                    if (i > 1) {
+//                        result.setText("Bunk " + (i - 1) + " classes for 75% ");
+//                    } else {
+//                        result.setText("No bunk");
+//                    }
+//                } else if (75 > percent) {
+//                    int i;
+//                    for (i = 0; i != -99; i++) {
+//                        double p = ((present + i) / (total + i) * 100);
+//                        if (p > 75) break;
+//                    }
+//                    if (i > 1) {
+//                        result.setText("Attend " + (i - 1) + " classes for 75%");
+//                    } else {
+//                        result.setText("");
+//                    }
+//                }
+//                left.setText("");
+//            }
+//        });
         present = total - absent;
         atndedt = findViewById(R.id.atndedt);
         bnkedt = findViewById(R.id.bnkedt);
