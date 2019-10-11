@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.MotionEvent;
@@ -29,6 +30,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Scanner;
 
 
@@ -57,7 +59,6 @@ public class Bunk extends BaseThemedActivity {
             v.startAnimation(fadeInAnimation);
 
             popupWindowDogs.dismiss();
-            Toast.makeText(Bunk.this, String.valueOf(arg2), Toast.LENGTH_SHORT).show();
             String selectedItemText = ((TextView) v).getText().toString();
             sub.setText(selectedItemText);
             total = Double.parseDouble(ld[arg2].getClasses());
@@ -94,7 +95,6 @@ public class Bunk extends BaseThemedActivity {
 
 
     }
-
 
     public PopupWindow popupWindowDogs(String[] subn) {
 
@@ -163,23 +163,6 @@ public class Bunk extends BaseThemedActivity {
 
 
         popupWindowDogs = popupWindowDogs(subn);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         view1 = findViewById(R.id.view1);
         view2 = findViewById(R.id.view2);

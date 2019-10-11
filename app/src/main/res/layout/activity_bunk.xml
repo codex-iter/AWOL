@@ -16,12 +16,11 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             app:title="Plan a bunk"
-
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
             android:background="?toolbarColor"
             android:layout_gravity="center_horizontal"
-            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
             app:titleTextColor="?toolbarTitle">
 
         </androidx.appcompat.widget.Toolbar>
@@ -29,7 +28,7 @@
     <TextView
         android:gravity="center_vertical"
         android:drawableEnd="@drawable/ic_arrow_drop_down_black_24dp"
-        android:text="@string/select_class"
+        android:text="@string/Select_Subject"
         android:layout_marginBottom="16dp"
         android:id="@+id/sub"
         android:textAppearance="@style/TextAppearance.AppCompat.Title"
@@ -48,9 +47,8 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:layout_weight="1"
         android:gravity="center"
         android:orientation="horizontal"
         android:weightSum="4">
@@ -69,17 +67,17 @@
         <EditText
             android:id="@+id/taredt"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="0.8"
-            android:textSize="14sp"
-            android:gravity="center"
-            android:text=""
             android:focusable="true"
+            android:gravity="center"
+            android:importantForAutofill="no"
+            android:inputType="number"
             android:maxLength="3"
             android:maxLines="1"
-            android:inputType="number"
+            android:text=""
             android:textColor="@color/colorPrimary"
-            android:importantForAutofill="no"
+            android:textSize="14sp"
             tools:ignore="LabelFor" />
     </LinearLayout>
 
@@ -105,8 +103,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center"
         android:weightSum="4">
@@ -124,7 +121,7 @@
         <EditText
             android:id="@+id/bnkedt"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="0.8"
             android:gravity="center"
             android:maxLength="4"
@@ -157,8 +154,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="horizontal"
         android:weightSum="4">
@@ -176,7 +172,7 @@
         <EditText
             android:id="@+id/atndedt"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="0.8"
             android:gravity="center"
             android:textSize="14sp"

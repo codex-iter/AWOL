@@ -1,5 +1,4 @@
 <resources>
-    <string name="select_class">Select Class</string>
     <string name="app_name">AWOL</string>
     <string name="awol"><u><b><i>AWOL</i></b></u></string>
     <string name="avgat">AVERAGE\nATTENDANCE</string>
@@ -52,7 +51,7 @@
     <string name="change_theme">Change Theme</string>
     <string name="not_getting_push_notifications_n_go_to_settings_and_allow_the_app_to_run_in_background">Not getting Push notifications?\n  Go to Settings and Allow the app to run in background.</string>
     <string name="share">Share</string>
-    <string name="Select_Subject">Select</string>
+    <string name="Select_Subject">Select Subject</string>
     <string name="oops_attendance_not_available">Oops! Attendance not available!</string>
 </resources>
 
