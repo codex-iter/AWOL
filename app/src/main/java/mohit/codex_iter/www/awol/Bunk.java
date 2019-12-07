@@ -30,6 +30,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Scanner;
@@ -293,11 +295,11 @@ public class Bunk extends BaseThemedActivity {
                                               imm.hideSoftInputFromWindow(taredt.getWindowToken(), 0);
                                           }
                                           if (s.equals("0") || s_t > 100 || s.equals("00") || s.equals("000")) {
-                                              Toast.makeText(Bunk.this, "Enter Valid Value", Toast.LENGTH_SHORT).show();
+                                              Snackbar.make((LinearLayout) findViewById(R.id.ll),"Enter Valid Value",Snackbar.LENGTH_SHORT).show();
                                           } else if (s.equals(""))
-                                              Toast.makeText(getApplicationContext(), "Enter Some Value", Toast.LENGTH_SHORT).show();
+                                              Snackbar.make((LinearLayout) findViewById(R.id.ll),"Enter Some Value",Snackbar.LENGTH_SHORT).show();
                                           else if (s.equals("100") && absent > 0)
-                                              Toast.makeText(getApplicationContext(), "Not Possible!!", Toast.LENGTH_SHORT).show();
+                                              Snackbar.make((LinearLayout) findViewById(R.id.ll),"Not Possible!!",Snackbar.LENGTH_SHORT).show();
                                           else{
                                               double tp = new Scanner(s).nextDouble();
                                               if (tp < percent) {
@@ -377,7 +379,7 @@ public class Bunk extends BaseThemedActivity {
                     imm.hideSoftInputFromWindow(atndedt.getWindowToken(), 0);
                 }
                 if (s.equals(""))
-                    Toast.makeText(getApplicationContext(), "enter some value", Toast.LENGTH_SHORT).show();
+                    Snackbar.make((LinearLayout) findViewById(R.id.ll),"Enter Some Value",Snackbar.LENGTH_SHORT).show();
                 else {
                     int c = new Scanner(s).nextInt();
                     InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -405,7 +407,7 @@ public class Bunk extends BaseThemedActivity {
                             left.setText("Attend " + (i - 1) + " more classes for 75%");
                         }
                     } else {
-                        Toast.makeText(Bunk.this, "Enter Valid value", Toast.LENGTH_SHORT).show();
+                        Snackbar.make((LinearLayout) findViewById(R.id.ll),"Enter Valid value",Snackbar.LENGTH_SHORT).show();
                     }
 
                 }
@@ -424,7 +426,8 @@ public class Bunk extends BaseThemedActivity {
                     imm.hideSoftInputFromWindow(bnkedt.getWindowToken(), 0);
                 }
                 if (s.equals(""))
-                    Toast.makeText(getApplicationContext(), "enter some value", Toast.LENGTH_SHORT).show();
+                    Snackbar.make((LinearLayout) findViewById(R.id.ll),"Enter Some value",Snackbar.LENGTH_SHORT).show();
+
                 else {
                     InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     if (getCurrentFocus() != null)
@@ -454,7 +457,8 @@ public class Bunk extends BaseThemedActivity {
 
 
                     } else {
-                        Toast.makeText(Bunk.this, "Enter Valid Value", Toast.LENGTH_SHORT).show();
+                        Snackbar.make((LinearLayout) findViewById(R.id.ll),"Enter Valid Value",Snackbar.LENGTH_SHORT).show();
+
                     }
                 }
             }

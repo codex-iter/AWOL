@@ -39,6 +39,7 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -58,7 +59,7 @@ public class MainActivity extends BaseThemedActivity {
     private TextView logo;
     private String param_0, param_1, response_d;
 
-
+   ConstraintLayout constraintLayout;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -69,6 +70,7 @@ public class MainActivity extends BaseThemedActivity {
         Constants.setDarkStatusBar(this);
         Bundle extras = getIntent().getExtras();
         String status = "";
+        constraintLayout=(ConstraintLayout) findViewById(R.id.ll);
         if (extras != null) {
             status = extras.getString("logout_status");
         }
@@ -107,8 +109,10 @@ public class MainActivity extends BaseThemedActivity {
                 String u = user.getText().toString().trim();
                 String p = pass.getText().toString().trim();
 
-                if (u.equals("") || p.equals(""))
-                    Toast.makeText(MainActivity.this, "Enter your Details", Toast.LENGTH_SHORT).show();
+                if (u.equals("") || p.equals("")) {
+                    Snackbar snackbar=Snackbar.make(constraintLayout,"Enter your Details",Snackbar.LENGTH_SHORT);
+                    snackbar.show();
+                }
 
                 else {
                     if (haveNetworkConnection()) {
@@ -123,7 +127,8 @@ public class MainActivity extends BaseThemedActivity {
                         edit.putBoolean("logout", false);
                         edit.apply();
                     } else {
-                        Toast.makeText(getApplicationContext(), "Something, went wrong.Try Again", Toast.LENGTH_SHORT).show();
+                        Snackbar snackbar=Snackbar.make(constraintLayout,"Something, went wrong.Try Again",Snackbar.LENGTH_SHORT);
+                        snackbar.show();
                         user.setText("");
                         pass.setText("");
                     }
@@ -203,19 +208,20 @@ public class MainActivity extends BaseThemedActivity {
                                 animationView.setVisibility(View.INVISIBLE);
                             l2.setVisibility(View.VISIBLE);
                             logo.setVisibility(View.VISIBLE);
-                            Toast.makeText(getApplicationContext(), "Wrong Credentials!", Toast.LENGTH_SHORT).show();
+                            Snackbar snackbar=Snackbar.make(constraintLayout,"Wrong Credentials!",Snackbar.LENGTH_SHORT);
+                            snackbar.show();
+
                         } else {
                             login = true;
-                            Toast.makeText(getApplicationContext(), "Success!", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(MainActivity.this, home.class);
                             //getname(param);
                             param_1 = param[1];
                             response += "kkk" + param[1];
                             intent.putExtra("result", response);
+                            intent.putExtra("Login_Check",true);
                             edit.putString(param[1], response);
                             edit.apply();
                             startActivity(intent);
-
                         }
                     }
                 },
@@ -230,16 +236,20 @@ public class MainActivity extends BaseThemedActivity {
                         if (error instanceof AuthFailureError) {
                             l2.setVisibility(View.VISIBLE);
                             logo.setVisibility(View.VISIBLE);
-                            Toast.makeText(getApplicationContext(), "Wrong Credentials!", Toast.LENGTH_SHORT).show();
+                            Snackbar snackbar=Snackbar.make(constraintLayout,"Wrong Credentials!",Snackbar.LENGTH_SHORT);
+                            snackbar.show();
                         } else if (error instanceof ServerError) {
                             l2.setVisibility(View.VISIBLE);
                             logo.setVisibility(View.VISIBLE);
-                            Toast.makeText(getApplicationContext(), "Cannot connect to ITER servers right now.Try again", Toast.LENGTH_SHORT).show();
+
+                            Snackbar snackbar=Snackbar.make(constraintLayout,"Cannot connect to ITER servers right now.Try again",Snackbar.LENGTH_SHORT);
+                            snackbar.show();
                         } else if (error instanceof NetworkError) {
                             Log.e("Volley_error", String.valueOf(error));
                             l2.setVisibility(View.VISIBLE);
                             logo.setVisibility(View.VISIBLE);
-                            Toast.makeText(getApplicationContext(), "Cannot establish connection", Toast.LENGTH_SHORT).show();
+                            Snackbar snackbar=Snackbar.make(constraintLayout,"Cannot establish connection",Snackbar.LENGTH_SHORT);
+                            snackbar.show();
                         } else if (error instanceof TimeoutError) {
                             if (!track) {
                                 animationView.setVisibility(View.VISIBLE);
@@ -248,7 +258,8 @@ public class MainActivity extends BaseThemedActivity {
                             } else {
                                 l2.setVisibility(View.VISIBLE);
                                 logo.setVisibility(View.VISIBLE);
-                                Toast.makeText(getApplicationContext(), "Cannot connect to ITER servers right now.Try again", Toast.LENGTH_SHORT).show();
+                                Snackbar snackbar=Snackbar.make(constraintLayout,"Cannot connect to ITER servers right now.Try again",Snackbar.LENGTH_SHORT);
+                                snackbar.show();
                                 track = false;
                             }
                         }

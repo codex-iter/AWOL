@@ -30,6 +30,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import mohit.codex_iter.www.awol.theme.ThemeFragment;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -64,7 +65,6 @@ public class home extends BaseThemedActivity {
     private DrawerLayout dl;
     private LinearLayout main_layout;
     private DrawerLayout mDrawerLayout;
-
 
     int[][] state = new int[][]{
             new int[]{android.R.attr.state_checked}, // checked
@@ -102,9 +102,12 @@ public class home extends BaseThemedActivity {
         final NavigationView navigationView= findViewById(R.id.nav_view);
         main_layout = findViewById(R.id.main_layout);
         mDrawerLayout = findViewById(R.id.drawer_layout);
-
         Bundle bundle = getIntent().getExtras();
-
+       boolean logincheck=bundle.getBoolean("Login_Check");
+       if(logincheck) {
+           Snackbar snackbar = Snackbar.make((LinearLayout) findViewById(R.id.main_layout), "Success!", Snackbar.LENGTH_SHORT);
+           snackbar.show();
+       }
         myList = new ArrayList<>();
         rl = findViewById(R.id.rl);
         if (dark) {
@@ -364,5 +367,3 @@ public class home extends BaseThemedActivity {
 
 
 }
-
-
