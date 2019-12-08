@@ -2,9 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="mohit.codex_iter.www.awol">
+
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.VIBRATE" />
-
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -19,22 +19,7 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <!--        <activity-->
-        <!--            android:name=".SplashScreen"-->
-        <!--            android:configChanges="orientation|screenSize|keyboardHidden"-->
-        <!--            android:screenOrientation="portrait"-->
-        <!--            android:theme="@style/SplashTheme">-->
-        <!--            <intent-filter>-->
-        <!--                <action android:name="android.intent.action.MAIN" />-->
-        <!--                <action android:name="android.intent.action.VIEW" />-->
-
-        <!--                <category android:name="android.intent.category.LAUNCHER" />-->
-        <!--            </intent-filter>-->
-        <!--        </activity>-->
-        <activity
-            android:name="mohit.codex_iter.www.awol.MainActivity"
-            android:configChanges="uiMode"
-            android:screenOrientation="portrait">
+        <activity android:name=".SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
@@ -42,27 +27,43 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <!-- <activity -->
+        <!-- android:name=".SplashScreen" -->
+        <!-- android:configChanges="orientation|screenSize|keyboardHidden" -->
+        <!-- android:screenOrientation="portrait" -->
+        <!-- android:theme="@style/SplashTheme"> -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="android.intent.action.MAIN" /> -->
+        <!-- <action android:name="android.intent.action.VIEW" /> -->
+        <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+        <!-- </intent-filter> -->
+        <!-- </activity> -->
         <activity
-            android:name="mohit.codex_iter.www.awol.home"
+            android:name=".MainActivity"
+            android:configChanges="uiMode"
+            android:screenOrientation="portrait">
+
+        </activity>
+        <activity
+            android:name=".home"
             android:configChanges="uiMode"
             android:screenOrientation="portrait" />
         <activity
-            android:name="mohit.codex_iter.www.awol.Bunk"
+            android:name=".Bunk"
             android:configChanges="uiMode"
             android:screenOrientation="portrait" />
         <activity
-            android:name="mohit.codex_iter.www.awol.Abt"
+            android:name=".Abt"
             android:configChanges="uiMode"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
-            android:name="mohit.codex_iter.www.awol.SettingsActivity"
+            android:name=".SettingsActivity"
             android:configChanges="uiMode"
             android:screenOrientation="portrait" />
 
         <receiver
-            android:name="mohit.codex_iter.www.awol.AlramReceiver"
+            android:name=".AlramReceiver"
             android:enabled="true"
             android:exported="false" />
 
@@ -71,15 +72,10 @@
             android:authorities="${applicationId}.my.package.name.provider"
             android:exported="false"
             android:grantUriPermissions="true">
-
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
-
         </provider>
-
     </application>
-
-
 
 </manifest>
