@@ -219,12 +219,49 @@ public class home extends BaseThemedActivity {
                                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().getString(R.string.github_url))));
                                     break;
                                 case R.id.lgout:
-                                    edit = sub.edit();
-                                    edit.putBoolean("logout", true);
-                                    edit.apply();
-                                    Intent intent3 = new Intent(getApplicationContext(), MainActivity.class);
-                                    intent3.putExtra("logout_status", "0");
-                                    startActivity(intent3);
+                                   AlertDialog.Builder binder=new AlertDialog.Builder(home.this);
+                                    binder.setMessage("Do you want to logout ?");
+                                    binder.setTitle(Html.fromHtml("<font color='#FF7F27'>Message</font>"));
+                                    binder.setCancelable(false);
+                                    binder.setPositiveButton(Html.fromHtml("<font color='#FF7F27'>Yes</font>"), new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+
+
+                                            edit = sub.edit();
+                                            edit.putBoolean("logout", true);
+                                            edit.apply();
+                                            Intent intent3 = new Intent(getApplicationContext(), MainActivity.class);
+                                            intent3.putExtra("logout_status", "0");
+                                            startActivity(intent3);
+
+
+                                        }
+                                    });
+                                    binder.setNegativeButton(Html.fromHtml("<font color='#FF7F27'>No</font>"), new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.cancel();
+                                        }
+                                    });
+                                    AlertDialog alertDialog=binder.create();
+                                    Window window = alertDialog.getWindow();
+                                    WindowManager.LayoutParams wlp = window.getAttributes();
+
+                                    wlp.gravity = Gravity.BOTTOM;
+                                    wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+                                    window.setAttributes(wlp);
+
+                                    alertDialog.show();
+                                    final Button nbutton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+                                    nbutton.setBackgroundColor(Color.RED);
+                                    Button pbutton = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+                                    pbutton.setBackgroundColor(Color.GREEN);
+
+
+
+
+
                                     break;
                                 case R.id.pab:
                                     Intent intent = new Intent(getApplicationContext(), Bunk.class);
