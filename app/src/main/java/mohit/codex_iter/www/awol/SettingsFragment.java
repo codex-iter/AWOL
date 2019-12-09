@@ -9,10 +9,12 @@ import android.os.Bundle;
 import android.os.PowerManager;
 import android.widget.Toast;
 
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragment;
 import androidx.preference.SwitchPreference;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.text.SimpleDateFormat;
@@ -30,13 +32,12 @@ public class SettingsFragment extends PreferenceFragment {
     private static final String PREF_DARK_THEME = "dark_theme";
     private boolean flag = true;
     private FirebaseAnalytics firebaseAnalytics;
-
+    CoordinatorLayout coordinatorLayout;
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         SharedPreferences preferences = getActivity().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
 
         super.onCreate(savedInstanceState);
-
         addPreferencesFromResource(R.xml.preference);
         final SwitchPreference notifications = (SwitchPreference) findPreference("pref_notification");
 
@@ -49,7 +50,6 @@ public class SettingsFragment extends PreferenceFragment {
         final SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Notification_date", 0);
         final SharedPreferences.Editor editor = sharedPreferences.edit();
         coordinatorLayout=(CoordinatorLayout) getActivity().findViewById(R.id.coordinator);
-
         if (notifications != null && notifications.isChecked()) {
             editor1.putBoolean("STOP_NOTIFICATION", false);
             editor1.apply();
@@ -107,7 +107,7 @@ public class SettingsFragment extends PreferenceFragment {
                                     }
 
                                 } else {
-                                    Toast.makeText(getActivity(), "Notifications set for tomorrow!", Toast.LENGTH_SHORT).show();
+                                    Snackbar.make(coordinatorLayout,"Notifications set for tomorrow!",Snackbar.LENGTH_LONG).show();
                                 }
                             } else {
                                 Intent intent = new Intent(getActivity(), AlramReceiver.class);
@@ -129,8 +129,7 @@ public class SettingsFragment extends PreferenceFragment {
                                         }
                                     }
                                 } else {
-
-                                    Toast.makeText(getActivity(), "Notifications set", Toast.LENGTH_SHORT).show();
+                                    Snackbar.make(coordinatorLayout,"Notifications set",Snackbar.LENGTH_LONG).show();
                                     intent = new Intent(getActivity(), AlramReceiver.class);
                                     PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                                     AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
@@ -140,7 +139,8 @@ public class SettingsFragment extends PreferenceFragment {
                                 }
                             }
                         } else {
-                            Toast.makeText(getActivity(), "Notifications Enabled", Toast.LENGTH_SHORT).show();
+
+                            Snackbar.make(coordinatorLayout,"Notifications Enabled",Snackbar.LENGTH_LONG).show();
                             /*Alram time*/
                             Calendar calendar = Calendar.getInstance();
                             calendar.set(Calendar.HOUR_OF_DAY, 7);
@@ -213,11 +213,13 @@ public class SettingsFragment extends PreferenceFragment {
                                 }
 
                             } else {
-                                Toast.makeText(getActivity(), "Notifications set for tomorrow!", Toast.LENGTH_SHORT).show();
+
+                                Snackbar.make(coordinatorLayout,"Notifications set for tomorrow",Snackbar.LENGTH_LONG).show();
                             }
                         }
                     } else {
-                        Toast.makeText(getActivity(), "Notifications Disabled", Toast.LENGTH_SHORT).show();
+
+                        Snackbar.make(coordinatorLayout,"Notifications Disabled",Snackbar.LENGTH_LONG).show();
                         flag = false;
                         editor1.putBoolean("STOP_NOTIFICATION", true);
                         editor1.apply();
