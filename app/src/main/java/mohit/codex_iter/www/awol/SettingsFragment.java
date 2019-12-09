@@ -48,7 +48,11 @@ public class SettingsFragment extends PreferenceFragment {
 
         final SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Notification_date", 0);
         final SharedPreferences.Editor editor = sharedPreferences.edit();
+<<<<<<< Updated upstream
 
+=======
+        coordinatorLayout=(CoordinatorLayout) getActivity().findViewById(R.id.coordinator);
+>>>>>>> Stashed changes
         if (notifications != null && notifications.isChecked()) {
             editor1.putBoolean("STOP_NOTIFICATION", false);
             editor1.apply();
