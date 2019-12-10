@@ -62,11 +62,18 @@
             android:configChanges="uiMode"
             android:screenOrientation="portrait" />
 
-        <receiver
-            android:name=".AlramReceiver"
-            android:enabled="true"
-            android:exported="false" />
-
+        <receiver android:name=".AlramReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".BootCompletedReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
         <provider
             android:name=".GenericFileProvider"
             android:authorities="${applicationId}.my.package.name.provider"
