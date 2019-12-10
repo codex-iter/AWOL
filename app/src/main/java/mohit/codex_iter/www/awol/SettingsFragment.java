@@ -39,6 +39,8 @@ public class SettingsFragment extends PreferenceFragment {
     CoordinatorLayout coordinatorLayout;
     @Override
     public void onCreate(final Bundle savedInstanceState) {
+
+
         SharedPreferences preferences = getActivity().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
 
         super.onCreate(savedInstanceState);
@@ -79,7 +81,7 @@ public class SettingsFragment extends PreferenceFragment {
                         editor1.putBoolean("STOP_NOTIFICATION", false);
                         editor1.apply();
                         if (!flag) {
-                            Toast.makeText(getActivity(), "Notifications Enabled", Toast.LENGTH_SHORT).show();
+                            Snackbar.make(coordinatorLayout,"Notifications Enabled",Snackbar.LENGTH_SHORT).show();
                             Calendar calendar = Calendar.getInstance();
                             Date alram_time = new Date();
                             calendar.set(Calendar.HOUR_OF_DAY, 7);
