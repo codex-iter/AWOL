@@ -1,227 +1,245 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:id="@+id/ll"
-    android:background="?windowColor"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:weightSum="11"
-    tools:context="mohit.codex_iter.www.awol.Bunk"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_width="match_parent"
 
-    <com.google.android.material.appbar.AppBarLayout
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:id="@+id/ll"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:layout_height="match_parent"
+        android:background="?windowColor"
+        android:orientation="vertical"
+        android:weightSum="11"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:context="mohit.codex_iter.www.awol.Bunk">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?toolbarColor"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
-            app:titleTextAppearance="@style/AppTheme.Dark.AppBarTitle" />
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <TextView
-        android:gravity="center_vertical"
-        android:drawableEnd="@drawable/ic_arrow_drop_down_black_24dp"
-        android:text="@string/Select_Subject"
-        android:layout_marginBottom="16dp"
-        android:id="@+id/sub"
-        android:textAppearance="@style/TextAppearance.AppCompat.Title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="10dp"
-        />
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_gravity="center"
-        android:id="@+id/view1"
-        android:background="#000"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:weightSum="4">
-
-        <TextView
-            android:id="@+id/target_at"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2.8"
-            android:gravity="center"
-            android:text="@string/your_target_attendance"
-            android:textColor="?aboutTextColor"
-            android:textSize="14sp"
-            tools:ignore="NestedWeights" />
-
-        <EditText
-            android:id="@+id/taredt"
-            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.8"
-            android:focusable="true"
-            android:gravity="center"
-            android:importantForAutofill="no"
-            android:inputType="number"
-            android:maxLength="3"
-            android:maxLines="1"
-            android:text=""
-            android:textColor="@color/colorPrimary"
-            android:textSize="14sp"
-            tools:ignore="LabelFor" />
-    </LinearLayout>
+            android:theme="@style/AppTheme.AppBarOverlay">
 
-    <Button
-        android:id="@+id/target"
-        android:layout_width="wrap_content"
-        android:layout_height="30dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="10dp"
-        android:textSize="14sp"
-        android:background="@drawable/btnr"
-        android:text="@string/result" />
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?toolbarColor"
+                app:popupTheme="@style/AppTheme.PopupOverlay"
+                app:titleTextAppearance="@style/AppTheme.Dark.AppBarTitle" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:text="@string/or"
-        android:textColor="#999999"
-        android:textSize="14sp" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:weightSum="4">
+        </com.google.android.material.appbar.AppBarLayout>
 
         <TextView
-            android:id="@+id/classes_bunk"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2.8"
+            android:id="@+id/sub"
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:drawableEnd="@drawable/ic_arrow_drop_down_black_24dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="8dp"
+            android:text="@string/Select_Subject"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            android:textColor="#000000"
+            android:textSize="20sp" />
+
+        <View
+            android:id="@+id/view1"
+            android:layout_width="match_parent"
+            android:layout_height="0.3dp"
+            android:layout_gravity="center"
+            android:background="#000" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:gravity="center"
-            android:text="@string/classes_you_wanna_bunk"
-            android:textColor="?aboutTextColor"
+            android:orientation="horizontal"
+            android:weightSum="4">
+
+            <TextView
+                android:id="@+id/target_at"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginTop="8dp"
+                android:layout_weight="2.8"
+                android:gravity="center"
+                android:text="@string/your_target_attendance"
+                android:textColor="?aboutTextColor"
+                android:textSize="14sp"
+                tools:ignore="NestedWeights" />
+
+            <EditText
+                android:id="@+id/taredt"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.8"
+                android:focusable="true"
+                android:gravity="center"
+                android:importantForAutofill="no"
+                android:inputType="number"
+                android:maxLength="3"
+                android:maxLines="1"
+                android:text=""
+                android:textColor="@color/colorPrimary"
+                android:textSize="14sp"
+                tools:ignore="LabelFor" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/target"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/btnr"
+            android:text="@string/result"
             android:textSize="14sp" />
 
-        <EditText
-            android:id="@+id/bnkedt"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.8"
-            android:gravity="center"
-            android:maxLength="4"
-            android:text=""
-            android:maxLines="1"
-            android:textSize="14sp"
-            android:inputType="number"
-            android:textColor="@color/colorPrimary"
-            tools:ignore="Autofill,LabelFor" />
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/bunk"
-        android:layout_width="wrap_content"
-        android:layout_height="30dp"
-        android:textSize="14sp"
-        android:layout_gravity="center"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/btnr"
-        android:text="@string/bunk" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:text="@string/or"
-        android:textSize="14sp"
-        android:textColor="#999999"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:weightSum="4">
-
         <TextView
-            android:id="@+id/going_attend"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2.8"
+            android:layout_width="match_parent"
+            android:layout_height="14dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"
+            android:layout_weight="1"
             android:gravity="center"
-            android:text="@string/classes_you_gonna_attend"
-            android:textColor="?aboutTextColor"
+            android:text="@string/or"
+            android:textColor="#999999"
+            android:textSize="12sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:weightSum="4">
+
+            <TextView
+                android:id="@+id/classes_bunk"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2.8"
+                android:gravity="center"
+                android:text="@string/classes_you_wanna_bunk"
+                android:textColor="?aboutTextColor"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/bnkedt"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.8"
+                android:gravity="center"
+                android:inputType="number"
+                android:maxLength="4"
+                android:maxLines="1"
+                android:text=""
+                android:textColor="@color/colorPrimary"
+                android:textSize="14sp"
+                tools:ignore="Autofill,LabelFor" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/bunk"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/btnr"
+            android:text="@string/bunk"
             android:textSize="14sp" />
 
-        <EditText
-            android:id="@+id/atndedt"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.8"
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="14dp"
+            android:layout_marginTop="8dp"
+            android:layout_weight="1"
             android:gravity="center"
-            android:textSize="14sp"
-            android:maxLength="4"
+            android:text="@string/or"
+            android:textColor="#999999"
+            android:textSize="12sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:weightSum="4">
+
+            <TextView
+                android:id="@+id/going_attend"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2.8"
+                android:gravity="center"
+                android:text="@string/classes_you_gonna_attend"
+                android:textColor="?aboutTextColor"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/atndedt"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.8"
+                android:gravity="center"
+                android:inputType="number"
+                android:maxLength="4"
+                android:maxLines="1"
+                android:text=""
+                android:textColor="@color/colorPrimary"
+                android:textSize="14sp"
+                tools:ignore="Autofill,LabelFor" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/attend"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/btnr"
+            android:text="@string/attend"
+            android:textSize="14sp" />
+
+        <View
+            android:id="@+id/view2"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_gravity="center"
+            android:background="#000" />
+
+        <TextView
+            android:id="@+id/result"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_marginTop="58dp"
+            android:layout_weight="1"
+            android:gravity="center"
             android:text=""
-            android:maxLines="1"
-            android:inputType="number"
             android:textColor="@color/colorPrimary"
-            tools:ignore="Autofill,LabelFor" />
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/left"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_marginTop="16dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text=""
+            android:textColor="@color/colorPrimary"
+            android:textSize="14sp" />
+
+
     </LinearLayout>
-
-    <Button
-        android:id="@+id/attend"
-        android:layout_width="wrap_content"
-        android:layout_height="30dp"
-        android:textSize="14sp"
-        android:layout_gravity="center"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="20dp"
-        android:background="@drawable/btnr"
-        android:text="@string/attend" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_gravity="center"
-        android:id="@+id/view2"
-        android:background="#000"/>
-
-    <TextView
-        android:id="@+id/result"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="50dp"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:text=""
-        android:textColor="@color/colorPrimary"
-        android:textSize="14sp" />
-    <TextView
-        android:id="@+id/left"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="5dp"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:text=""
-        android:textColor="@color/colorPrimary"
-        android:textSize="14sp" />
-
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
