@@ -2,11 +2,15 @@ package mohit.codex_iter.www.awol;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.provider.Settings;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
@@ -50,6 +54,16 @@ public class SettingsFragment extends PreferenceFragment {
         final SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Notification_date", 0);
         final SharedPreferences.Editor editor = sharedPreferences.edit();
         coordinatorLayout=(CoordinatorLayout) getActivity().findViewById(R.id.coordinator);
+        String packageName = getContext().getPackageName();
+        PowerManager pm = (PowerManager) getContext().getSystemService(POWER_SERVICE);
+        if (!pm.isIgnoringBatteryOptimizations(packageName)) {
+            Snackbar.make(coordinatorLayout, "Allow app to run in background to get Notifications", Snackbar.LENGTH_INDEFINITE).setActionTextColor(Color.RED).setAction("Allow", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    openPowerSettings(getContext());
+                }
+            }).show();
+        }
         if (notifications != null && notifications.isChecked()) {
             editor1.putBoolean("STOP_NOTIFICATION", false);
             editor1.apply();
@@ -249,6 +263,11 @@ public class SettingsFragment extends PreferenceFragment {
         SharedPreferences.Editor editor = getActivity().getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit();
         editor.putBoolean(PREF_DARK_THEME, darkTheme);
         editor.apply();
+    }
+    private void openPowerSettings(Context context) {
+        Intent intent = new Intent();
+        intent.setAction(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
+        context.startActivity(intent);
     }
 
 }
