@@ -6,8 +6,8 @@ android {
         applicationId "mohit.codex_iter.www.awol"
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode 12
-        versionName "9.1"
+        versionCode 27
+        versionName "1.1.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -15,6 +15,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
     }
 }
 
@@ -35,9 +39,10 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.2.0'
     implementation "androidx.preference:preference:1.1.0"
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    implementation 'com.squareup.okhttp3:okhttp:3.12.0'
+    implementation 'com.squareup.okhttp3:okhttp:3.14.4'
 
     implementation 'com.airbnb.android:lottie:3.1.0'
+    implementation 'com.google.android.play:core:1.6.4'
 
 }
 apply plugin: 'com.google.gms.google-services'

@@ -4,8 +4,8 @@
     <color name="colorAccent">#ccc</color>
     <color name="colorPrimaryDark">#141414</color>
     <color name="colorwhite">#ffffff</color>
-    <color name="darkColorPrimary"> #141414</color>
-    <color name="darkColorPrimaryDark"> #141414</color>
+    <color name="darkColorPrimary">#141414</color>
+    <color name="darkColorPrimaryDark">#141414</color>
     <color name="darkColorAccent">#2aac4b</color>
     <color name="mid">#F3F025</color>
     <color name="danger">#F5FC0101</color>
@@ -20,11 +20,11 @@
     <color name="green">#4caf50</color>
     <color name="greenDark">#087f23</color>
     <color name="blue">#2196f3</color>
-<color name="blueDark">#0069c0</color>
+    <color name="blueDark">#0069c0</color>
 
     <color name="lightBackground">#fafafa</color>
     <color name="darkBackground">#141414</color>
 
-<color name="textColorDark">#141831</color>
-<color name="textColorLight">#aaaaaa</color>
+    <color name="textColorDark">#141831</color>
+    <color name="textColorLight">#141831</color>
 </resources>

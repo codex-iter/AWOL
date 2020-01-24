@@ -3,6 +3,7 @@ package mohit.codex_iter.www.awol;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
@@ -18,11 +19,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.view.GravityCompat;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieProperty;
@@ -40,9 +38,22 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.play.core.appupdate.AppUpdateInfo;
+import com.google.android.play.core.appupdate.AppUpdateManager;
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
+import com.google.android.play.core.install.InstallState;
+import com.google.android.play.core.install.InstallStateUpdatedListener;
+import com.google.android.play.core.install.model.AppUpdateType;
+import com.google.android.play.core.install.model.InstallStatus;
+import com.google.android.play.core.install.model.UpdateAvailability;
+import com.google.android.play.core.tasks.OnSuccessListener;
+import com.google.android.play.core.tasks.Task;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.crashlytics.android.Crashlytics.log;
+import static com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE;
 
 
 public class MainActivity extends BaseThemedActivity {
@@ -68,6 +79,7 @@ public class MainActivity extends BaseThemedActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Constants.setDarkStatusBar(this);
+
         Bundle extras = getIntent().getExtras();
         String status = "";
         constraintLayout=(ConstraintLayout) findViewById(R.id.ll);
@@ -92,6 +104,7 @@ public class MainActivity extends BaseThemedActivity {
                     }
                 }
         );
+
         l2 = findViewById(R.id.linearLayout2);
         logo = findViewById(R.id.logo);
         logo.setVisibility(View.VISIBLE);
@@ -152,6 +165,19 @@ public class MainActivity extends BaseThemedActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (login){
+            Intent intent = new Intent(MainActivity.this, home.class);
+            //getname(param);
+            response_d += "kkk" + param_1;
+            intent.putExtra("result", response_d);
+            edit.putString(param_1, response_d);
+            edit.apply();
+            startActivity(intent);
+        }
+    }
 
 //    private void showData(String u, String p) {
 //        Toast.makeText(getApplicationContext(), "Something, went wrong.Try Again", Toast.LENGTH_SHORT).show();
@@ -208,9 +234,8 @@ public class MainActivity extends BaseThemedActivity {
                                 animationView.setVisibility(View.INVISIBLE);
                             l2.setVisibility(View.VISIBLE);
                             logo.setVisibility(View.VISIBLE);
-                            Snackbar snackbar=Snackbar.make(constraintLayout,"Wrong Credentials!",Snackbar.LENGTH_SHORT);
+                            Snackbar snackbar=Snackbar.make(constraintLayout,"Attendance is currently unavailable",Snackbar.LENGTH_SHORT);
                             snackbar.show();
-
                         } else {
                             login = true;
                             Intent intent = new Intent(MainActivity.this, home.class);
@@ -345,17 +370,4 @@ public class MainActivity extends BaseThemedActivity {
         moveTaskToBack(true);
     }
 
-    @Override
-    public void onResume(){
-        super.onResume();
-        if (login){
-            Intent intent = new Intent(MainActivity.this, home.class);
-            //getname(param);
-            response_d += "kkk" + param_1;
-            intent.putExtra("result", response_d);
-            edit.putString(param_1, response_d);
-            edit.apply();
-            startActivity(intent);
-        }
-    }
 }

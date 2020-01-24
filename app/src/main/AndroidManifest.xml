@@ -27,17 +27,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!-- <activity -->
-        <!-- android:name=".SplashScreen" -->
-        <!-- android:configChanges="orientation|screenSize|keyboardHidden" -->
-        <!-- android:screenOrientation="portrait" -->
-        <!-- android:theme="@style/SplashTheme"> -->
-        <!-- <intent-filter> -->
-        <!-- <action android:name="android.intent.action.MAIN" /> -->
-        <!-- <action android:name="android.intent.action.VIEW" /> -->
-        <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-        <!-- </intent-filter> -->
-        <!-- </activity> -->
+<!--         <activity -->
+<!--         android:name=".SplashScreen" -->
+<!--         android:configChanges="orientation|screenSize|keyboardHidden" -->
+<!--         android:screenOrientation="portrait" -->
+<!--         android:theme="@style/SplashTheme"> -->
+<!--         <intent-filter> -->
+<!--         <action android:name="android.intent.action.MAIN" /> -->
+<!--         <action android:name="android.intent.action.VIEW" /> -->
+<!--         <category android:name="android.intent.category.LAUNCHER" /> -->
+<!--         </intent-filter> -->
+<!--         </activity> -->
         <activity
             android:name=".MainActivity"
             android:configChanges="uiMode"

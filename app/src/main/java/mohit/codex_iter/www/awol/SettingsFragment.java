@@ -6,10 +6,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.provider.Settings;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.Toast;
 
@@ -25,6 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 import static android.content.Context.ALARM_SERVICE;
 import static android.content.Context.MODE_PRIVATE;
@@ -35,6 +40,7 @@ public class SettingsFragment extends PreferenceFragment {
     private static final String PREFS_NAME = "prefs";
     private static final String PREF_DARK_THEME = "dark_theme";
     private boolean flag = true;
+    private boolean dark = false;
     private FirebaseAnalytics firebaseAnalytics;
     CoordinatorLayout coordinatorLayout;
     @Override
@@ -46,7 +52,16 @@ public class SettingsFragment extends PreferenceFragment {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preference);
         final SwitchPreference notifications = (SwitchPreference) findPreference("pref_notification");
+//       if (!dark) {
 
+//        }
+        SharedPreferences preferences1 = getActivity().getSharedPreferences("Dark", MODE_PRIVATE);
+        boolean white = preferences1.getBoolean("dark", false);
+        if (white) {
+            Spannable title = new SpannableString(notifications.getTitle().toString());
+            title.setSpan(new ForegroundColorSpan(Color.BLACK), 0, title.length(), 0);
+            notifications.setTitle(title);
+        }
         final SharedPreferences stop = getActivity().getSharedPreferences("STOP", 0);
         final SharedPreferences.Editor editor1 = stop.edit();
 
@@ -264,6 +279,7 @@ public class SettingsFragment extends PreferenceFragment {
     private void toggleTheme(boolean darkTheme) {
         SharedPreferences.Editor editor = getActivity().getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit();
         editor.putBoolean(PREF_DARK_THEME, darkTheme);
+        dark = true;
         editor.apply();
     }
     private void openPowerSettings(Context context) {

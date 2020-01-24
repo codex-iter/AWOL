@@ -21,6 +21,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.util.List;
+import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -35,10 +36,10 @@ public class ThemeFragment extends BottomSheetDialogFragment {
 
     private static final String POSITION="position";
     private boolean isDark=false;
-    SharedPreferences preferences;
+    private SharedPreferences preferences;
     private static final String PREF_DARK_THEME="dark_theme";
     private static final String THEME="theme_pref";
-    List<ThemeItem> items;
+    private List<ThemeItem> items;
     public static ThemeFragment newInstance() {
         return new ThemeFragment();
     }
@@ -50,7 +51,7 @@ public class ThemeFragment extends BottomSheetDialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.theme_select_layout,container,false);
         items = Constants.getThemes();
-        preferences = getActivity().getSharedPreferences("theme", 0);
+        preferences = Objects.requireNonNull(getActivity()).getSharedPreferences("theme", 0);
         isDark = preferences.getBoolean(PREF_DARK_THEME, false);
         ((TextView) view.findViewById(R.id.title)).setTextColor(isDark? Color.WHITE:Color.BLACK);
         RecyclerView recyclerView = view.findViewById(R.id.theme_list);

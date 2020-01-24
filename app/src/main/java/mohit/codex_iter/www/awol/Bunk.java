@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.TypedValue;
@@ -22,12 +23,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
-
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -42,12 +39,10 @@ public class Bunk extends BaseThemedActivity {
 
     EditText atndedt, bnkedt, taredt;
     TextView result, left;
-    TextView sub;
+    TextView sub, target_atd, classes_bunk, going_attend;
     Button target, bunk, attend;
     double absent, total, percent, present;
     ListData[] ld;
-
-    private View view2, view1;
 
 
     public class DogsDropdownOnItemClickListener implements AdapterView.OnItemClickListener {
@@ -139,10 +134,16 @@ public class Bunk extends BaseThemedActivity {
                 listItem.setText(item);
                 listItem.setTag(position);
                 listItem.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-                listItem.setBackgroundColor(Color.parseColor("#141414"));
+                if (!dark) {
+                    listItem.setBackgroundColor(Color.WHITE);
+                    listItem.setTextColor(Color.BLACK);
+                } else {
+                    listItem.setBackgroundColor(Color.parseColor("#141414"));
+                    listItem.setTextColor(Color.WHITE);
+                }
                 int padding = Math.round(getResources().getDisplayMetrics().density*16);
                 listItem.setPadding(padding, padding, padding, padding);
-                listItem.setTextColor(Color.WHITE);
+
 
                 return listItem;
             }
@@ -170,6 +171,12 @@ public class Bunk extends BaseThemedActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             Objects.requireNonNull(getSupportActionBar()).setDisplayShowHomeEnabled(true);
         }
+        if(!dark){
+            toolbar.setTitleTextColor(getResources().getColor(R.color.black));
+            Objects.requireNonNull(toolbar.getNavigationIcon()).setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP);
+        }
+
+
         this.ld = ListData.ld;
         String[] subn = new String[ld.length];
         for (int i = 0; i < ld.length; i++)
@@ -178,18 +185,26 @@ public class Bunk extends BaseThemedActivity {
 
         popupWindowDogs = popupWindowDogs(subn);
 
-        view1 = findViewById(R.id.view1);
-        view2 = findViewById(R.id.view2);
+        View view1 = findViewById(R.id.view1);
+        View view2 = findViewById(R.id.view2);
 
 
         if (dark){
             view1.setBackgroundColor(Color.parseColor("#A9A9A9"));
             view2.setBackgroundColor(Color.parseColor("#A9A9A9"));
-
         }
 
-
         sub = findViewById(R.id.sub);
+        target_atd = findViewById(R.id.target_at);
+        classes_bunk = findViewById(R.id.classes_bunk);
+        going_attend = findViewById(R.id.going_attend);
+
+        if (dark) {
+            sub.setTextColor(Color.WHITE);
+            target_atd.setTextColor(Color.WHITE);
+            classes_bunk.setTextColor(Color.WHITE);
+            going_attend.setTextColor(Color.WHITE);
+        }
         sub.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

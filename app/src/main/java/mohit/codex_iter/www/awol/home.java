@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
@@ -27,17 +28,23 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.FileProvider;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import mohit.codex_iter.www.awol.theme.ThemeFragment;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.play.core.appupdate.AppUpdateInfo;
+import com.google.android.play.core.appupdate.AppUpdateManager;
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
+import com.google.android.play.core.install.InstallStateUpdatedListener;
+import com.google.android.play.core.install.model.AppUpdateType;
+import com.google.android.play.core.install.model.InstallStatus;
+import com.google.android.play.core.install.model.UpdateAvailability;
+import com.google.android.play.core.tasks.Task;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -48,6 +55,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
+
+import mohit.codex_iter.www.awol.theme.ThemeFragment;
+
+import static com.crashlytics.android.Crashlytics.log;
+import static com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE;
 
 
 public class home extends BaseThemedActivity {
@@ -69,9 +81,10 @@ public class home extends BaseThemedActivity {
     private SharedPreferences.Editor edit;
     @SuppressWarnings("FieldCanBeLocal")
     private MyBaseAdapter adapter;
-    private DrawerLayout dl;
-    private LinearLayout main_layout;
     private DrawerLayout mDrawerLayout;
+    private AppUpdateManager appUpdateManager;
+
+    private static final int MY_REQUEST_CODE = 1011;
 
     int[][] state = new int[][]{
             new int[]{android.R.attr.state_checked}, // checked
@@ -98,31 +111,75 @@ public class home extends BaseThemedActivity {
     ColorStateList csl2 = new ColorStateList(state2, color2);
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_home);
-        final NavigationView navigationView= findViewById(R.id.nav_view);
-        main_layout = findViewById(R.id.main_layout);
+        final NavigationView navigationView = findViewById(R.id.nav_view);
+        LinearLayout main_layout = findViewById(R.id.main_layout);
         mDrawerLayout = findViewById(R.id.drawer_layout);
         Bundle bundle = getIntent().getExtras();
-       boolean logincheck=bundle.getBoolean("Login_Check");
-       if(logincheck) {
-           Snackbar snackbar = Snackbar.make((LinearLayout) findViewById(R.id.main_layout), "Success!", Snackbar.LENGTH_SHORT);
-           snackbar.show();
-       }
+
+
+        appUpdateManager = AppUpdateManagerFactory.create(home.this);
+
+        Task<AppUpdateInfo> appUpdateInfoTask = appUpdateManager.getAppUpdateInfo();
+
+        appUpdateInfoTask.addOnSuccessListener(appUpdateInfo -> {
+            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
+                if (appUpdateInfo.isUpdateTypeAllowed(IMMEDIATE)) {
+                    try {
+                        appUpdateManager.startUpdateFlowForResult(
+                                appUpdateInfo,
+                                IMMEDIATE,
+                                home.this,
+                                MY_REQUEST_CODE);
+                    } catch (IntentSender.SendIntentException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    //FLEXIBLE
+                    try {
+                        appUpdateManager.startUpdateFlowForResult(
+                                appUpdateInfo,
+                                AppUpdateType.FLEXIBLE,
+                                home.this,
+                                MY_REQUEST_CODE);
+                    } catch (IntentSender.SendIntentException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+        });
+
+        InstallStateUpdatedListener updatedListener = state -> {
+            if (state.installStatus() == InstallStatus.DOWNLOADED) {
+                popupSnackbarForCompleteUpdate();
+            }
+        };
+
+        appUpdateManager.registerListener(updatedListener);
+
+        boolean logincheck = false;
+        if (bundle != null) {
+            logincheck = bundle.getBoolean("Login_Check");
+        }
+        if (logincheck) {
+            Snackbar snackbar = Snackbar.make(main_layout, "Success!", Snackbar.LENGTH_SHORT);
+            snackbar.show();
+        }
         myList = new ArrayList<>();
         rl = findViewById(R.id.rl);
         if (dark) {
             rl.setBackgroundColor(Color.parseColor("#141414"));
 
         }
-        if (bundle != null)
+        if (bundle != null) {
             result = bundle.getString("result");
+        }
 
         if (result != null) {
             r = result.split("kkk");
@@ -136,14 +193,14 @@ public class home extends BaseThemedActivity {
             JSONObject jObj1 = new JSONObject(result);
             System.out.println(result);
 
-            if(!jObj1.has("griddata")) {
-                Menu menu=navigationView.getMenu();
-                MenuItem menuItem=menu.findItem(R.id.pab);
+            if (!jObj1.has("griddata")) {
+                Menu menu = navigationView.getMenu();
+                MenuItem menuItem = menu.findItem(R.id.pab);
                 menuItem.setEnabled(false);
                 rl.setVisibility(View.GONE);
-                TextView tv=findViewById(R.id.NA);
+                TextView tv = findViewById(R.id.NA);
                 tv.setVisibility(View.VISIBLE);
-                if (dark){
+                if (dark) {
                     tv.setTextColor(Color.parseColor("FFCCCCCC"));
                     main_layout.setBackgroundColor(Color.parseColor("#141414"));
                 } else {
@@ -182,7 +239,6 @@ public class home extends BaseThemedActivity {
             }
             adapter = new MyBaseAdapter(getApplicationContext(), myList);
             rl.setAdapter(adapter);
-            dl = findViewById(R.id.drawer_layout);
             Toolbar toolbar = findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
             ActionBar actionbar = getSupportActionBar();
@@ -206,94 +262,154 @@ public class home extends BaseThemedActivity {
 //            }
 
             navigationView.setNavigationItemSelectedListener(
-                    new NavigationView.OnNavigationItemSelectedListener() {
-                        @Override
-                        public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                            dl.closeDrawers();
-                            switch (menuItem.getItemId()) {
-                                case R.id.sa:
-                                    Intent sendIntent = new Intent();
-                                    sendIntent.setAction(Intent.ACTION_SEND);
-                                    sendIntent.putExtra(Intent.EXTRA_TEXT, "Hey check this out: bit.do/iter_awol \n ");
-                                    sendIntent.setType("text/plain");
-                                    startActivity(sendIntent);
-                                    break;
-                                case R.id.abt:
-                                    Intent intenta = new Intent(home.this, Abt.class);
-                                    startActivity(intenta);
-                                    break;
-                                case R.id.cd:
-                                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().getString(R.string.github_url))));
-                                    break;
-                                case R.id.lgout:
-                                   AlertDialog.Builder binder=new AlertDialog.Builder(home.this);
-                                    binder.setMessage("Do you want to logout ?");
-                                    binder.setTitle(Html.fromHtml("<font color='#FF7F27'>Message</font>"));
-                                    binder.setCancelable(false);
-                                    binder.setPositiveButton(Html.fromHtml("<font color='#FF7F27'>Yes</font>"), new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
+                    menuItem -> {
+                        mDrawerLayout.closeDrawers();
+                        switch (menuItem.getItemId()) {
+                            case R.id.sa:
+                                Intent sendIntent = new Intent();
+                                sendIntent.setAction(Intent.ACTION_SEND);
+                                sendIntent.putExtra(Intent.EXTRA_TEXT, "Hey check this out: bit.do/iter_awol \n ");
+                                sendIntent.setType("text/plain");
+                                startActivity(sendIntent);
+                                break;
+                            case R.id.abt:
+                                Intent intenta = new Intent(home.this, Abt.class);
+                                startActivity(intenta);
+                                break;
+                            case R.id.cd:
+                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().getString(R.string.github_url))));
+                                break;
+                            case R.id.lgout:
+                                AlertDialog.Builder binder = new AlertDialog.Builder(home.this);
+                                binder.setMessage("Do you want to logout ?");
+                                binder.setTitle(Html.fromHtml("<font color='#FF7F27'>Message</font>"));
+                                binder.setCancelable(false);
+                                binder.setPositiveButton(Html.fromHtml("<font color='#FF7F27'>Yes</font>"), (dialog, which) -> {
 
 
-                                            edit = sub.edit();
-                                            edit.putBoolean("logout", true);
-                                            edit.apply();
-                                            Intent intent3 = new Intent(getApplicationContext(), MainActivity.class);
-                                            intent3.putExtra("logout_status", "0");
-                                            startActivity(intent3);
+                                    edit = sub.edit();
+                                    edit.putBoolean("logout", true);
+                                    edit.apply();
+                                    Intent intent3 = new Intent(getApplicationContext(), MainActivity.class);
+                                    intent3.putExtra("logout_status", "0");
+                                    startActivity(intent3);
 
 
-                                        }
-                                    });
-                                    binder.setNegativeButton(Html.fromHtml("<font color='#FF7F27'>No</font>"), new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.cancel();
-                                        }
-                                    });
-                                    AlertDialog alertDialog=binder.create();
-                                    Window window = alertDialog.getWindow();
-                                    WindowManager.LayoutParams wlp = window.getAttributes();
+                                });
+                                binder.setNegativeButton(Html.fromHtml("<font color='#FF7F27'>No</font>"), (dialog, which) -> dialog.cancel());
+                                AlertDialog alertDialog = binder.create();
+                                Window window = alertDialog.getWindow();
+                                WindowManager.LayoutParams wlp = null;
+                                if (window != null) {
+                                    wlp = window.getAttributes();
+                                }
 
+                                if (wlp != null) {
                                     wlp.gravity = Gravity.BOTTOM;
+                                }
+                                if (wlp != null) {
                                     wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+                                }
+                                if (window != null) {
                                     window.setAttributes(wlp);
+                                }
 
-                                    alertDialog.show();
-                                    final Button nbutton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
-                                    nbutton.setBackgroundColor(Color.RED);
-                                    Button pbutton = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
-                                    pbutton.setBackgroundColor(Color.GREEN);
-
-
-
+                                alertDialog.show();
+                                final Button nbutton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+                                nbutton.setBackgroundColor(Color.RED);
+                                Button pbutton = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+                                pbutton.setBackgroundColor(Color.GREEN);
 
 
-                                    break;
-                                case R.id.pab:
-                                    Intent intent = new Intent(getApplicationContext(), Bunk.class);
-                                    startActivity(intent);
-                                    break;
-                                case R.id.setting:
-                                    Intent intent1 = new Intent(getApplicationContext(), SettingsActivity.class);
-                                    startActivity(intent1);
-                                    break;
-                                case R.id.policy:
-                                    Uri uri = Uri.parse("https://awol-iter.flycricket.io/privacy.html");
-                                    Intent intent2 = new Intent(Intent.ACTION_VIEW, uri);
-                                    startActivity(intent2);
-                                    break;
-                                case R.id.change_theme:
-                                    mDrawerLayout.closeDrawer(GravityCompat.START);
-                                    ThemeFragment fragment = ThemeFragment.newInstance();
-                                    fragment.show(getSupportFragmentManager(),"theme_fragment");
-                                    break;
-                            }
-                            return true;
+                                break;
+                            case R.id.pab:
+                                Intent intent = new Intent(getApplicationContext(), Bunk.class);
+                                startActivity(intent);
+                                break;
+                            case R.id.setting:
+                                Intent intent1 = new Intent(getApplicationContext(), SettingsActivity.class);
+                                startActivity(intent1);
+                                break;
+                            case R.id.policy:
+                                Uri uri = Uri.parse("https://awol-iter.flycricket.io/privacy.html");
+                                Intent intent2 = new Intent(Intent.ACTION_VIEW, uri);
+                                startActivity(intent2);
+                                break;
+                            case R.id.change_theme:
+                                mDrawerLayout.closeDrawer(GravityCompat.START);
+                                ThemeFragment fragment = ThemeFragment.newInstance();
+                                fragment.show(getSupportFragmentManager(), "theme_fragment");
+                                break;
                         }
+                        return true;
                     });
         }
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == MY_REQUEST_CODE) {
+            if (resultCode != RESULT_OK) {
+                log("Update flow failed! Result code: " + resultCode);
+                appUpdateManager.getAppUpdateInfo().addOnSuccessListener(
+                        appUpdateInfo -> {
+                            if (appUpdateInfo.isUpdateTypeAllowed(IMMEDIATE)) {
+                                finish();
+                            } else {
+                                Snackbar snackbar =
+                                        Snackbar.make(
+                                                findViewById(android.R.id.content),
+                                                "Update has been failed.",
+                                                Snackbar.LENGTH_INDEFINITE);
+                                snackbar.setAction("RETRY", view -> appUpdateManager.completeUpdate());
+                                snackbar.setActionTextColor(Color.RED);
+                                snackbar.show();
+                            }
+                        }
+                );
+            }
+        }
+    }
+
+
+    private void popupSnackbarForCompleteUpdate() {
+        Snackbar snackbar =
+                Snackbar.make(
+                        findViewById(android.R.id.content),
+                        "An update has just been downloaded.",
+                        Snackbar.LENGTH_INDEFINITE);
+        snackbar.setAction("RESTART", view -> appUpdateManager.completeUpdate());
+        snackbar.setActionTextColor(Color.RED);
+        snackbar.show();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        appUpdateManager
+                .getAppUpdateInfo()
+                .addOnSuccessListener(
+                        appUpdateInfo -> {
+                            if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED) {
+                                popupSnackbarForCompleteUpdate();
+                            }
+                            if (appUpdateInfo.updateAvailability()
+                                    == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
+                                // If an in-app update is already running, resume the update.
+                                try {
+                                    appUpdateManager.startUpdateFlowForResult(
+                                            appUpdateInfo,
+                                            IMMEDIATE,
+                                            this,
+                                            MY_REQUEST_CODE);
+                                } catch (IntentSender.SendIntentException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -310,7 +426,7 @@ public class home extends BaseThemedActivity {
             SharedPreferences status_lg = this.getSharedPreferences("status", 0);
             String status = status_lg.getString("status", "");
 
-            if (status.equals("0")){
+            if (status.equals("0")) {
                 old.put("Latt", "");
                 old.put("Patt", "");
                 old.put("TotalAttandence", "");
@@ -341,15 +457,16 @@ public class home extends BaseThemedActivity {
             return "Just now";
         }
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            dl.openDrawer(GravityCompat.START);
+            mDrawerLayout.openDrawer(GravityCompat.START);
             return true;
         }
         if (item.getItemId() == R.id.mShare) {
             Bitmap bitmap = ScreenshotUtils.getScreenShot(rl);
-            if (bitmap != null){
+            if (bitmap != null) {
                 File save = ScreenshotUtils.getMainDirectoryName(this);
                 File file = ScreenshotUtils.store(bitmap, "screenshot.jpg", save);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -378,13 +495,13 @@ public class home extends BaseThemedActivity {
             intent.putExtra(Intent.EXTRA_STREAM, uri);//pass uri here
             startActivity(Intent.createChooser(intent, getString(R.string.share_title)));
 
-        } catch (FileUriExposedException e){
+        } catch (FileUriExposedException e) {
             Toast.makeText(this, "Something, went wrong.", Toast.LENGTH_SHORT).show();
         }
 
     }
 
-    public void shareScreenshot_low(File file){
+    public void shareScreenshot_low(File file) {
         Uri uri = Uri.fromFile(file);//Convert file path into Uri for sharing
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_SEND);
@@ -396,13 +513,12 @@ public class home extends BaseThemedActivity {
     }
 
 
-
     @Override
     public void onBackPressed() {
 
 
-        if (this.dl.isDrawerOpen(GravityCompat.START)) {
-            this.dl.closeDrawer(GravityCompat.START);
+        if (this.mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            this.mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
             moveTaskToBack(true);
         }

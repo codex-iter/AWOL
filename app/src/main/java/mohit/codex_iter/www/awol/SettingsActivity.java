@@ -1,14 +1,11 @@
 package mohit.codex_iter.www.awol;
-
 import android.content.SharedPreferences;
-import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import java.util.Objects;
 
@@ -45,6 +42,18 @@ public class SettingsActivity extends BaseThemedActivity {
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             Objects.requireNonNull(getSupportActionBar()).setDisplayShowHomeEnabled(true);
+        }
+
+        SharedPreferences preferences = getSharedPreferences("Dark", MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        if(!dark){
+            editor.putBoolean("dark", true);
+            editor.apply();
+            toolbar.setTitleTextColor(getResources().getColor(R.color.black));
+            Objects.requireNonNull(toolbar.getNavigationIcon()).setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP);
+        } else {
+            editor.putBoolean("dark", false);
+            editor.apply();
         }
     }
 
