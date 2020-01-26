@@ -78,7 +78,7 @@ public class DetailedResultActivity extends BaseThemedActivity {
             }
             JSONArray arr = null;
             if (jObj1 != null) {
-                arr = jObj1.getJSONArray("data");
+                arr = jObj1.getJSONArray("Semdata");
             }
             if (arr != null) {
                 l = arr.length();

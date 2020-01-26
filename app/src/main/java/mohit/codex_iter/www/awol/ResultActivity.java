@@ -134,8 +134,10 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
                 Context.MODE_PRIVATE);
         String u = userm.getString("user", "");
         String p = userm.getString("pass", "");
+        String s = String.valueOf(sem);
+        Log.d("SEM", "onResultClicked: " + sem);
         String web = getString(R.string.link);
-        getData(web, u, p);
+        getData(web, u, p, s);
     }
 
 
@@ -150,7 +152,7 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
                         Intent intent = new Intent(ResultActivity.this, DetailedResultActivity.class);
                         response += "kkk" + param[1];
                         intent.putExtra("result", response);
-//                        intent.putExtra("Semester",sem );
+                        intent.putExtra("Semester",sem );
                         intent.putExtra("SGPA", sgpa);
                         intent.putExtra("TotalCredit", totalCredit);
                         intent.putExtra("Status", status);
