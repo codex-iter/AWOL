@@ -10,6 +10,8 @@
     <color name="mid">#F3F025</color>
     <color name="danger">#F5FC0101</color>
     <color name="black">#FF0C0C0C</color>
+    <color name="white">#FFFFFF</color>
+    <color name="gray">#ece4e4</color>
 
 
     <color name="grey50">#fafafa</color>

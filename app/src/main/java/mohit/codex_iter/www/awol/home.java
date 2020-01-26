@@ -16,6 +16,7 @@ import android.os.FileUriExposedException;
 import android.os.Vibrator;
 import android.text.Html;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,7 +25,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,7 +34,16 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.FileProvider;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.ServerError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.play.core.appupdate.AppUpdateInfo;
@@ -53,7 +62,9 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 import mohit.codex_iter.www.awol.theme.ThemeFragment;
@@ -69,21 +80,23 @@ public class home extends BaseThemedActivity {
     private int l, avgab;
     @SuppressWarnings("FieldCanBeLocal")
     private double avgat;
-    public ListView rl;
+    public RecyclerView rl;
     @SuppressWarnings("FieldCanBeLocal")
     private String[] r;
-    public ArrayList<ListData> myList;
+    public ArrayList<ListData> myList = new ArrayList<>();
+    ;
     @SuppressWarnings("FieldCanBeLocal")
     private String code;
     @SuppressWarnings("FieldCanBeLocal")
     private TextView name, reg, avat, avab;
-    private SharedPreferences sub;
+    private SharedPreferences sub, userm;
     private SharedPreferences.Editor edit;
     @SuppressWarnings("FieldCanBeLocal")
     private MyBaseAdapter adapter;
     private DrawerLayout mDrawerLayout;
     private AppUpdateManager appUpdateManager;
-
+    private boolean no_attendance;
+    private LinearLayout main_layout;
     private static final int MY_REQUEST_CODE = 1011;
 
     int[][] state = new int[][]{
@@ -116,9 +129,9 @@ public class home extends BaseThemedActivity {
 
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_home);
+        setContentView(R.layout.activity_recycle);
         final NavigationView navigationView = findViewById(R.id.nav_view);
-        LinearLayout main_layout = findViewById(R.id.main_layout);
+        main_layout = findViewById(R.id.main_layout);
         mDrawerLayout = findViewById(R.id.drawer_layout);
         Bundle bundle = getIntent().getExtras();
 
@@ -171,43 +184,45 @@ public class home extends BaseThemedActivity {
             Snackbar snackbar = Snackbar.make(main_layout, "Success!", Snackbar.LENGTH_SHORT);
             snackbar.show();
         }
-        myList = new ArrayList<>();
         rl = findViewById(R.id.rl);
         if (dark) {
             rl.setBackgroundColor(Color.parseColor("#141414"));
 
         }
         if (bundle != null) {
+            no_attendance = bundle.getBoolean("NO_ATTENDANCE");
+        }
+        if (no_attendance) {
+            Menu menu = navigationView.getMenu();
+            MenuItem menuItem = menu.findItem(R.id.pab);
+            menuItem.setEnabled(false);
+
+            rl.setVisibility(View.GONE);
+            TextView tv = findViewById(R.id.NA);
+            tv.setVisibility(View.VISIBLE);
+            if (dark) {
+                tv.setTextColor(Color.parseColor("#FFFFFF"));
+                main_layout.setBackgroundColor(Color.parseColor("#141414"));
+            } else {
+                tv.setTextColor(Color.parseColor("#141414"));
+            }
+        }
+
+        if (bundle != null) {
             result = bundle.getString("result");
         }
 
         if (result != null) {
             r = result.split("kkk");
+            result = r[0];
         }
-        result = r[0];
         avgab = 0;
         avgat = 0;
         sub = getSharedPreferences("sub",
                 Context.MODE_PRIVATE);
+
         try {
             JSONObject jObj1 = new JSONObject(result);
-            System.out.println(result);
-
-            if (!jObj1.has("griddata")) {
-                Menu menu = navigationView.getMenu();
-                MenuItem menuItem = menu.findItem(R.id.pab);
-                menuItem.setEnabled(false);
-                rl.setVisibility(View.GONE);
-                TextView tv = findViewById(R.id.NA);
-                tv.setVisibility(View.VISIBLE);
-                if (dark) {
-                    tv.setTextColor(Color.parseColor("FFCCCCCC"));
-                    main_layout.setBackgroundColor(Color.parseColor("#141414"));
-                } else {
-                    tv.setTextColor(Color.parseColor("#141414"));
-                }
-
-            }
             JSONArray arr = jObj1.getJSONArray("griddata");
             l = arr.length();
             ld = new ListData[l];
@@ -237,8 +252,11 @@ public class home extends BaseThemedActivity {
             for (int i = 0; i < l; i++) {
                 myList.add(ld[i]);
             }
-            adapter = new MyBaseAdapter(getApplicationContext(), myList);
+            adapter = new MyBaseAdapter(this, myList);
+            rl.setHasFixedSize(true);
             rl.setAdapter(adapter);
+            rl.setLayoutManager(new LinearLayoutManager(this));
+
             Toolbar toolbar = findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
             ActionBar actionbar = getSupportActionBar();
@@ -249,7 +267,9 @@ public class home extends BaseThemedActivity {
             name = headerView.findViewById(R.id.name);
             reg = headerView.findViewById(R.id.reg);
             name.setText("");
-            reg.setText(r[1]);
+            if (bundle != null) {
+                reg.setText(bundle.getString("REGISTRATION_NO"));
+            }
 
             avat = headerView.findViewById(R.id.avat);
             avat.setText(String.format(Locale.US, "%.2f", avgat));
@@ -285,16 +305,12 @@ public class home extends BaseThemedActivity {
                                 binder.setTitle(Html.fromHtml("<font color='#FF7F27'>Message</font>"));
                                 binder.setCancelable(false);
                                 binder.setPositiveButton(Html.fromHtml("<font color='#FF7F27'>Yes</font>"), (dialog, which) -> {
-
-
                                     edit = sub.edit();
                                     edit.putBoolean("logout", true);
                                     edit.apply();
                                     Intent intent3 = new Intent(getApplicationContext(), MainActivity.class);
                                     intent3.putExtra("logout_status", "0");
                                     startActivity(intent3);
-
-
                                 });
                                 binder.setNegativeButton(Html.fromHtml("<font color='#FF7F27'>No</font>"), (dialog, which) -> dialog.cancel());
                                 AlertDialog alertDialog = binder.create();
@@ -303,7 +319,6 @@ public class home extends BaseThemedActivity {
                                 if (window != null) {
                                     wlp = window.getAttributes();
                                 }
-
                                 if (wlp != null) {
                                     wlp.gravity = Gravity.BOTTOM;
                                 }
@@ -313,18 +328,23 @@ public class home extends BaseThemedActivity {
                                 if (window != null) {
                                     window.setAttributes(wlp);
                                 }
-
                                 alertDialog.show();
                                 final Button nbutton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
                                 nbutton.setBackgroundColor(Color.RED);
                                 Button pbutton = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
                                 pbutton.setBackgroundColor(Color.GREEN);
-
-
                                 break;
                             case R.id.pab:
                                 Intent intent = new Intent(getApplicationContext(), Bunk.class);
                                 startActivity(intent);
+                                break;
+                            case R.id.result:
+                                userm = getSharedPreferences("user",
+                                        Context.MODE_PRIVATE);
+                                String u = userm.getString("user", "");
+                                String p = userm.getString("pass", "");
+                                String web = getString(R.string.link);
+                                getData(web, u, p);
                                 break;
                             case R.id.setting:
                                 Intent intent1 = new Intent(getApplicationContext(), SettingsActivity.class);
@@ -410,6 +430,51 @@ public class home extends BaseThemedActivity {
                         });
     }
 
+    private void getData(final String... param) {
+        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+        StringRequest postRequest = new StringRequest(Request.Method.POST, param[0] + "/result",
+                response -> {
+                    if (response.equals("900")) {
+                        Snackbar snackbar = Snackbar.make(main_layout, "Results not found", Snackbar.LENGTH_SHORT);
+                        snackbar.show();
+                    } else {
+                        Intent intent = new Intent(home.this, ResultActivity.class);
+                        response += "kkk" + param[1];
+                        intent.putExtra("result", response);
+                      //  edit.putString(param[1], response);
+//                        edit.apply();
+                        startActivity(intent);
+                    }
+                },
+                error -> {
+                    // error
+                    //showData(param[1], param[2]);
+                    if (error instanceof AuthFailureError) {
+                        Snackbar snackbar=Snackbar.make(main_layout,"Wrong Credentials!",Snackbar.LENGTH_SHORT);
+                        snackbar.show();
+                    } else if (error instanceof ServerError) {
+                        Snackbar snackbar=Snackbar.make(main_layout,"Cannot connect to ITER servers right now.Try again",Snackbar.LENGTH_SHORT);
+                        snackbar.show();
+                    } else if (error instanceof NetworkError) {
+                        Log.e("Volley_error", String.valueOf(error));
+                        Snackbar snackbar=Snackbar.make(main_layout,"Cannot establish connection",Snackbar.LENGTH_SHORT);
+                        snackbar.show();
+                    }
+
+                }
+        ) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("user", param[1]);
+                params.put("pass", param[2]);
+
+                return params;
+            }
+        };
+        queue.add(postRequest);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -465,14 +530,19 @@ public class home extends BaseThemedActivity {
             return true;
         }
         if (item.getItemId() == R.id.mShare) {
-            Bitmap bitmap = ScreenshotUtils.getScreenShot(rl);
-            if (bitmap != null) {
-                File save = ScreenshotUtils.getMainDirectoryName(this);
-                File file = ScreenshotUtils.store(bitmap, "screenshot.jpg", save);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    shareScreenshot(file);
-                } else {
-                    shareScreenshot_low(file);
+            if (no_attendance) {
+                Snackbar snackbar = Snackbar.make(main_layout, "Attendance is currently unavailable", Snackbar.LENGTH_SHORT);
+                snackbar.show();
+            } else {
+                Bitmap bitmap = ScreenshotUtils.getScreenShot(rl);
+                if (bitmap != null) {
+                    File save = ScreenshotUtils.getMainDirectoryName(this);
+                    File file = ScreenshotUtils.store(bitmap, "screenshot.jpg", save);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        shareScreenshot(file);
+                    } else {
+                        shareScreenshot_low(file);
+                    }
                 }
             }
 

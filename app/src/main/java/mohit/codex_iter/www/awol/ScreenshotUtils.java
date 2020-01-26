@@ -9,8 +9,8 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.view.View.MeasureSpec;
-import android.widget.ListAdapter;
-import android.widget.ListView;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -21,37 +21,47 @@ public class ScreenshotUtils {
 
     /*  Method which will return Bitmap after taking screenshot. We have to pass the view which we want to take screenshot.  */
     static Bitmap getScreenShot(View view) {
-        ListView listview = (ListView) view;
-        ListAdapter adapter = listview.getAdapter();
-        int itemscount = adapter.getCount();
+        RecyclerView recyclerView = (RecyclerView) view;
+        RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+        RecyclerView.Adapter adapter = recyclerView.getAdapter();
+        int itemscount = 0;
+        if (adapter != null) {
+            itemscount = adapter.getItemCount();
+        }
         int allitemsheight = 0;
         List<Bitmap> bmps = new ArrayList<>();
 
         for (int i = 0; i < itemscount; i++) {
+            View childView = null;
+            if (layoutManager != null) {
+                childView = layoutManager.getChildAt(i);
+            }
+            if (childView != null) {
+                childView.measure(MeasureSpec.makeMeasureSpec(recyclerView.getWidth(), MeasureSpec.EXACTLY),
+                        MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
 
-            View childView = adapter.getView(i, null, listview);
-            childView.measure(MeasureSpec.makeMeasureSpec(listview.getWidth(), MeasureSpec.EXACTLY),
-                    MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
-
-            childView.layout(0, 0, childView.getMeasuredWidth(), childView.getMeasuredHeight());
-            childView.setDrawingCacheEnabled(true);
-            childView.buildDrawingCache();
-            bmps.add(childView.getDrawingCache());
-            allitemsheight += childView.getMeasuredHeight();
+                childView.layout(0, 0, childView.getMeasuredWidth(), childView.getMeasuredHeight());
+                childView.setDrawingCacheEnabled(true);
+                childView.buildDrawingCache();
+                bmps.add(childView.getDrawingCache());
+                allitemsheight += childView.getMeasuredHeight();
+            }
         }
 
-        Bitmap bigbitmap = Bitmap.createBitmap(listview.getMeasuredWidth(), allitemsheight, Bitmap.Config.ARGB_8888);
+        Bitmap bigbitmap = Bitmap.createBitmap(recyclerView.getMeasuredWidth(), allitemsheight, Bitmap.Config.ARGB_8888);
         Canvas bigcanvas = new Canvas(bigbitmap);
 
         Paint paint = new Paint();
         int iHeight = 0;
 
         for (int i = 0; i < bmps.size(); i++) {
-            Bitmap bmp = bmps.get(i);
-            bigcanvas.drawBitmap(bmp, 0, iHeight, paint);
-            iHeight += bmp.getHeight();
+            Bitmap mBitmap = bmps.get(i);
+            bigcanvas.drawBitmap(mBitmap, 0, iHeight, paint);
+            iHeight += mBitmap.getHeight();
 
-            bmp.recycle();
+            if (!mBitmap.isRecycled()) {
+                mBitmap.recycle();
+            }
         }
 
 

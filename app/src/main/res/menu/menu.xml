@@ -6,6 +6,9 @@
         android:icon="@drawable/ic_hotel"
         android:title="@string/plan_bunk" />
     <item
+        android:title="@string/results"
+        android:id="@+id/result"/>
+    <item
         android:id="@+id/sa"
         android:icon="@drawable/ic_send"
         android:title="@string/share_app" />

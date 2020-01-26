@@ -6,149 +6,141 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import java.util.ArrayList;
-import java.util.Scanner;
+import androidx.recyclerview.widget.RecyclerView;
 
-public class MyBaseAdapter extends ArrayAdapter<ListData> {
-    private ArrayList<ListData> myList;
-    private LayoutInflater inflater;
-    private Context context;
+import java.util.List;
 
+public class MyBaseAdapter extends RecyclerView.Adapter<MyBaseAdapter.myViewHolder> {
 
-    public MyBaseAdapter(Context context, ArrayList<ListData> myList) {
-        super(context, -1, myList);
-        inflater=LayoutInflater.from(context);
-        this.myList=myList;
-        this.context=context;
+    private Context ctx;
+    private List<ListData> datalist;
+
+    public MyBaseAdapter(Context context, List<ListData> datalist) {
+        this.ctx = context;
+        this.datalist = datalist;
     }
 
     @NonNull
+    @Override
+    public MyBaseAdapter.myViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(ctx);
+        View view = inflater.inflate(R.layout.dummy, parent, false);
+        return new myViewHolder(view);
+    }
+
     @SuppressLint("SetTextI18n")
     @Override
-    public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
-        MyViewHolder mViewHolder;
-        SharedPreferences theme = context.getSharedPreferences("theme",0);
+    public void onBindViewHolder(@NonNull MyBaseAdapter.myViewHolder holder, int position) {
+        SharedPreferences theme = ctx.getSharedPreferences("theme", 0);
         boolean dark = theme.getBoolean("dark_theme", false);
-        if (convertView == null) {
-            convertView = inflater.inflate(R.layout.dummy, parent, false);
-            mViewHolder = new MyViewHolder(convertView);
-            convertView.setTag(mViewHolder);
-        } else {
-            mViewHolder = (MyViewHolder) convertView.getTag();
-        }
-//        Animation animation;
-//        animation = AnimationUtils.loadAnimation(context, R.anim.action);
-//        animation.setDuration(200);
-//        convertView.startAnimation(animation);
-        mViewHolder.sub.setText(myList.get(position).getSub());
-        String p = myList.get(position).getPercent();
+
+        holder.sub.setText(datalist.get(position).getSub());
+        String p = datalist.get(position).getPercent();
 
         double percent = 0;
         if (p != null) {
             percent = Double.valueOf(p);
         }
 
-        if (percent > (float)80){
-            mViewHolder.ta.setBackgroundResource(R.drawable.percent_back_green);
-        } else if (percent >= (float)60 && percent <=80){
-                mViewHolder.ta.setBackgroundResource(R.drawable.percent_back_yellow);
+        if (percent > (float) 80) {
+            holder.ta.setBackgroundResource(R.drawable.percent_back_green);
+        } else if (percent >= (float) 60 && percent <= 80) {
+            holder.ta.setBackgroundResource(R.drawable.percent_back_yellow);
         } else {
-            mViewHolder.ta.setBackgroundResource(R.drawable.percent_back_red);
+            holder.ta.setBackgroundResource(R.drawable.percent_back_red);
         }
-        mViewHolder.ta.setText(myList.get(position).getPercent()+"%");
-//        mViewHolder.tha.setText(myList.get(position).getThat());
-//        mViewHolder.la.setText(myList.get(position).getLabt());
-        String s=myList.get(position).getOld();
-      //  Toast.makeText(context, "Old Attendance : " + s, Toast.LENGTH_SHORT).show();
-        if(!s.equals(""))
-        {
-            double n = Double.valueOf(myList.get(position).getPercent());
+        holder.ta.setText(datalist.get(position).getPercent() + "%");
+        String s = datalist.get(position).getOld();
+        if (!s.equals("")) {
+            double n = Double.valueOf(datalist.get(position).getPercent());
             double o = Double.valueOf(s);
-        //    Toast.makeText(context, "New Attendance : " + n, Toast.LENGTH_SHORT).show();
-            if(n>=o) {
-                mViewHolder.up.setBackgroundResource(R.drawable.up);
-            }
-            else {
-                mViewHolder.up.setBackgroundResource(R.drawable.down);
+            //    Toast.makeText(context, "New Attendance : " + n, Toast.LENGTH_SHORT).show();
+            if (n >= o) {
+                holder.up.setBackgroundResource(R.drawable.up);
+            } else {
+                holder.up.setBackgroundResource(R.drawable.down);
             }
         }
-//        if(myList.get(position).getStatus()==1)
-//            mViewHolder.at.setBackgroundResource(R.drawable.circp);
-//        else if(myList.get(position).getStatus()==2)
-//            mViewHolder.at. setBackgroundResource(R.drawable.circs);
-//        else if(myList.get(position).getStatus()==3)
-//            mViewHolder.at.setBackgroundResource(R.drawable.circo);
-//        else
-//            mViewHolder.at.setBackgroundResource(R.drawable.circe);
 
-        mViewHolder.lu.setText(myList.get(position).getUpd());
-        mViewHolder.th.setText(myList.get(position).getTheory()+myList.get(position).getThat());
-        mViewHolder.prac.setText(myList.get(position).getLab()+myList.get(position).getLabt());
-        mViewHolder.ab.setText(myList.get(position).getAbsent());
-        mViewHolder.tc.setText(myList.get(position).getClasses());
-        mViewHolder.bunk_text.setText(myList.get(position).getBunk_text_str());
-        //to be
+        if (!s.equals("")) {
+            double n = Double.valueOf(datalist.get(position).getPercent());
+            double o = Double.valueOf(s);
+            //    Toast.makeText(context, "New Attendance : " + n, Toast.LENGTH_SHORT).show();
+            if (n >= o) {
+                holder.up.setBackgroundResource(R.drawable.up);
+            } else {
+                holder.up.setBackgroundResource(R.drawable.down);
+            }
+        }
 
-        if (!dark){
-            mViewHolder.cardView.setCardBackgroundColor(Color.parseColor("#FFFFFF"));
-            mViewHolder.ta.setTextColor(Color.parseColor("#141831"));
-            mViewHolder.lu.setTextColor(Color.parseColor("#141831"));
-            mViewHolder.th.setTextColor(Color.parseColor("#141831"));
-            mViewHolder.prac.setTextColor(Color.parseColor("#141831"));
-            mViewHolder.ab.setTextColor(Color.parseColor("#141831"));
-            mViewHolder.tc.setTextColor(Color.parseColor("#141831"));
+        holder.lu.setText(datalist.get(position).getUpd());
+        holder.th.setText(datalist.get(position).getTheory() + datalist.get(position).getThat());
+        holder.prac.setText(datalist.get(position).getLab() + datalist.get(position).getLabt());
+        holder.ab.setText(datalist.get(position).getAbsent());
+        holder.tc.setText(datalist.get(position).getClasses());
+        holder.bunk_text.setText(datalist.get(position).getBunk_text_str());
+
+        if (!dark) {
+            holder.cardView.setCardBackgroundColor(Color.parseColor("#FFFFFF"));
+            holder.ta.setTextColor(Color.parseColor("#141831"));
+            holder.lu.setTextColor(Color.parseColor("#141831"));
+            holder.th.setTextColor(Color.parseColor("#141831"));
+            holder.prac.setTextColor(Color.parseColor("#141831"));
+            holder.ab.setTextColor(Color.parseColor("#141831"));
+            holder.tc.setTextColor(Color.parseColor("#141831"));
             // mViewHolder.total.setTextColor(Color.parseColor("#141831"));
-            mViewHolder.updated.setTextColor(Color.parseColor("#141831"));
-            mViewHolder.absents.setTextColor(Color.parseColor("#141831"));
-            mViewHolder.pract.setTextColor(Color.parseColor("#141831"));
-            mViewHolder.theory.setTextColor(Color.parseColor("#141831"));
-            mViewHolder.classes.setTextColor(Color.parseColor("#141831"));
-            mViewHolder.bunk_text.setTextColor(Color.parseColor("#141831"));
+            holder.updated.setTextColor(Color.parseColor("#141831"));
+            holder.absents.setTextColor(Color.parseColor("#141831"));
+            holder.pract.setTextColor(Color.parseColor("#141831"));
+            holder.theory.setTextColor(Color.parseColor("#141831"));
+            holder.classes.setTextColor(Color.parseColor("#141831"));
+            holder.bunk_text.setTextColor(Color.parseColor("#141831"));
         }
-        return convertView;
+
     }
 
+    @Override
+    public int getItemCount() {
+        return datalist.size();
+    }
 
-    private class MyViewHolder {
-
-        TextView sub,lu,th,prac,ab,tc,theory, updated, pract,classes,absents,bunk_text ;
+    public class myViewHolder extends RecyclerView.ViewHolder {
+        TextView sub, lu, th, prac, ab, tc, theory, updated, pract, classes, absents, bunk_text;
         Button ta;
         ImageView up;
         CardView cardView;
-        private MyViewHolder(View view) {
-            //  total = view.findViewById(R.id.total);
+
+        public myViewHolder(@NonNull View view) {
+            super(view);
+
+//            total = view.findViewById(R.id.total);
             theory = view.findViewById(R.id.theory_t);
             updated = view.findViewById(R.id.updated);
             pract = view.findViewById(R.id.practicle);
             classes = view.findViewById(R.id.classes);
             absents = view.findViewById(R.id.absents);
             cardView = view.findViewById(R.id.card_view);
-            sub =  view.findViewById(R.id.sub);
-            lu=   view.findViewById(R.id.lu);
-            th= view.findViewById(R.id.theory);
-            prac= view.findViewById(R.id.prac);
-            ab= view.findViewById(R.id.ab);
-            tc=view.findViewById(R.id.tc);
-            ta=view.findViewById(R.id.ta);
-            bunk_text=view.findViewById(R.id.bunk_text);
+            sub = view.findViewById(R.id.sub);
+            lu = view.findViewById(R.id.lu);
+            th = view.findViewById(R.id.theory);
+            prac = view.findViewById(R.id.prac);
+            ab = view.findViewById(R.id.ab);
+            tc = view.findViewById(R.id.tc);
+            ta = view.findViewById(R.id.ta);
+            bunk_text = view.findViewById(R.id.bunk_text);
 
 //            tha=view.findViewById(R.id.tha);
 //            la=view.findViewById(R.id.la);
-            up=view.findViewById(R.id.up);
+            up = view.findViewById(R.id.up);
             //down=view.findViewById(R.id.down);
+
         }
     }
 }
-
-

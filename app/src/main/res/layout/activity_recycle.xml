@@ -11,50 +11,53 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:theme="@style/AppTheme.AppBarOverlay">
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?actionBarSize"
-            android:background="?toolbarColor"
-            android:layout_gravity="center_horizontal"
-            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-            app:titleTextColor="@color/colorAccent">
 
-        </androidx.appcompat.widget.Toolbar>
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize"
+                android:layout_gravity="center_horizontal"
+                android:background="?toolbarColor"
+                android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+                app:titleTextColor="@color/colorAccent">
+
+            </androidx.appcompat.widget.Toolbar>
         </com.google.android.material.appbar.AppBarLayout>
+
         <TextView
             android:id="@+id/NA"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:gravity="center"
             android:text="@string/oops_attendance_not_available"
             android:textSize="14sp"
             android:textStyle="bold"
-            android:gravity="center"
-            android:visibility="gone"
-            />
-        <ListView
-            android:clipToPadding="false"
+            android:visibility="gone" />
+
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rl"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:clipToPadding="false"
             android:divider="@null"
             android:textColor="#000"
             android:textSize="25sp"
-            android:padding="5dp"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
     </LinearLayout>
+
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
-        app:menu="@menu/menu"
-        app:itemTextColor="?android:textColorPrimary"
+        app:headerLayout="@layout/header"
         app:itemIconTint="?android:textColorPrimary"
-        app:headerLayout="@layout/header" />
+        app:itemTextColor="?android:textColorPrimary"
+        app:menu="@menu/menu" />
 </androidx.drawerlayout.widget.DrawerLayout>

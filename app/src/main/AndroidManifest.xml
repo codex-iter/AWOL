@@ -61,7 +61,12 @@
             android:name=".SettingsActivity"
             android:configChanges="uiMode"
             android:screenOrientation="portrait" />
-
+        <activity android:name=".ResultActivity"
+            android:configChanges="uiMode"
+            android:screenOrientation="portrait" />
+        <activity android:name=".DetailedResultActivity"
+            android:configChanges="uiMode"
+            android:screenOrientation="portrait" />
         <receiver android:name=".AlramReceiver"
             android:enabled="true">
             <intent-filter>

@@ -3,10 +3,7 @@ package mohit.codex_iter.www.awol;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.net.ConnectivityManager;
@@ -25,35 +22,18 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieProperty;
 import com.airbnb.lottie.model.KeyPath;
-import com.airbnb.lottie.value.LottieFrameInfo;
-import com.airbnb.lottie.value.SimpleLottieValueCallback;
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
 import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.android.play.core.appupdate.AppUpdateInfo;
-import com.google.android.play.core.appupdate.AppUpdateManager;
-import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
-import com.google.android.play.core.install.InstallState;
-import com.google.android.play.core.install.InstallStateUpdatedListener;
-import com.google.android.play.core.install.model.AppUpdateType;
-import com.google.android.play.core.install.model.InstallStatus;
-import com.google.android.play.core.install.model.UpdateAvailability;
-import com.google.android.play.core.tasks.OnSuccessListener;
-import com.google.android.play.core.tasks.Task;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.crashlytics.android.Crashlytics.log;
-import static com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE;
 
 
 public class MainActivity extends BaseThemedActivity {
@@ -82,7 +62,7 @@ public class MainActivity extends BaseThemedActivity {
 
         Bundle extras = getIntent().getExtras();
         String status = "";
-        constraintLayout=(ConstraintLayout) findViewById(R.id.ll);
+        constraintLayout= findViewById(R.id.ll);
         if (extras != null) {
             status = extras.getString("logout_status");
         }
@@ -97,12 +77,7 @@ public class MainActivity extends BaseThemedActivity {
         animationView.addValueCallback(
                 new KeyPath("**"),
                 LottieProperty.COLOR_FILTER,
-                new SimpleLottieValueCallback<ColorFilter>() {
-                    @Override
-                    public ColorFilter getValue(LottieFrameInfo<ColorFilter> frameInfo) {
-                        return new PorterDuffColorFilter(getResources().getColor(R.color.darkColorAccent), PorterDuff.Mode.SRC_ATOP);
-                    }
-                }
+                frameInfo -> new PorterDuffColorFilter(getResources().getColor(R.color.darkColorAccent), PorterDuff.Mode.SRC_ATOP)
         );
 
         l2 = findViewById(R.id.linearLayout2);
@@ -116,43 +91,40 @@ public class MainActivity extends BaseThemedActivity {
                 Context.MODE_PRIVATE);
         logout = getSharedPreferences("sub",
                 Context.MODE_PRIVATE);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String u = user.getText().toString().trim();
-                String p = pass.getText().toString().trim();
+        btn.setOnClickListener(view -> {
+            String u = user.getText().toString().trim();
+            String p = pass.getText().toString().trim();
 
-                if (u.equals("") || p.equals("")) {
-                    Snackbar snackbar=Snackbar.make(constraintLayout,"Enter your Details",Snackbar.LENGTH_SHORT);
+            if (u.equals("") || p.equals("")) {
+                Snackbar snackbar=Snackbar.make(constraintLayout,"Enter your Details",Snackbar.LENGTH_SHORT);
+                snackbar.show();
+            }
+
+            else {
+                if (haveNetworkConnection()) {
+                    String web = getString(R.string.link);
+                    getData(web, u, p);
+                    edit = userm.edit();
+                    edit.putString("user", u);
+                    edit.putString(u + "pass", p);
+                    edit.putString("pass", p);
+                    edit.apply();
+                    edit = logout.edit();
+                    edit.putBoolean("logout", false);
+                    edit.apply();
+                } else {
+                    Snackbar snackbar=Snackbar.make(constraintLayout,"Something, went wrong.Try Again",Snackbar.LENGTH_SHORT);
                     snackbar.show();
+                    user.setText("");
+                    pass.setText("");
                 }
-
-                else {
-                    if (haveNetworkConnection()) {
-                        String web = getString(R.string.link);
-                        getData(web, u, p);
-                        edit = userm.edit();
-                        edit.putString("user", u);
-                        edit.putString(u + "pass", p);
-                        edit.putString("pass", p);
-                        edit.apply();
-                        edit = logout.edit();
-                        edit.putBoolean("logout", false);
-                        edit.apply();
-                    } else {
-                        Snackbar snackbar=Snackbar.make(constraintLayout,"Something, went wrong.Try Again",Snackbar.LENGTH_SHORT);
-                        snackbar.show();
-                        user.setText("");
-                        pass.setText("");
-                    }
 //                    else {
-                    // showData(u, p);
+                // showData(u, p);
 //                    }
-                }
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                if (imm != null) {
-                    imm.hideSoftInputFromWindow(pass.getWindowToken(), 0);
-                }
+            }
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                imm.hideSoftInputFromWindow(pass.getWindowToken(), 0);
             }
         });
 
@@ -204,20 +176,11 @@ public class MainActivity extends BaseThemedActivity {
     private void resetAnimationView() {
         currentAnimationFrame = 0;
         animationView.addValueCallback(new KeyPath("**"), LottieProperty.COLOR_FILTER,
-                new SimpleLottieValueCallback<ColorFilter>() {
-                    @Override
-                    public ColorFilter getValue(LottieFrameInfo<ColorFilter> frameInfo) {
-                        return null;
-                    }
-                }
+                frameInfo -> null
         );
     }
 
     private void getData(final String... param) {
-
-//        pd = new ProgressDialog(MainActivity.this);
-//        pd.setMessage("Please wait");
-//        pd.setCancelable(false);
         animationView.setVisibility(View.VISIBLE);
         l2.setVisibility(View.INVISIBLE);
         logo.setVisibility(View.INVISIBLE);
@@ -225,71 +188,71 @@ public class MainActivity extends BaseThemedActivity {
         RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
         param_0 = param[0];
         StringRequest postRequest = new StringRequest(Request.Method.POST, param[0] + "/attendance",
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        response_d = response;
-                        if (response.equals("404")) {
-                            if (animationView.getVisibility() == View.VISIBLE)
-                                animationView.setVisibility(View.INVISIBLE);
-                            l2.setVisibility(View.VISIBLE);
-                            logo.setVisibility(View.VISIBLE);
-                            Snackbar snackbar=Snackbar.make(constraintLayout,"Attendance is currently unavailable",Snackbar.LENGTH_SHORT);
-                            snackbar.show();
-                        } else {
-                            login = true;
-                            Intent intent = new Intent(MainActivity.this, home.class);
-                            //getname(param);
-                            param_1 = param[1];
-                            response += "kkk" + param[1];
-                            intent.putExtra("result", response);
-                            intent.putExtra("Login_Check",true);
-                            edit.putString(param[1], response);
-                            edit.apply();
-                            startActivity(intent);
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // error
+                response -> {
+                    response_d = response;
+                    if (response.equals("404")) {
                         if (animationView.getVisibility() == View.VISIBLE)
                             animationView.setVisibility(View.INVISIBLE);
+                        l2.setVisibility(View.VISIBLE);
+                        logo.setVisibility(View.VISIBLE);
+                        Snackbar snackbar=Snackbar.make(constraintLayout,"Wrong credentials",Snackbar.LENGTH_SHORT);
+                        snackbar.show();
+                    } else if (response.equals("390")) {
+                        Intent intent = new Intent(MainActivity.this, home.class);
+                        intent.putExtra("REGISTRATION_NO", user.getText().toString());
+                        intent.putExtra("NO_ATTENDANCE", true);
+                        intent.putExtra("Login_Check",true);
+                        startActivity(intent);
+                    } else {
+                        Intent intent = new Intent(MainActivity.this, home.class);
+                        //getname(param);
+                        param_1 = param[1];
+                        response += "kkk" + param[1];
+                        intent.putExtra("result", response);
+                        intent.putExtra("REGISTRATION_NO", user.getText().toString());
+                        intent.putExtra("Login_Check",true);
+                        edit.putString(param[1], response);
+                        edit.apply();
+                        startActivity(intent);
+                    }
+                },
+                error -> {
+                    // error
+                    if (animationView.getVisibility() == View.VISIBLE)
+                        animationView.setVisibility(View.INVISIBLE);
 
-                        //showData(param[1], param[2]);
-                        if (error instanceof AuthFailureError) {
+                    //showData(param[1], param[2]);
+                    if (error instanceof AuthFailureError) {
+                        l2.setVisibility(View.VISIBLE);
+                        logo.setVisibility(View.VISIBLE);
+                        Snackbar snackbar=Snackbar.make(constraintLayout,"Wrong Credentials!",Snackbar.LENGTH_SHORT);
+                        snackbar.show();
+                    } else if (error instanceof ServerError) {
+                        l2.setVisibility(View.VISIBLE);
+                        logo.setVisibility(View.VISIBLE);
+
+                        Snackbar snackbar=Snackbar.make(constraintLayout,"Cannot connect to ITER servers right now.Try again",Snackbar.LENGTH_SHORT);
+                        snackbar.show();
+                    } else if (error instanceof NetworkError) {
+                        Log.e("Volley_error", String.valueOf(error));
+                        l2.setVisibility(View.VISIBLE);
+                        logo.setVisibility(View.VISIBLE);
+                        Snackbar snackbar=Snackbar.make(constraintLayout,"Cannot establish connection",Snackbar.LENGTH_SHORT);
+                        snackbar.show();
+                    } else if (error instanceof TimeoutError) {
+                        if (!track) {
+                            animationView.setVisibility(View.VISIBLE);
+                            track = true;
+                            btn.performClick();
+                        } else {
                             l2.setVisibility(View.VISIBLE);
                             logo.setVisibility(View.VISIBLE);
-                            Snackbar snackbar=Snackbar.make(constraintLayout,"Wrong Credentials!",Snackbar.LENGTH_SHORT);
-                            snackbar.show();
-                        } else if (error instanceof ServerError) {
-                            l2.setVisibility(View.VISIBLE);
-                            logo.setVisibility(View.VISIBLE);
-
                             Snackbar snackbar=Snackbar.make(constraintLayout,"Cannot connect to ITER servers right now.Try again",Snackbar.LENGTH_SHORT);
                             snackbar.show();
-                        } else if (error instanceof NetworkError) {
-                            Log.e("Volley_error", String.valueOf(error));
-                            l2.setVisibility(View.VISIBLE);
-                            logo.setVisibility(View.VISIBLE);
-                            Snackbar snackbar=Snackbar.make(constraintLayout,"Cannot establish connection",Snackbar.LENGTH_SHORT);
-                            snackbar.show();
-                        } else if (error instanceof TimeoutError) {
-                            if (!track) {
-                                animationView.setVisibility(View.VISIBLE);
-                                track = true;
-                                btn.performClick();
-                            } else {
-                                l2.setVisibility(View.VISIBLE);
-                                logo.setVisibility(View.VISIBLE);
-                                Snackbar snackbar=Snackbar.make(constraintLayout,"Cannot connect to ITER servers right now.Try again",Snackbar.LENGTH_SHORT);
-                                snackbar.show();
-                                track = false;
-                            }
+                            track = false;
                         }
-
                     }
+
                 }
         ) {
             @Override
