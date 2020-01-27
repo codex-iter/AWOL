@@ -32,12 +32,14 @@
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:layout_margin="5dp"
+                    app:cardElevation="0dp"
                     app:cardCornerRadius="7dp">
 
                     <ImageView
-                        android:id="@+id/imageViewItemPhoto"
+                        android:id="@+id/imageViewResultEmotion"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:padding="5dp"
                         android:scaleType="fitXY" />
 
                 </androidx.cardview.widget.CardView>
