@@ -1,5 +1,6 @@
 package mohit.codex_iter.www.awol;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -46,6 +47,7 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
     private LinearLayout main_layout;
     private int sem;
     private String totalCredit, sgpa, status;
+    private ProgressDialog pd;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -130,6 +132,10 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
         this.totalCredit = totalCredit;
         this.status = status;
         this.sgpa = sgpa;
+        pd = new ProgressDialog(this);
+        pd.setMessage("Fetching Result...");
+        pd.setCanceledOnTouchOutside(false);
+        pd.show();
         userm = getSharedPreferences("user",
                 Context.MODE_PRIVATE);
         String u = userm.getString("user", "");
@@ -145,6 +151,7 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
         RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
         StringRequest postRequest = new StringRequest(Request.Method.POST, param[0] + "/detailedResult",
                 response -> {
+                    pd.dismiss();
                     if (response.equals("169")) {
                         Snackbar snackbar = Snackbar.make(main_layout, "Results not found", Snackbar.LENGTH_SHORT);
                         snackbar.show();
@@ -162,6 +169,7 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
                 error -> {
                     // error
                     //showData(param[1], param[2]);
+                    pd.dismiss();
                     if (error instanceof AuthFailureError) {
                         Snackbar snackbar = Snackbar.make(main_layout, "Wrong Credentials!", Snackbar.LENGTH_SHORT);
                         snackbar.show();

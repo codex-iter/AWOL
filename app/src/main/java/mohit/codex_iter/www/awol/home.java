@@ -1,6 +1,7 @@
 package mohit.codex_iter.www.awol;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -122,6 +123,7 @@ public class home extends BaseThemedActivity {
     };
 
     ColorStateList csl2 = new ColorStateList(state2, color2);
+    private ProgressDialog pd;
 
 
     @Override
@@ -339,6 +341,10 @@ public class home extends BaseThemedActivity {
                                 startActivity(intent);
                                 break;
                             case R.id.result:
+                                pd = new ProgressDialog(this);
+                                pd.setMessage("Fetching Result...");
+                                pd.setCanceledOnTouchOutside(false);
+                                pd.show();
                                 userm = getSharedPreferences("user",
                                         Context.MODE_PRIVATE);
                                 String u = userm.getString("user", "");
@@ -434,6 +440,7 @@ public class home extends BaseThemedActivity {
         RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
         StringRequest postRequest = new StringRequest(Request.Method.POST, param[0] + "/result",
                 response -> {
+                    pd.dismiss();
                     if (response.equals("900")) {
                         Snackbar snackbar = Snackbar.make(main_layout, "Results not found", Snackbar.LENGTH_SHORT);
                         snackbar.show();
@@ -449,6 +456,7 @@ public class home extends BaseThemedActivity {
                 error -> {
                     // error
                     //showData(param[1], param[2]);
+                    pd.dismiss();
                     if (error instanceof AuthFailureError) {
                         Snackbar snackbar=Snackbar.make(main_layout,"Wrong Credentials!",Snackbar.LENGTH_SHORT);
                         snackbar.show();
