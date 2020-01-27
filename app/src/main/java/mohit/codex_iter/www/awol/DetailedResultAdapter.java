@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -32,8 +33,11 @@ public class DetailedResultAdapter extends RecyclerView.Adapter<DetailedResultAd
 
     @Override
     public void onBindViewHolder(@NonNull DetailedResultAdapter.DetailViewHolder holder, int position) {
-        holder.subject_name.setText(detailResultData.get(position).getSubjectdesc());
-        holder.subject_grade.setText(detailResultData.get(position).getGrade());
+        holder.textViewSubName.setText(detailResultData.get(position).getSubjectdesc());
+        holder.textViewSubCode.setText(detailResultData.get(position).getSubjectcode());
+        holder.textViewGrade.setText(detailResultData.get(position).getGrade());
+        holder.textViewIndvCredits.setText(detailResultData.get(position).getEarnedcredit());
+        Toast.makeText(ctx, "Sub " + position, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -43,14 +47,16 @@ public class DetailedResultAdapter extends RecyclerView.Adapter<DetailedResultAd
 
     public class DetailViewHolder extends RecyclerView.ViewHolder {
 
-        CardView cardView;
-        TextView subject_name, subject_grade;
+//        CardView cardView;
+        TextView textViewSubName, textViewSubCode, textViewGrade, textViewIndvCredits;
         public DetailViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            cardView = itemView.findViewById(R.id.card_view);
-            subject_name = itemView.findViewById(R.id.subjectName);
-            subject_grade = itemView.findViewById(R.id.subjectGrade);
+//            cardView = itemView.findViewById(R.id.card_view);
+            textViewSubName = itemView.findViewById(R.id.textViewSubName);
+            textViewSubCode = itemView.findViewById(R.id.textViewSubCode);
+            textViewGrade = itemView.findViewById(R.id.textViewGrade);
+            textViewIndvCredits = itemView.findViewById(R.id.textViewIndvCredits);
         }
     }
 }

@@ -55,7 +55,7 @@ public class DetailedResultActivity extends BaseThemedActivity {
         userm = getSharedPreferences("user",
                 Context.MODE_PRIVATE);
 
-        recyclerView = findViewById(R.id.rl);
+        recyclerView = findViewById(R.id.recyclerViewDetailedResult);
 
         if (dark) {
             recyclerView.setBackgroundColor(Color.parseColor("#141414"));
