@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,10 +35,12 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.ResultHold
 
     @Override
     public void onBindViewHolder(@NonNull ResultAdapter.ResultHolder holder, int position) {
-        holder.semTextView.setText(resultData.get(position).getSemesterdesc());
+        holder.semTextView.setText(String.valueOf(resultData.get(position).getStynumber()));
+//        holder.semTextView.setText("51");
+        holder.creditsTextView.setText(resultData.get(position).getTotalearnedcredit());
         holder.sgpaTextView.setText(resultData.get(position).getSgpaR());
 
-        holder.cardView.setOnClickListener(view -> {
+        holder.recyclerResultParent.setOnClickListener(view -> {
             if (listener != null) {
                 listener.onResultClicked(resultData.get(position).getStynumber(), resultData.get(position).getTotalearnedcredit(),
                         resultData.get(position).getFail(), resultData.get(position).getSgpaR());
@@ -52,14 +55,17 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.ResultHold
 
     public class ResultHolder extends RecyclerView.ViewHolder {
 
-        CardView cardView;
-        TextView semTextView, sgpaTextView;
+//        CardView cardView;
+        TextView semTextView, sgpaTextView, creditsTextView;
+        LinearLayout recyclerResultParent;
 
         public ResultHolder(@NonNull View itemView) {
             super(itemView);
-            cardView = itemView.findViewById(R.id.card_view);
-            semTextView = itemView.findViewById(R.id.sem);
-            sgpaTextView = itemView.findViewById(R.id.sgpa);
+            recyclerResultParent = itemView.findViewById(R.id.recyclerResultParent);
+//            cardView = itemView.findViewById(R.id.card_view);
+            semTextView = itemView.findViewById(R.id.textViewSem);
+            creditsTextView = itemView.findViewById(R.id.textViewCredits);
+            sgpaTextView = itemView.findViewById(R.id.textViewSGPA);
         }
     }
     public interface OnItemClickListener {
