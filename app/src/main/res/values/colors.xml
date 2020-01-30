@@ -12,6 +12,7 @@
     <color name="black">#FF0C0C0C</color>
     <color name="white">#FFFFFF</color>
     <color name="gray">#ece4e4</color>
+    <color name="transparent">#00ff001C</color>
 
 
     <color name="grey50">#fafafa</color>

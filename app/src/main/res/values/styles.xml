@@ -12,22 +12,22 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="toolbarColor">@android:color/white</item>
         <item name="menuIconTint">@color/colorPrimary</item>
-
     </style>
 
-    <style name="splash_screen" parent="Theme.AppCompat.Light.NoActionBar"></style>
-
+    <style name="splash_screen" parent="Theme.AppCompat.Light.NoActionBar" />
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:textColor">@color/colorwhite</item>
     </style>
 
-
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="DialogLight" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">@color/black</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
 
     <!-- Dark application theme. -->
     <style name="AppTheme.Dark" parent="Theme.AppCompat">
@@ -117,4 +117,5 @@
         <item name="toolbarColor">@color/green</item>
         <item name="toolbarTitle">@android:color/white</item>
     </style>
+
 </resources>

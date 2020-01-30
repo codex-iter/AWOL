@@ -3,7 +3,7 @@
     <string name="awol"><u><b><i>AWOL</i></b></u></string>
     <string name="avgat">AVERAGE\nATTENDANCE</string>
     <string name="avgab">AVERAGE\nABSENTS</string>
-    <string name="link">https://attendancecodexiter.herokuapp.com</string>
+    <string name="link">https://codexawol.herokuapp.com</string>
     <string name="github_url">https://github.com/codex-iter/AWOL</string>
     <string name="abtAPP">THIS APP DOES NOT PROMOTE BUNKING. THE APP WAS DESIGNED TO ENSURE THAT YOU CAN MANAGE A PROPER
     ATTENDANCE AND BUNK SAFELY.THE ATTENDANCE SHOWN IS COMPLETELY MANAGED BY COLLEGE.THE DEVELOPER IS NOT RESPONSIBLE FOR
@@ -25,7 +25,7 @@
     <string name="todo">TODO</string>
     <string name="sharing_text">ScreenShot by AWOL-ITER\n Download it bit.do/iter_awol</string>
     <string name="share_title">Share Attendance</string>
-    <string name="pawan_gorai">Pawan Gorai</string>
+    <string name="pawan_gorai">Pawan Kumar Gorai</string>
     <string name="nehal_kumar_singh">Nehal Kumar Singh</string>
     <string name="your_target_attendance">Your Target Attendance:</string>
     <string name="result">Result</string>
@@ -38,7 +38,8 @@
     <string name="username">USERNAME</string>
     <string name="password">PASSWORD</string>
     <string name="login">Login</string>
-    <string name="mohit_agarwal">CODEX</string>
+    <string name="mohit_agarwal">Mohit Agarwal</string>
+    <string name="codex">CODEX</string>
     <string name="_1641017271">404</string>
     <string name="_98_76">98.76%</string>
     <string name="plan_bunk">Plan@Bunk</string>
@@ -54,5 +55,7 @@
     <string name="Select_Subject">Select Subject</string>
     <string name="oops_attendance_not_available">Oops! Attendance not available!</string>
     <string name="results">Results</string>
+    <string name="avinav">Avinaba Ray</string>
+    <string name="check_result"><u>Check Results</u></string>
 </resources>
 

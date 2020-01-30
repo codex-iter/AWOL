@@ -16,7 +16,7 @@
         android:id="@+id/name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/mohit_agarwal"
+        android:text="@string/codex"
         android:textColor="@color/colorAccent"
         android:textStyle="bold"
         android:gravity="center_horizontal"

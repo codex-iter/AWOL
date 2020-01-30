@@ -28,8 +28,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="3dp"
-                android:textColor="@color/textColorLight"
-                android:textSize="20sp"
+                android:textColor="@color/colorPrimary"
+                android:textSize="18sp"
                 android:textStyle="bold"
                 android:text="Subject Name"/>
 
@@ -72,7 +72,7 @@
                         android:text="Sub Code"
                         android:layout_row="0"
                         android:layout_column="0"
-                        android:textColor="@color/textColorLight"
+                        android:textColor="@color/colorPrimary"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
@@ -85,8 +85,9 @@
                         android:layout_gravity="center_vertical"
                         android:layout_row="0"
                         android:layout_column="1"
-                        android:textColor="@color/common_google_signin_btn_text_dark_focused"
-                        android:textSize="16sp" />
+                        android:textColor="@color/colorAccent"
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
 
                     <TextView
                         android:id="@+id/textView5"
@@ -96,7 +97,7 @@
                         android:text="Grade"
                         android:layout_row="1"
                         android:layout_column="0"
-                        android:textColor="@color/textColorLight"
+                        android:textColor="@color/colorPrimary"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
@@ -109,7 +110,8 @@
                         android:layout_gravity="center_vertical"
                         android:layout_row="1"
                         android:layout_column="1"
-                        android:textColor="@color/common_google_signin_btn_text_dark_focused"
+                        android:textColor="@color/colorAccent"
+                        android:textStyle="bold"
                         android:textSize="16sp" />
 
                     <TextView
@@ -120,7 +122,7 @@
                         android:text="Credits Earned"
                         android:layout_row="2"
                         android:layout_column="0"
-                        android:textColor="@color/textColorLight"
+                        android:textColor="@color/colorPrimary"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
@@ -134,7 +136,8 @@
                         android:text="TextView"
                         android:layout_row="2"
                         android:layout_column="1"
-                        android:textColor="@color/common_google_signin_btn_text_dark_focused"
+                        android:textColor="@color/colorAccent"
+                        android:textStyle="bold"
                         android:textSize="16sp" />
 
 

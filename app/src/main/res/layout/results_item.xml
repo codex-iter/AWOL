@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/tools"
     android:id="@+id/recyclerResultParent"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -11,12 +12,14 @@
     android:paddingRight="5dp">
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/card_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="5dp"
         android:elevation="10dp"
+        app:cardCornerRadius="7dp"
         app:contentPadding="3dp"
-        app:cardCornerRadius="7dp">
+        card_view:cardBackgroundColor="@color/cardview_shadow_end_color">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -32,8 +35,8 @@
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:layout_margin="5dp"
-                    app:cardElevation="0dp"
-                    app:cardCornerRadius="7dp">
+                    app:cardCornerRadius="7dp"
+                    app:cardElevation="0dp">
 
                     <ImageView
                         android:id="@+id/imageViewResultEmotion"
@@ -48,19 +51,19 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:rowCount="3"
                     android:columnCount="3"
-                    android:paddingStart="15dp">
+                    android:paddingStart="15dp"
+                    android:rowCount="3">
 
                     <TextView
                         android:id="@+id/textView1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="2.5dp"
-                        android:text="Semester"
                         android:layout_row="0"
                         android:layout_column="0"
-                        android:textColor="@color/textColorLight"
+                        android:padding="2.5dp"
+                        android:text="Semester"
+                        android:textColor="@color/colorPrimary"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
@@ -68,23 +71,24 @@
                         android:id="@+id/textViewSem"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingLeft="15dp"
-                        android:text="TextView"
-                        android:layout_gravity="center_vertical"
                         android:layout_row="0"
                         android:layout_column="1"
-                        android:textColor="@color/common_google_signin_btn_text_dark_focused"
-                        android:textSize="16sp" />
+                        android:layout_gravity="center_vertical"
+                        android:paddingLeft="15dp"
+                        android:text="TextView"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/textView2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="2.5dp"
-                        android:text="Credits Earned"
                         android:layout_row="1"
                         android:layout_column="0"
-                        android:textColor="@color/textColorLight"
+                        android:padding="2.5dp"
+                        android:text="Credits Earned"
+                        android:textColor="@color/colorPrimary"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
@@ -92,23 +96,24 @@
                         android:id="@+id/textViewCredits"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingLeft="15dp"
-                        android:text="TextView"
-                        android:layout_gravity="center_vertical"
                         android:layout_row="1"
                         android:layout_column="1"
-                        android:textColor="@color/common_google_signin_btn_text_dark_focused"
-                        android:textSize="16sp" />
+                        android:layout_gravity="center_vertical"
+                        android:paddingLeft="15dp"
+                        android:text="TextView"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/textView3"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="2.5dp"
-                        android:text="SGPA"
                         android:layout_row="2"
                         android:layout_column="0"
-                        android:textColor="@color/textColorLight"
+                        android:padding="2.5dp"
+                        android:text="SGPA"
+                        android:textColor="@color/colorPrimary"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
@@ -116,22 +121,17 @@
                         android:id="@+id/textViewSGPA"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingLeft="15dp"
-                        android:scrollbars="vertical"
-                        android:layout_gravity="center_vertical"
-                        android:text="TextView"
                         android:layout_row="2"
                         android:layout_column="1"
-                        android:textColor="@color/common_google_signin_btn_text_dark_focused"
-                        android:textSize="16sp" />
-
-
+                        android:layout_gravity="center_vertical"
+                        android:paddingLeft="15dp"
+                        android:scrollbars="vertical"
+                        android:text="TextView"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
                 </GridLayout>
-
             </LinearLayout>
-
         </LinearLayout>
-
     </androidx.cardview.widget.CardView>
-
 </LinearLayout>

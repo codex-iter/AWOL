@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -13,6 +14,7 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -52,10 +54,7 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_recycle);
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setVisibility(View.GONE);
-//        navigationView.setEnabled(false);
+        setContentView(R.layout.detailedresult_activity);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -64,31 +63,32 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
         Objects.requireNonNull(getSupportActionBar()).setElevation(0);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowHomeEnabled(true);
         main_layout = findViewById(R.id.main_layout);
+        recyclerView = findViewById(R.id.recyclerViewDetailedResult);
 
         userm = getSharedPreferences("user",
                 Context.MODE_PRIVATE);
 
         Bundle bundle = getIntent().getExtras();
-        recyclerView = findViewById(R.id.rl);
-
         if (dark) {
+            toolbar.setTitleTextColor(getResources().getColor(R.color.white));
             recyclerView.setBackgroundColor(Color.parseColor("#141414"));
+        } else {
+            toolbar.setTitleTextColor(getResources().getColor(R.color.black));
+            Objects.requireNonNull(toolbar.getNavigationIcon()).setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP);
         }
-
-
         if (bundle != null) {
             result = bundle.getString("result");
+            Log.d("result", result);
         }
-
         if (result != null) {
             r = result.split("kkk");
             result = r[0];
         }
-
         try {
             JSONObject jObj1 = null;
             if (result != null) {
                 jObj1 = new JSONObject(result);
+                Log.d("resultdetail", String.valueOf(jObj1));
             }
             JSONArray arr = null;
             if (jObj1 != null) {
@@ -115,6 +115,7 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
             }
         } catch (Exception e) {
             e.printStackTrace();
+            Log.d("Error : ", String.valueOf(e));
         } finally {
             ResultData.ld = ld;
             for (int i = 0; i < l; i++) {
@@ -132,20 +133,18 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
         this.totalCredit = totalCredit;
         this.status = status;
         this.sgpa = sgpa;
-        pd = new ProgressDialog(this);
+        this.sem = sem;
+        pd = new ProgressDialog(this, R.style.DialogLight);
         pd.setMessage("Fetching Result...");
         pd.setCanceledOnTouchOutside(false);
         pd.show();
-        userm = getSharedPreferences("user",
-                Context.MODE_PRIVATE);
         String u = userm.getString("user", "");
         String p = userm.getString("pass", "");
         String s = String.valueOf(sem);
-        Log.d("SEM", "onResultClicked: " + sem);
+        Log.d("SEM", "onResultClicked: " + s);
         String web = getString(R.string.link);
         getData(web, u, p, s);
     }
-
 
     private void getData(final String... param) {
         RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
@@ -159,7 +158,7 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
                         Intent intent = new Intent(ResultActivity.this, DetailedResultActivity.class);
                         response += "kkk" + param[1];
                         intent.putExtra("result", response);
-                        intent.putExtra("Semester",sem );
+                        intent.putExtra("Semester",String.valueOf(sem));
                         intent.putExtra("SGPA", sgpa);
                         intent.putExtra("TotalCredit", totalCredit);
                         intent.putExtra("Status", status);
@@ -204,7 +203,6 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
         if (id == android.R.id.home) {
             finish();
         }
-
         return true;
     }
 }

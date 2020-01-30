@@ -1,6 +1,8 @@
 package mohit.codex_iter.www.awol;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,11 +35,20 @@ public class DetailedResultAdapter extends RecyclerView.Adapter<DetailedResultAd
 
     @Override
     public void onBindViewHolder(@NonNull DetailedResultAdapter.DetailViewHolder holder, int position) {
+        SharedPreferences theme = ctx.getSharedPreferences("theme", 0);
+        boolean dark = theme.getBoolean("dark_theme", false);
+
         holder.textViewSubName.setText(detailResultData.get(position).getSubjectdesc());
         holder.textViewSubCode.setText(detailResultData.get(position).getSubjectcode());
         holder.textViewGrade.setText(detailResultData.get(position).getGrade());
         holder.textViewIndvCredits.setText(detailResultData.get(position).getEarnedcredit());
-        Toast.makeText(ctx, "Sub " + position, Toast.LENGTH_SHORT).show();
+
+        if (!dark) {
+            holder.textViewSubCode.setTextColor(Color.parseColor("#141831"));
+            holder.textViewGrade.setTextColor(Color.parseColor("#141831"));;
+            holder.textViewIndvCredits.setTextColor(Color.parseColor("#141831"));
+            holder.textViewSubName.setTextColor(Color.parseColor("#141831"));
+        }
     }
 
     @Override

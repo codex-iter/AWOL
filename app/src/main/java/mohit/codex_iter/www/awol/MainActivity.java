@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
@@ -26,11 +27,17 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
 import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.snackbar.Snackbar;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -49,8 +56,8 @@ public class MainActivity extends BaseThemedActivity {
     private boolean login;
     private TextView logo;
     private String param_0, param_1, response_d;
-
-   ConstraintLayout constraintLayout;
+    private String studentName;
+    ConstraintLayout constraintLayout;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -62,7 +69,7 @@ public class MainActivity extends BaseThemedActivity {
 
         Bundle extras = getIntent().getExtras();
         String status = "";
-        constraintLayout= findViewById(R.id.ll);
+        constraintLayout = findViewById(R.id.ll);
         if (extras != null) {
             status = extras.getString("logout_status");
         }
@@ -96,13 +103,12 @@ public class MainActivity extends BaseThemedActivity {
             String p = pass.getText().toString().trim();
 
             if (u.equals("") || p.equals("")) {
-                Snackbar snackbar=Snackbar.make(constraintLayout,"Enter your Details",Snackbar.LENGTH_SHORT);
+                Snackbar snackbar = Snackbar.make(constraintLayout, "Enter your Details", Snackbar.LENGTH_SHORT);
                 snackbar.show();
-            }
-
-            else {
+            } else {
                 if (haveNetworkConnection()) {
                     String web = getString(R.string.link);
+                    getname(web, u ,p);
                     getData(web, u, p);
                     edit = userm.edit();
                     edit.putString("user", u);
@@ -113,34 +119,28 @@ public class MainActivity extends BaseThemedActivity {
                     edit.putBoolean("logout", false);
                     edit.apply();
                 } else {
-                    Snackbar snackbar=Snackbar.make(constraintLayout,"Something, went wrong.Try Again",Snackbar.LENGTH_SHORT);
+                    Snackbar snackbar = Snackbar.make(constraintLayout, "Something, went wrong.Try Again", Snackbar.LENGTH_SHORT);
                     snackbar.show();
                     user.setText("");
                     pass.setText("");
                 }
-//                    else {
-                // showData(u, p);
-//                    }
             }
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             if (imm != null) {
                 imm.hideSoftInputFromWindow(pass.getWindowToken(), 0);
             }
         });
-
         if (userm.contains("user") && userm.contains("pass") && logout.contains("logout") && !logout.getBoolean("logout", false)) {
             user.setText(userm.getString("user", ""));
             pass.setText(userm.getString("pass", ""));
             btn.performClick();
         }
-
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (login){
+        if (login) {
             Intent intent = new Intent(MainActivity.this, home.class);
             //getname(param);
             response_d += "kkk" + param_1;
@@ -150,28 +150,6 @@ public class MainActivity extends BaseThemedActivity {
             startActivity(intent);
         }
     }
-
-//    private void showData(String u, String p) {
-//        Toast.makeText(getApplicationContext(), "Something, went wrong.Try Again", Toast.LENGTH_SHORT).show();
-//        Intent intent = new Intent(MainActivity.this, home.class);
-//        String test = userm.getString("user", "");
-//        if(userm.contains(u)) {
-//            if(p.equals(userm.getString(u+"pass", ""))){
-//                edit=logout.edit();
-//                edit.putBoolean("logout",false);
-//                edit.apply();
-//                String s = userm.getString(u, "");
-//                intent.putExtra("result", s);
-//                Toast.makeText(getApplicationContext(), "showing offline value for this user", Toast.LENGTH_SHORT).show();
-//                startActivity(intent);
-//            }else {
-//                Toast.makeText(getApplicationContext(), "invalid credentials", Toast.LENGTH_SHORT).show();
-//            }
-//        }
-//        else
-//        Toast.makeText(getApplicationContext(), "No offline data for the user", Toast.LENGTH_SHORT).show();
-
-    //}
 
     private void resetAnimationView() {
         currentAnimationFrame = 0;
@@ -195,13 +173,14 @@ public class MainActivity extends BaseThemedActivity {
                             animationView.setVisibility(View.INVISIBLE);
                         l2.setVisibility(View.VISIBLE);
                         logo.setVisibility(View.VISIBLE);
-                        Snackbar snackbar=Snackbar.make(constraintLayout,"Wrong credentials",Snackbar.LENGTH_SHORT);
+                        Snackbar snackbar = Snackbar.make(constraintLayout, "Wrong credentials", Snackbar.LENGTH_SHORT);
                         snackbar.show();
                     } else if (response.equals("390")) {
                         Intent intent = new Intent(MainActivity.this, home.class);
                         intent.putExtra("REGISTRATION_NO", user.getText().toString());
                         intent.putExtra("NO_ATTENDANCE", true);
-                        intent.putExtra("Login_Check",true);
+                        intent.putExtra("Login_Check", true);
+                        intent.putExtra("Student_Name", studentName);
                         startActivity(intent);
                     } else {
                         Intent intent = new Intent(MainActivity.this, home.class);
@@ -210,7 +189,8 @@ public class MainActivity extends BaseThemedActivity {
                         response += "kkk" + param[1];
                         intent.putExtra("result", response);
                         intent.putExtra("REGISTRATION_NO", user.getText().toString());
-                        intent.putExtra("Login_Check",true);
+                        intent.putExtra("Login_Check", true);
+                        intent.putExtra("Student_Name", studentName);
                         edit.putString(param[1], response);
                         edit.apply();
                         startActivity(intent);
@@ -225,19 +205,18 @@ public class MainActivity extends BaseThemedActivity {
                     if (error instanceof AuthFailureError) {
                         l2.setVisibility(View.VISIBLE);
                         logo.setVisibility(View.VISIBLE);
-                        Snackbar snackbar=Snackbar.make(constraintLayout,"Wrong Credentials!",Snackbar.LENGTH_SHORT);
+                        Snackbar snackbar = Snackbar.make(constraintLayout, "Wrong Credentials!", Snackbar.LENGTH_SHORT);
                         snackbar.show();
                     } else if (error instanceof ServerError) {
                         l2.setVisibility(View.VISIBLE);
                         logo.setVisibility(View.VISIBLE);
-
-                        Snackbar snackbar=Snackbar.make(constraintLayout,"Cannot connect to ITER servers right now.Try again",Snackbar.LENGTH_SHORT);
+                        Snackbar snackbar = Snackbar.make(constraintLayout, "Something went wrong", Snackbar.LENGTH_SHORT);
                         snackbar.show();
                     } else if (error instanceof NetworkError) {
                         Log.e("Volley_error", String.valueOf(error));
                         l2.setVisibility(View.VISIBLE);
                         logo.setVisibility(View.VISIBLE);
-                        Snackbar snackbar=Snackbar.make(constraintLayout,"Cannot establish connection",Snackbar.LENGTH_SHORT);
+                        Snackbar snackbar = Snackbar.make(constraintLayout, "Cannot establish connection", Snackbar.LENGTH_SHORT);
                         snackbar.show();
                     } else if (error instanceof TimeoutError) {
                         if (!track) {
@@ -247,7 +226,7 @@ public class MainActivity extends BaseThemedActivity {
                         } else {
                             l2.setVisibility(View.VISIBLE);
                             logo.setVisibility(View.VISIBLE);
-                            Snackbar snackbar=Snackbar.make(constraintLayout,"Cannot connect to ITER servers right now.Try again",Snackbar.LENGTH_SHORT);
+                            Snackbar snackbar = Snackbar.make(constraintLayout, "Cannot connect to ITER servers right now.Try again", Snackbar.LENGTH_SHORT);
                             snackbar.show();
                             track = false;
                         }
@@ -268,44 +247,34 @@ public class MainActivity extends BaseThemedActivity {
 
 
     }
-//    private void getname(final String... param){
-//        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-//        StringRequest postRequest = new StringRequest(Request.Method.POST, param[0]+"/studentinfo",
-//                new Response.Listener<String>()
-//                {
-//                    @Override
-//                    public void onResponse(String response)  {
-//
-//                     try {
-//                           JSONObject jobj  = new JSONObject(response);
-//                           JSONArray jarr   = jobj.getJSONArray("detail");
-//                           JSONObject jobj1 = jarr.getJSONObject(0);
-//                           name = jobj1.getString("name");
-//                        } catch (JSONException e) {
-//                            Toast.makeText(getApplicationContext(), "cannot fetch name!!", Toast.LENGTH_SHORT).show();
-//                        }
-//
-//                    }
-//                },
-//                new Response.ErrorListener()
-//                {
-//                    @Override
-//                    public void onErrorResponse(VolleyError error) {}}
-//
-//        ) {
-//            @Override
-//            protected Map<String, String> getParams()
-//            {
-//                Map<String, String>  params = new HashMap<String, String>();
-//                params.put("user", param[1]);
-//                params.put("pass", param[2]);
-//
-//                return params;
-//            }
-//        };
-//        queue.add(postRequest);
-//
-//    }
+
+    private void getname(final String... param) {
+        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+        StringRequest postRequest = new StringRequest(Request.Method.POST, param[0] + "/studentinfo",
+                response -> {
+                    try {
+                        JSONObject jobj = new JSONObject(response);
+                        JSONArray jarr = jobj.getJSONArray("detail");
+                        JSONObject jobj1 = jarr.getJSONObject(0);
+                        studentName = jobj1.getString("name");
+                        Log.d("Student", studentName);
+                    } catch (JSONException e) {
+                        Toast.makeText(getApplicationContext(), "Cannot fetch name!!", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                error -> {
+                }
+        ) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("user", param[1]);
+                params.put("pass", param[2]);
+                return params;
+            }
+        };
+        queue.add(postRequest);
+    }
 
     private boolean haveNetworkConnection() {
         boolean haveConnectedWifi = false;
@@ -328,6 +297,7 @@ public class MainActivity extends BaseThemedActivity {
 
         return haveConnectedWifi || haveConnectedMobile;
     }
+
     @Override
     public void onBackPressed() {
         moveTaskToBack(true);

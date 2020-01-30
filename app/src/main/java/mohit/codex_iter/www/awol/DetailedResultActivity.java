@@ -1,13 +1,15 @@
 package mohit.codex_iter.www.awol;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.widget.TextView;
+import android.util.Log;
+import android.view.MenuItem;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,10 +17,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class DetailedResultActivity extends BaseThemedActivity {
 
-    private String mearnedCredits, msgpa, mstatus;
+    private String mearnedCredits, msgpa, mstatus, msem;
     SharedPreferences userm;
     private RecyclerView recyclerView;
     private String[] r;
@@ -27,43 +30,42 @@ public class DetailedResultActivity extends BaseThemedActivity {
     private DetailResultData[] ld;
     private ArrayList<DetailResultData> resultList = new ArrayList<>();
     private DetailedResultAdapter resultAdapter;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.detailedresult_activity);
 
-        TextView earnedCredits = findViewById(R.id.earnedCredits);
-        TextView sgpa = findViewById(R.id.sgpa);
-        TextView status = findViewById(R.id.status);
-
         Bundle bundle = getIntent().getExtras();
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        recyclerView = findViewById(R.id.recyclerViewDetailedResult);
+
+        setSupportActionBar(toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Results");
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setElevation(0);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowHomeEnabled(true);
 
         if (bundle != null) {
-           mearnedCredits = bundle.getString("TotalCredit");
-           msgpa = bundle.getString("SGPA");
-           mstatus = bundle.getString("Status");
+            mearnedCredits = bundle.getString("TotalCredit");
+            msgpa = bundle.getString("SGPA");
+            mstatus = bundle.getString("Status");
+            msem = bundle.getString("Semester");
         }
 
-        earnedCredits.setText("Total CreaditsEarned : " + mearnedCredits);
-        sgpa.setText("SGPA : " + msgpa);
-//        if (mstatus.equals("N")) {
-//            status.setText("Pass");
-//        } else {
-//            status.setText("No");
-//        }
+        if (dark) {
+            toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+            recyclerView.setBackgroundColor(Color.parseColor("#141414"));
+        } else {
+            toolbar.setTitleTextColor(getResources().getColor(R.color.black));
+            Objects.requireNonNull(toolbar.getNavigationIcon()).setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP);
+        }
 
         userm = getSharedPreferences("user",
                 Context.MODE_PRIVATE);
-
-        recyclerView = findViewById(R.id.recyclerViewDetailedResult);
-
-        if (dark) {
-            recyclerView.setBackgroundColor(Color.parseColor("#141414"));
-        }
-
-
         if (bundle != null) {
             result = bundle.getString("result");
+            Log.d("result", result);
         }
 
         if (result != null) {
@@ -75,10 +77,14 @@ public class DetailedResultActivity extends BaseThemedActivity {
             JSONObject jObj1 = null;
             if (result != null) {
                 jObj1 = new JSONObject(result);
+                Log.d("resultdetail", String.valueOf(jObj1));
             }
             JSONArray arr = null;
             if (jObj1 != null) {
-                arr = jObj1.getJSONArray("Semdata");
+                JSONObject jOj2;
+                jOj2 = jObj1.getJSONObject(msem);
+                arr = jOj2.getJSONArray("Semdata");
+                Log.d("resultdetail", String.valueOf(arr));
             }
             if (arr != null) {
                 l = arr.length();
@@ -94,10 +100,13 @@ public class DetailedResultActivity extends BaseThemedActivity {
                 if (jObj != null) {
                     ld[i].setSubjectdesc(jObj.getString("subjectdesc"));
                     ld[i].setGrade(jObj.getString("grade"));
+                    ld[i].setEarnedcredit(jObj.getString("earnedcredit"));
+                    ld[i].setSubjectcode(jObj.getString("subjectcode"));
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
+            Log.d("Error : ", String.valueOf(e));
         } finally {
             DetailResultData.ld = ld;
             for (int i = 0; i < l; i++) {
@@ -108,5 +117,14 @@ public class DetailedResultActivity extends BaseThemedActivity {
             recyclerView.setAdapter(resultAdapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            finish();
+        }
+        return true;
     }
 }

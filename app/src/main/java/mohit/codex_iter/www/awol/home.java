@@ -32,6 +32,7 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.FileProvider;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -99,6 +100,8 @@ public class home extends BaseThemedActivity {
     private boolean no_attendance;
     private LinearLayout main_layout;
     private static final int MY_REQUEST_CODE = 1011;
+    private String studentName;
+    private Button check_result;
 
     int[][] state = new int[][]{
             new int[]{android.R.attr.state_checked}, // checked
@@ -135,6 +138,7 @@ public class home extends BaseThemedActivity {
         final NavigationView navigationView = findViewById(R.id.nav_view);
         main_layout = findViewById(R.id.main_layout);
         mDrawerLayout = findViewById(R.id.drawer_layout);
+        check_result = findViewById(R.id.check_result);
         Bundle bundle = getIntent().getExtras();
 
 
@@ -181,6 +185,10 @@ public class home extends BaseThemedActivity {
         boolean logincheck = false;
         if (bundle != null) {
             logincheck = bundle.getBoolean("Login_Check");
+            studentName = bundle.getString("Student_Name");
+            if (studentName != null) {
+                Log.d("Student", studentName);
+            }
         }
         if (logincheck) {
             Snackbar snackbar = Snackbar.make(main_layout, "Success!", Snackbar.LENGTH_SHORT);
@@ -189,7 +197,6 @@ public class home extends BaseThemedActivity {
         rl = findViewById(R.id.rl);
         if (dark) {
             rl.setBackgroundColor(Color.parseColor("#141414"));
-
         }
         if (bundle != null) {
             no_attendance = bundle.getBoolean("NO_ATTENDANCE");
@@ -200,12 +207,14 @@ public class home extends BaseThemedActivity {
             menuItem.setEnabled(false);
 
             rl.setVisibility(View.GONE);
-            TextView tv = findViewById(R.id.NA);
-            tv.setVisibility(View.VISIBLE);
+            ConstraintLayout noAttendance = findViewById(R.id.NA);
+            TextView tv = findViewById(R.id.NA_content);
+            noAttendance.setVisibility(View.VISIBLE);
             if (dark) {
                 tv.setTextColor(Color.parseColor("#FFFFFF"));
                 main_layout.setBackgroundColor(Color.parseColor("#141414"));
             } else {
+                check_result.setTextColor(Color.parseColor("#141414"));
                 tv.setTextColor(Color.parseColor("#141414"));
             }
         }
@@ -268,7 +277,7 @@ public class home extends BaseThemedActivity {
             View headerView = navigationView.getHeaderView(0);
             name = headerView.findViewById(R.id.name);
             reg = headerView.findViewById(R.id.reg);
-            name.setText("");
+            name.setText(studentName);
             if (bundle != null) {
                 reg.setText(bundle.getString("REGISTRATION_NO"));
             }
@@ -277,12 +286,13 @@ public class home extends BaseThemedActivity {
             avat.setText(String.format(Locale.US, "%.2f", avgat));
             avab = headerView.findViewById(R.id.avab);
             avab.setText(String.valueOf(avgab));
-//            if (dark) {
-//
-//                navigationView.setItemTextColor(csl);
-//                navigationView.setItemIconTintList(csl2);
-//            }
 
+            check_result.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    fetchResult();
+                }
+            });
             navigationView.setNavigationItemSelectedListener(
                     menuItem -> {
                         mDrawerLayout.closeDrawers();
@@ -341,16 +351,7 @@ public class home extends BaseThemedActivity {
                                 startActivity(intent);
                                 break;
                             case R.id.result:
-                                pd = new ProgressDialog(this);
-                                pd.setMessage("Fetching Result...");
-                                pd.setCanceledOnTouchOutside(false);
-                                pd.show();
-                                userm = getSharedPreferences("user",
-                                        Context.MODE_PRIVATE);
-                                String u = userm.getString("user", "");
-                                String p = userm.getString("pass", "");
-                                String web = getString(R.string.link);
-                                getData(web, u, p);
+                                fetchResult();
                                 break;
                             case R.id.setting:
                                 Intent intent1 = new Intent(getApplicationContext(), SettingsActivity.class);
@@ -370,6 +371,19 @@ public class home extends BaseThemedActivity {
                         return true;
                     });
         }
+    }
+
+    public void fetchResult() {
+        pd = new ProgressDialog(this, R.style.DialogLight);
+        pd.setMessage("Fetching Result...");
+        pd.setCanceledOnTouchOutside(false);
+        pd.show();
+        userm = getSharedPreferences("user",
+                Context.MODE_PRIVATE);
+        String u = userm.getString("user", "");
+        String p = userm.getString("pass", "");
+        String web = getString(R.string.link);
+        getData(web, u, p);
     }
 
     @Override
@@ -397,7 +411,6 @@ public class home extends BaseThemedActivity {
             }
         }
     }
-
 
     private void popupSnackbarForCompleteUpdate() {
         Snackbar snackbar =
@@ -448,27 +461,22 @@ public class home extends BaseThemedActivity {
                         Intent intent = new Intent(home.this, ResultActivity.class);
                         response += "kkk" + param[1];
                         intent.putExtra("result", response);
-                      //  edit.putString(param[1], response);
-//                        edit.apply();
                         startActivity(intent);
                     }
                 },
                 error -> {
-                    // error
-                    //showData(param[1], param[2]);
                     pd.dismiss();
                     if (error instanceof AuthFailureError) {
-                        Snackbar snackbar=Snackbar.make(main_layout,"Wrong Credentials!",Snackbar.LENGTH_SHORT);
+                        Snackbar snackbar = Snackbar.make(main_layout, "Wrong Credentials!", Snackbar.LENGTH_SHORT);
                         snackbar.show();
                     } else if (error instanceof ServerError) {
-                        Snackbar snackbar=Snackbar.make(main_layout,"Cannot connect to ITER servers right now.Try again",Snackbar.LENGTH_SHORT);
+                        Snackbar snackbar = Snackbar.make(main_layout, "Cannot connect to ITER servers right now.Try again", Snackbar.LENGTH_SHORT);
                         snackbar.show();
                     } else if (error instanceof NetworkError) {
                         Log.e("Volley_error", String.valueOf(error));
-                        Snackbar snackbar=Snackbar.make(main_layout,"Cannot establish connection",Snackbar.LENGTH_SHORT);
+                        Snackbar snackbar = Snackbar.make(main_layout, "Cannot establish connection", Snackbar.LENGTH_SHORT);
                         snackbar.show();
                     }
-
                 }
         ) {
             @Override
@@ -485,26 +493,20 @@ public class home extends BaseThemedActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-
         getMenuInflater().inflate(R.menu.share, menu);
-
         return super.onCreateOptionsMenu(menu);
-
     }
 
     private String Updated(JSONObject jObj, SharedPreferences sub, String code, int i) throws JSONException {
         if (sub.contains(code)) {
             JSONObject old = new JSONObject(sub.getString(code, ""));
-
             SharedPreferences status_lg = this.getSharedPreferences("status", 0);
             String status = status_lg.getString("status", "");
-
             if (status.equals("0")) {
                 old.put("Latt", "");
                 old.put("Patt", "");
                 old.put("TotalAttandence", "");
             }
-
             if ((!old.getString("Latt").equals(jObj.getString("Latt"))) || (!old.getString("Patt").equals(jObj.getString("Patt")))) {
                 jObj.put("updated", new Date().getTime());
                 ld[i].setOld(old.getString("TotalAttandence"));
@@ -553,7 +555,6 @@ public class home extends BaseThemedActivity {
                     }
                 }
             }
-
         }
         return super.onOptionsItemSelected(item);
     }
@@ -561,7 +562,6 @@ public class home extends BaseThemedActivity {
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void shareScreenshot(File file) {
         try {
-
             Uri uri = FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() +
                     ".my.package.name.provider", file);
             Intent intent = new Intent();
@@ -576,7 +576,6 @@ public class home extends BaseThemedActivity {
         } catch (FileUriExposedException e) {
             Toast.makeText(this, "Something, went wrong.", Toast.LENGTH_SHORT).show();
         }
-
     }
 
     public void shareScreenshot_low(File file) {
@@ -590,11 +589,8 @@ public class home extends BaseThemedActivity {
         startActivity(Intent.createChooser(intent, getString(R.string.share_title)));
     }
 
-
     @Override
     public void onBackPressed() {
-
-
         if (this.mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             this.mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
