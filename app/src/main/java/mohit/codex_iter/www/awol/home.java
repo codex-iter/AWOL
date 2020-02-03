@@ -5,9 +5,9 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
@@ -17,6 +17,7 @@ import android.os.FileUriExposedException;
 import android.os.Vibrator;
 import android.text.Html;
 import android.text.format.DateUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -29,6 +30,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
@@ -46,16 +48,16 @@ import com.android.volley.RequestQueue;
 import com.android.volley.ServerError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.android.play.core.appupdate.AppUpdateInfo;
 import com.google.android.play.core.appupdate.AppUpdateManager;
-import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
-import com.google.android.play.core.install.InstallStateUpdatedListener;
-import com.google.android.play.core.install.model.AppUpdateType;
-import com.google.android.play.core.install.model.InstallStatus;
-import com.google.android.play.core.install.model.UpdateAvailability;
-import com.google.android.play.core.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -69,39 +71,61 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import mohit.codex_iter.www.awol.theme.ThemeFragment;
 
-import static com.crashlytics.android.Crashlytics.log;
-import static com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE;
-
+import static mohit.codex_iter.www.awol.Constants.API;
+import static mohit.codex_iter.www.awol.Constants.LOGIN;
+import static mohit.codex_iter.www.awol.Constants.NOATTENDANCE;
+import static mohit.codex_iter.www.awol.Constants.REGISTRATION_NUMBER;
+import static mohit.codex_iter.www.awol.Constants.RESULTS;
+import static mohit.codex_iter.www.awol.Constants.RESULTSTATUS;
+import static mohit.codex_iter.www.awol.Constants.SHOWRESULT;
+import static mohit.codex_iter.www.awol.Constants.STUDENT_NAME;
 
 public class home extends BaseThemedActivity {
+
+    @BindView(R.id.main_layout)
+    LinearLayout mainLayout;
+    @BindView(R.id.drawer_layout)
+    DrawerLayout drawerLayout;
+    @BindView(R.id.check_result)
+    Button checkResult;
+    @BindView(R.id.nav_view)
+    NavigationView navigationView;
+    @BindView(R.id.NA_content)
+    TextView tv;
+    @BindView(R.id.rl)
+    RecyclerView recyclerView;
+    @BindView(R.id.NA)
+    ConstraintLayout noAttendanceLayout;
+    @BindView(R.id.bottomSheet_view)
+    ConstraintLayout bottomSheetView;
+
     private String result;
     private ListData[] ld;
     @SuppressWarnings("FieldCanBeLocal")
     private int l, avgab;
     @SuppressWarnings("FieldCanBeLocal")
     private double avgat;
-    public RecyclerView rl;
     @SuppressWarnings("FieldCanBeLocal")
     private String[] r;
     public ArrayList<ListData> myList = new ArrayList<>();
-    ;
     @SuppressWarnings("FieldCanBeLocal")
     private String code;
     @SuppressWarnings("FieldCanBeLocal")
-    private TextView name, reg, avat, avab;
-    private SharedPreferences sub, userm;
+    private SharedPreferences sub, userm, studentnamePrefernces;
     private SharedPreferences.Editor edit;
     @SuppressWarnings("FieldCanBeLocal")
     private MyBaseAdapter adapter;
-    private DrawerLayout mDrawerLayout;
     private AppUpdateManager appUpdateManager;
     private boolean no_attendance;
-    private LinearLayout main_layout;
     private static final int MY_REQUEST_CODE = 1011;
     private String studentName;
-    private Button check_result;
+    private String api;
+    private boolean showResult;
+    private BottomSheetBehavior bottomSheetBehavior;
 
     int[][] state = new int[][]{
             new int[]{android.R.attr.state_checked}, // checked
@@ -128,99 +152,103 @@ public class home extends BaseThemedActivity {
     ColorStateList csl2 = new ColorStateList(state2, color2);
     private ProgressDialog pd;
 
+    private static final String TAG = "Home";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_recycle);
-        final NavigationView navigationView = findViewById(R.id.nav_view);
-        main_layout = findViewById(R.id.main_layout);
-        mDrawerLayout = findViewById(R.id.drawer_layout);
-        check_result = findViewById(R.id.check_result);
+
+        ButterKnife.bind(this);
         Bundle bundle = getIntent().getExtras();
-
-
-        appUpdateManager = AppUpdateManagerFactory.create(home.this);
-
-        Task<AppUpdateInfo> appUpdateInfoTask = appUpdateManager.getAppUpdateInfo();
-
-        appUpdateInfoTask.addOnSuccessListener(appUpdateInfo -> {
-            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
-                if (appUpdateInfo.isUpdateTypeAllowed(IMMEDIATE)) {
-                    try {
-                        appUpdateManager.startUpdateFlowForResult(
-                                appUpdateInfo,
-                                IMMEDIATE,
-                                home.this,
-                                MY_REQUEST_CODE);
-                    } catch (IntentSender.SendIntentException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    //FLEXIBLE
-                    try {
-                        appUpdateManager.startUpdateFlowForResult(
-                                appUpdateInfo,
-                                AppUpdateType.FLEXIBLE,
-                                home.this,
-                                MY_REQUEST_CODE);
-                    } catch (IntentSender.SendIntentException e) {
-                        e.printStackTrace();
+//        appUpdateManager = AppUpdateManagerFactory.create(home.this);
+//
+        CollectionReference apiCollection = FirebaseFirestore.getInstance().collection(RESULTSTATUS);
+        apiCollection.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                if (queryDocumentSnapshots != null) {
+                    for (DocumentChange documentChange : queryDocumentSnapshots.getDocumentChanges()) {
+                        showResult = documentChange.getDocument().getBoolean(SHOWRESULT);
                     }
                 }
             }
-
         });
-
-        InstallStateUpdatedListener updatedListener = state -> {
-            if (state.installStatus() == InstallStatus.DOWNLOADED) {
-                popupSnackbarForCompleteUpdate();
-            }
-        };
-
-        appUpdateManager.registerListener(updatedListener);
+//
+//        Task<AppUpdateInfo> appUpdateInfoTask = appUpdateManager.getAppUpdateInfo();
+//
+//        appUpdateInfoTask.addOnSuccessListener(appUpdateInfo -> {
+//            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
+//                if (appUpdateInfo.isUpdateTypeAllowed(IMMEDIATE)) {
+//                    try {
+//                        appUpdateManager.startUpdateFlowForResult(
+//                                appUpdateInfo,
+//                                IMMEDIATE,
+//                                home.this,
+//                                MY_REQUEST_CODE);
+//                    } catch (IntentSender.SendIntentException e) {
+//                        e.printStackTrace();
+//                    }
+//                } else {
+//                    //FLEXIBLE
+//                    try {
+//                        appUpdateManager.startUpdateFlowForResult(
+//                                appUpdateInfo,
+//                                AppUpdateType.FLEXIBLE,
+//                                home.this,
+//                                MY_REQUEST_CODE);
+//                    } catch (IntentSender.SendIntentException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//
+//        });
+//
+//        InstallStateUpdatedListener updatedListener = state -> {
+//            if (state.installStatus() == InstallStatus.DOWNLOADED) {
+//                popupSnackbarForCompleteUpdate();
+//            }
+//        };
+//
+//        appUpdateManager.registerListener(updatedListener);
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetView);
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
         boolean logincheck = false;
         if (bundle != null) {
-            logincheck = bundle.getBoolean("Login_Check");
-            studentName = bundle.getString("Student_Name");
-            if (studentName != null) {
-                Log.d("Student", studentName);
-            }
+            logincheck = bundle.getBoolean(LOGIN);
+            api = bundle.getString(API);
+            no_attendance = bundle.getBoolean(NOATTENDANCE);
         }
+        studentnamePrefernces = this.getSharedPreferences(STUDENT_NAME, MODE_PRIVATE);
+        studentName = studentnamePrefernces.getString(STUDENT_NAME, "");
+
         if (logincheck) {
-            Snackbar snackbar = Snackbar.make(main_layout, "Success!", Snackbar.LENGTH_SHORT);
+            Snackbar snackbar = Snackbar.make(mainLayout, "Success!", Snackbar.LENGTH_SHORT);
             snackbar.show();
         }
-        rl = findViewById(R.id.rl);
         if (dark) {
-            rl.setBackgroundColor(Color.parseColor("#141414"));
+            recyclerView.setBackgroundColor(Color.parseColor("#141414"));
         }
-        if (bundle != null) {
-            no_attendance = bundle.getBoolean("NO_ATTENDANCE");
-        }
+        Menu menu = navigationView.getMenu();
         if (no_attendance) {
-            Menu menu = navigationView.getMenu();
             MenuItem menuItem = menu.findItem(R.id.pab);
             menuItem.setEnabled(false);
 
-            rl.setVisibility(View.GONE);
-            ConstraintLayout noAttendance = findViewById(R.id.NA);
-            TextView tv = findViewById(R.id.NA_content);
-            noAttendance.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+            noAttendanceLayout.setVisibility(View.VISIBLE);
             if (dark) {
                 tv.setTextColor(Color.parseColor("#FFFFFF"));
-                main_layout.setBackgroundColor(Color.parseColor("#141414"));
+                mainLayout.setBackgroundColor(Color.parseColor("#141414"));
             } else {
-                check_result.setTextColor(Color.parseColor("#141414"));
+                checkResult.setTextColor(Color.parseColor("#141414"));
                 tv.setTextColor(Color.parseColor("#141414"));
             }
         }
 
         if (bundle != null) {
-            result = bundle.getString("result");
+            result = bundle.getString(RESULTS);
         }
 
         if (result != null) {
@@ -264,9 +292,9 @@ public class home extends BaseThemedActivity {
                 myList.add(ld[i]);
             }
             adapter = new MyBaseAdapter(this, myList);
-            rl.setHasFixedSize(true);
-            rl.setAdapter(adapter);
-            rl.setLayoutManager(new LinearLayoutManager(this));
+            recyclerView.setHasFixedSize(true);
+            recyclerView.setAdapter(adapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
             Toolbar toolbar = findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
@@ -275,27 +303,22 @@ public class home extends BaseThemedActivity {
             actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
             actionbar.setTitle(null);
             View headerView = navigationView.getHeaderView(0);
-            name = headerView.findViewById(R.id.name);
-            reg = headerView.findViewById(R.id.reg);
+            TextView name = headerView.findViewById(R.id.name);
+            TextView reg = headerView.findViewById(R.id.reg);
             name.setText(studentName);
             if (bundle != null) {
-                reg.setText(bundle.getString("REGISTRATION_NO"));
+                reg.setText(bundle.getString(REGISTRATION_NUMBER));
             }
 
-            avat = headerView.findViewById(R.id.avat);
+            TextView avat = headerView.findViewById(R.id.avat);
             avat.setText(String.format(Locale.US, "%.2f", avgat));
-            avab = headerView.findViewById(R.id.avab);
+            TextView avab = headerView.findViewById(R.id.avab);
             avab.setText(String.valueOf(avgab));
 
-            check_result.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    fetchResult();
-                }
-            });
+            checkResult.setOnClickListener(view -> fetchResult());
             navigationView.setNavigationItemSelectedListener(
                     menuItem -> {
-                        mDrawerLayout.closeDrawers();
+                        drawerLayout.closeDrawers();
                         switch (menuItem.getItemId()) {
                             case R.id.sa:
                                 Intent sendIntent = new Intent();
@@ -319,6 +342,9 @@ public class home extends BaseThemedActivity {
                                 binder.setPositiveButton(Html.fromHtml("<font color='#FF7F27'>Yes</font>"), (dialog, which) -> {
                                     edit = sub.edit();
                                     edit.putBoolean("logout", true);
+                                    edit.apply();
+                                    edit = studentnamePrefernces.edit();
+                                    edit.putString(STUDENT_NAME, null);
                                     edit.apply();
                                     Intent intent3 = new Intent(getApplicationContext(), MainActivity.class);
                                     intent3.putExtra("logout_status", "0");
@@ -351,7 +377,12 @@ public class home extends BaseThemedActivity {
                                 startActivity(intent);
                                 break;
                             case R.id.result:
-                                fetchResult();
+                                if (!showResult) {
+                                    Snackbar snackbar = Snackbar.make(mainLayout, "We will be back within 3-4 days", Snackbar.LENGTH_LONG);
+                                    snackbar.show();
+                                } else {
+                                    fetchResult();
+                                }
                                 break;
                             case R.id.setting:
                                 Intent intent1 = new Intent(getApplicationContext(), SettingsActivity.class);
@@ -363,7 +394,7 @@ public class home extends BaseThemedActivity {
                                 startActivity(intent2);
                                 break;
                             case R.id.change_theme:
-                                mDrawerLayout.closeDrawer(GravityCompat.START);
+                                drawerLayout.closeDrawer(GravityCompat.START);
                                 ThemeFragment fragment = ThemeFragment.newInstance();
                                 fragment.show(getSupportFragmentManager(), "theme_fragment");
                                 break;
@@ -377,104 +408,112 @@ public class home extends BaseThemedActivity {
         pd = new ProgressDialog(this, R.style.DialogLight);
         pd.setMessage("Fetching Result...");
         pd.setCanceledOnTouchOutside(false);
-        pd.show();
+//        pd.show();
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        drawerLayout.setBackgroundColor(getResources().getColor(R.color.grey50));
+        bottomSheetBehavior.setPeekHeight(convertDpToPixel(60));
         userm = getSharedPreferences("user",
                 Context.MODE_PRIVATE);
         String u = userm.getString("user", "");
         String p = userm.getString("pass", "");
-        String web = getString(R.string.link);
-        getData(web, u, p);
+        getData(api, u, p);
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == MY_REQUEST_CODE) {
-            if (resultCode != RESULT_OK) {
-                log("Update flow failed! Result code: " + resultCode);
-                appUpdateManager.getAppUpdateInfo().addOnSuccessListener(
-                        appUpdateInfo -> {
-                            if (appUpdateInfo.isUpdateTypeAllowed(IMMEDIATE)) {
-                                finish();
-                            } else {
-                                Snackbar snackbar =
-                                        Snackbar.make(
-                                                findViewById(android.R.id.content),
-                                                "Update has been failed.",
-                                                Snackbar.LENGTH_INDEFINITE);
-                                snackbar.setAction("RETRY", view -> appUpdateManager.completeUpdate());
-                                snackbar.setActionTextColor(Color.RED);
-                                snackbar.show();
-                            }
-                        }
-                );
-            }
-        }
+    public static int convertDpToPixel(float dp) {
+        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
+        float px = dp * (metrics.densityDpi / 160f);
+        return Math.round(px);
     }
 
-    private void popupSnackbarForCompleteUpdate() {
-        Snackbar snackbar =
-                Snackbar.make(
-                        findViewById(android.R.id.content),
-                        "An update has just been downloaded.",
-                        Snackbar.LENGTH_INDEFINITE);
-        snackbar.setAction("RESTART", view -> appUpdateManager.completeUpdate());
-        snackbar.setActionTextColor(Color.RED);
-        snackbar.show();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        appUpdateManager
-                .getAppUpdateInfo()
-                .addOnSuccessListener(
-                        appUpdateInfo -> {
-                            if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED) {
-                                popupSnackbarForCompleteUpdate();
-                            }
-                            if (appUpdateInfo.updateAvailability()
-                                    == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
-                                // If an in-app update is already running, resume the update.
-                                try {
-                                    appUpdateManager.startUpdateFlowForResult(
-                                            appUpdateInfo,
-                                            IMMEDIATE,
-                                            this,
-                                            MY_REQUEST_CODE);
-                                } catch (IntentSender.SendIntentException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        });
-    }
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if (requestCode == MY_REQUEST_CODE) {
+//            if (resultCode != RESULT_OK) {
+//                log("Update flow failed! Result code: " + resultCode);
+//                appUpdateManager.getAppUpdateInfo().addOnSuccessListener(
+//                        appUpdateInfo -> {
+//                            if (appUpdateInfo.isUpdateTypeAllowed(IMMEDIATE)) {
+//                                finish();
+//                            } else {
+//                                Snackbar snackbar =
+//                                        Snackbar.make(
+//                                                findViewById(android.R.id.content),
+//                                                "Update has been failed.",
+//                                                Snackbar.LENGTH_INDEFINITE);
+//                                snackbar.setAction("RETRY", view -> appUpdateManager.completeUpdate());
+//                                snackbar.setActionTextColor(Color.RED);
+//                                snackbar.show();
+//                            }
+//                        }
+//                );
+//            }
+//        }
+//    }
+//
+//    private void popupSnackbarForCompleteUpdate() {
+//        Snackbar snackbar =
+//                Snackbar.make(
+//                        findViewById(android.R.id.content),
+//                        "An update has just been downloaded.",
+//                        Snackbar.LENGTH_INDEFINITE);
+//        snackbar.setAction("RESTART", view -> appUpdateManager.completeUpdate());
+//        snackbar.setActionTextColor(Color.RED);
+//        snackbar.show();
+//    }
+//
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        appUpdateManager
+//                .getAppUpdateInfo()
+//                .addOnSuccessListener(
+//                        appUpdateInfo -> {
+//                            if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED) {
+//                                popupSnackbarForCompleteUpdate();
+//                            }
+//                            if (appUpdateInfo.updateAvailability()
+//                                    == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
+//                                // If an in-app update is already running, resume the update.
+//                                try {
+//                                    appUpdateManager.startUpdateFlowForResult(
+//                                            appUpdateInfo,
+//                                            IMMEDIATE,
+//                                            this,
+//                                            MY_REQUEST_CODE);
+//                                } catch (IntentSender.SendIntentException e) {
+//                                    e.printStackTrace();
+//                                }
+//                            }
+//                        });
 
     private void getData(final String... param) {
         RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
         StringRequest postRequest = new StringRequest(Request.Method.POST, param[0] + "/result",
                 response -> {
-                    pd.dismiss();
+                    bottomSheetBehavior.setPeekHeight(convertDpToPixel(0));
                     if (response.equals("900")) {
-                        Snackbar snackbar = Snackbar.make(main_layout, "Results not found", Snackbar.LENGTH_SHORT);
+                        Snackbar snackbar = Snackbar.make(mainLayout, "Results not found", Snackbar.LENGTH_SHORT);
                         snackbar.show();
                     } else {
                         Intent intent = new Intent(home.this, ResultActivity.class);
                         response += "kkk" + param[1];
-                        intent.putExtra("result", response);
+                        intent.putExtra(RESULTS, response);
+                        intent.putExtra(API, api);
                         startActivity(intent);
                     }
                 },
                 error -> {
-                    pd.dismiss();
+                    bottomSheetBehavior.setPeekHeight(convertDpToPixel(0));
                     if (error instanceof AuthFailureError) {
-                        Snackbar snackbar = Snackbar.make(main_layout, "Wrong Credentials!", Snackbar.LENGTH_SHORT);
+                        Snackbar snackbar = Snackbar.make(mainLayout, "Wrong Credentials!", Snackbar.LENGTH_SHORT);
                         snackbar.show();
                     } else if (error instanceof ServerError) {
-                        Snackbar snackbar = Snackbar.make(main_layout, "Cannot connect to ITER servers right now.Try again", Snackbar.LENGTH_SHORT);
+                        Snackbar snackbar = Snackbar.make(mainLayout, "Cannot connect to ITER servers right now.Try again", Snackbar.LENGTH_SHORT);
                         snackbar.show();
                     } else if (error instanceof NetworkError) {
                         Log.e("Volley_error", String.valueOf(error));
-                        Snackbar snackbar = Snackbar.make(main_layout, "Cannot establish connection", Snackbar.LENGTH_SHORT);
+                        Snackbar snackbar = Snackbar.make(mainLayout, "Cannot establish connection", Snackbar.LENGTH_SHORT);
                         snackbar.show();
                     }
                 }
@@ -484,7 +523,6 @@ public class home extends BaseThemedActivity {
                 Map<String, String> params = new HashMap<>();
                 params.put("user", param[1]);
                 params.put("pass", param[2]);
-
                 return params;
             }
         };
@@ -536,15 +574,15 @@ public class home extends BaseThemedActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            mDrawerLayout.openDrawer(GravityCompat.START);
+            drawerLayout.openDrawer(GravityCompat.START);
             return true;
         }
         if (item.getItemId() == R.id.mShare) {
             if (no_attendance) {
-                Snackbar snackbar = Snackbar.make(main_layout, "Attendance is currently unavailable", Snackbar.LENGTH_SHORT);
+                Snackbar snackbar = Snackbar.make(mainLayout, "Attendance is currently unavailable", Snackbar.LENGTH_SHORT);
                 snackbar.show();
             } else {
-                Bitmap bitmap = ScreenshotUtils.getScreenShot(rl);
+                Bitmap bitmap = ScreenshotUtils.getScreenShot(recyclerView);
                 if (bitmap != null) {
                     File save = ScreenshotUtils.getMainDirectoryName(this);
                     File file = ScreenshotUtils.store(bitmap, "screenshot.jpg", save);
@@ -572,7 +610,6 @@ public class home extends BaseThemedActivity {
             intent.putExtra(android.content.Intent.EXTRA_TEXT, getString(R.string.sharing_text));
             intent.putExtra(Intent.EXTRA_STREAM, uri);//pass uri here
             startActivity(Intent.createChooser(intent, getString(R.string.share_title)));
-
         } catch (FileUriExposedException e) {
             Toast.makeText(this, "Something, went wrong.", Toast.LENGTH_SHORT).show();
         }
@@ -591,8 +628,8 @@ public class home extends BaseThemedActivity {
 
     @Override
     public void onBackPressed() {
-        if (this.mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-            this.mDrawerLayout.closeDrawer(GravityCompat.START);
+        if (this.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            this.drawerLayout.closeDrawer(GravityCompat.START);
         } else {
             moveTaskToBack(true);
         }

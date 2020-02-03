@@ -1,15 +1,12 @@
 <resources>
     <string name="app_name">AWOL</string>
-    <string name="awol"><u><b><i>AWOL</i></b></u></string>
     <string name="avgat">AVERAGE\nATTENDANCE</string>
     <string name="avgab">AVERAGE\nABSENTS</string>
-    <string name="link">https://codexawol.herokuapp.com</string>
+<!--    <string name="link">https://codexawol.herokuapp.com</string>-->
     <string name="github_url">https://github.com/codex-iter/AWOL</string>
     <string name="abtAPP">THIS APP DOES NOT PROMOTE BUNKING. THE APP WAS DESIGNED TO ENSURE THAT YOU CAN MANAGE A PROPER
     ATTENDANCE AND BUNK SAFELY.THE ATTENDANCE SHOWN IS COMPLETELY MANAGED BY COLLEGE.THE DEVELOPER IS NOT RESPONSIBLE FOR
         INACCURATE ATTENDANCE OR DELAY IN ATTENDANCE UPDATE.</string>
-    <string name="abtME">HEY FELLAS! THIS IS MOHIT AGARWAL.\nHOPE YOU ENJOY THE APP.\nREACH ME FOR A COFFEE AT</string>
-    <string name="don_t_bunk_anymore">DON\'T BUNK ANYMORE</string>
     <string name="absents">Absents :</string>
     <string name="classes">Classes :</string>
     <string name="practical">Practical :</string>
@@ -34,7 +31,6 @@
     <string name="bunk">Bunk</string>
     <string name="classes_you_gonna_attend">Classes you gonna attend:</string>
     <string name="attend">Attend</string>
-    <string name="a">A</string>
     <string name="username">USERNAME</string>
     <string name="password">PASSWORD</string>
     <string name="login">Login</string>
@@ -50,7 +46,6 @@
     <string name="privacy_policy">Privacy Policy</string>
     <string name="logout">Logout</string>
     <string name="change_theme">Change Theme</string>
-    <string name="not_getting_push_notifications_n_go_to_settings_and_allow_the_app_to_run_in_background">Not getting Push notifications?\n  Go to Settings and Allow the app to run in background.</string>
     <string name="share">Share</string>
     <string name="Select_Subject">Select Subject</string>
     <string name="oops_attendance_not_available">Oops! Attendance not available!</string>

@@ -18,7 +18,6 @@
         android:layout_height="wrap_content"
         android:text="@string/codex"
         android:textColor="@color/colorAccent"
-        android:textStyle="bold"
         android:gravity="center_horizontal"
         android:paddingStart="8dp"
         android:paddingEnd="0dp"
@@ -34,8 +33,7 @@
         android:paddingStart="8dp"
         android:paddingEnd="0dp"
         android:textColor="#cccccc"
-        android:textStyle="bold"
-        android:textSize="20sp"
+        android:textSize="15sp"
         android:fontFamily="sans-serif"/>
 
 <LinearLayout

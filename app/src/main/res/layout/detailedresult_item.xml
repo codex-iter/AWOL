@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/tools"
     android:id="@+id/recyclerResultParent"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -15,6 +16,7 @@
         android:layout_height="match_parent"
         android:layout_margin="5dp"
         android:elevation="10dp"
+
         app:contentPadding="3dp"
         app:cardCornerRadius="7dp">
 
@@ -46,7 +48,6 @@
                     android:visibility="gone">
 
                     <ImageView
-                        android:id="@+id/imageViewDetailedResult"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:padding="5dp"
@@ -65,7 +66,6 @@
                     android:paddingBottom="3dp">
 
                     <TextView
-                        android:id="@+id/textView4"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="2.5dp"
@@ -90,7 +90,6 @@
                         android:textStyle="bold"/>
 
                     <TextView
-                        android:id="@+id/textView5"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="2.5dp"
@@ -115,7 +114,6 @@
                         android:textSize="16sp" />
 
                     <TextView
-                        android:id="@+id/textView6"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="2.5dp"

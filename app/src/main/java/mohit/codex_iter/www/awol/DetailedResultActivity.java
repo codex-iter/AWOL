@@ -19,6 +19,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import static mohit.codex_iter.www.awol.Constants.RESULTS;
+
 public class DetailedResultActivity extends BaseThemedActivity {
 
     private String mearnedCredits, msgpa, mstatus, msem;
@@ -64,8 +66,8 @@ public class DetailedResultActivity extends BaseThemedActivity {
         userm = getSharedPreferences("user",
                 Context.MODE_PRIVATE);
         if (bundle != null) {
-            result = bundle.getString("result");
-            Log.d("result", result);
+            result = bundle.getString(RESULTS);
+            Log.d(RESULTS, result);
         }
 
         if (result != null) {

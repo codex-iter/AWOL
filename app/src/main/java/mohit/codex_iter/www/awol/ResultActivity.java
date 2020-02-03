@@ -4,16 +4,20 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,6 +29,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.ServerError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -36,37 +41,50 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+import static mohit.codex_iter.www.awol.Constants.API;
+import static mohit.codex_iter.www.awol.Constants.RESULTS;
+
 public class ResultActivity extends BaseThemedActivity implements ResultAdapter.OnItemClickListener {
 
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.main_layout)
+    LinearLayout main_layout;
+    @BindView(R.id.recyclerViewDetailedResult)
+    RecyclerView recyclerView;
+    @BindView(R.id.bottomSheet_view)
+    ConstraintLayout bottomSheetView;
+
     SharedPreferences userm;
-    private RecyclerView recyclerView;
-    private String[] r;
     private String result;
     private int l;
     private ResultData[] ld;
     private ArrayList<ResultData> resultList = new ArrayList<>();
-    private ResultAdapter resultAdapter;
-    private LinearLayout main_layout;
     private int sem;
-    private String totalCredit, sgpa, status;
+    private String totalCredit, sgpa, status, api;
     private ProgressDialog pd;
+    private BottomSheetBehavior bottomSheetBehavior;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.detailedresult_activity);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle("Results");
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         Objects.requireNonNull(getSupportActionBar()).setElevation(0);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowHomeEnabled(true);
-        main_layout = findViewById(R.id.main_layout);
-        recyclerView = findViewById(R.id.recyclerViewDetailedResult);
 
         userm = getSharedPreferences("user",
                 Context.MODE_PRIVATE);
+
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetView);
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
         Bundle bundle = getIntent().getExtras();
         if (dark) {
@@ -77,11 +95,12 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
             Objects.requireNonNull(toolbar.getNavigationIcon()).setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP);
         }
         if (bundle != null) {
-            result = bundle.getString("result");
-            Log.d("result", result);
+            result = bundle.getString(RESULTS);
+            api = bundle.getString(API);
+            Log.d(RESULTS, result);
         }
         if (result != null) {
-            r = result.split("kkk");
+            String[] r = result.split("kkk");
             result = r[0];
         }
         try {
@@ -121,7 +140,7 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
             for (int i = 0; i < l; i++) {
                 resultList.add(ld[i]);
             }
-            resultAdapter = new ResultAdapter(this, resultList, this);
+            ResultAdapter resultAdapter = new ResultAdapter(this, resultList, this);
             recyclerView.setHasFixedSize(true);
             recyclerView.setAdapter(resultAdapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -137,20 +156,24 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
         pd = new ProgressDialog(this, R.style.DialogLight);
         pd.setMessage("Fetching Result...");
         pd.setCanceledOnTouchOutside(false);
-        pd.show();
+        bottomSheetBehavior.setPeekHeight(convertDpToPixel(60));
+        //pd.show();
         String u = userm.getString("user", "");
         String p = userm.getString("pass", "");
         String s = String.valueOf(sem);
         Log.d("SEM", "onResultClicked: " + s);
-        String web = getString(R.string.link);
-        getData(web, u, p, s);
+        getData(api, u, p, s);
     }
-
+    public static int convertDpToPixel(float dp){
+        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
+        float px = dp * (metrics.densityDpi / 160f);
+        return Math.round(px);
+    }
     private void getData(final String... param) {
         RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
         StringRequest postRequest = new StringRequest(Request.Method.POST, param[0] + "/detailedResult",
                 response -> {
-                    pd.dismiss();
+                    bottomSheetBehavior.setPeekHeight(convertDpToPixel(0));
                     if (response.equals("169")) {
                         Snackbar snackbar = Snackbar.make(main_layout, "Results not found", Snackbar.LENGTH_SHORT);
                         snackbar.show();
@@ -168,7 +191,7 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
                 error -> {
                     // error
                     //showData(param[1], param[2]);
-                    pd.dismiss();
+                    bottomSheetBehavior.setPeekHeight(convertDpToPixel(0));
                     if (error instanceof AuthFailureError) {
                         Snackbar snackbar = Snackbar.make(main_layout, "Wrong Credentials!", Snackbar.LENGTH_SHORT);
                         snackbar.show();

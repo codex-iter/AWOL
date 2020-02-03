@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/ScrollView01"
     android:background="?windowColor"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -34,7 +33,6 @@
 
         <ImageView
             android:src="?logoo"
-            android:id="@+id/logo"
             android:layout_width="234dp"
             android:layout_height="224dp"
             android:contentDescription="@string/todo" />
@@ -51,7 +49,6 @@
 
             <ImageView
                 android:onClick="openFacebook"
-                android:id="@+id/fb"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="4dp"
@@ -62,7 +59,6 @@
 
             <ImageView
                 android:onClick="openInstagram"
-                android:id="@+id/git"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="4dp"
@@ -73,7 +69,6 @@
 
             <ImageView
                 android:onClick="openGmail"
-                android:id="@+id/gmail"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="4dp"
@@ -84,7 +79,6 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/dis"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="7dp"
@@ -93,7 +87,6 @@
             android:textColor="?aboutTextColor"
             android:textSize="14sp" />
         <TextView
-            android:id="@+id/para"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="9dp"
@@ -106,7 +99,6 @@
 
 
         <TextView
-            android:id="@+id/cdx"
             android:onClick="openGithub"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -121,7 +113,6 @@
             tools:targetApi="o" />
 
         <TextView
-            android:id="@+id/dev"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10sp"
@@ -135,7 +126,6 @@
             tools:targetApi="o" />
 
         <TextView
-            android:id="@+id/mohit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -145,7 +135,6 @@
             android:textSize="14sp" />
 
         <TextView
-            android:id="@+id/pawan"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -155,7 +144,6 @@
             android:textSize="14sp" />
 
         <TextView
-            android:id="@+id/avinav"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -165,7 +153,6 @@
             android:textSize="14sp"/>
 
         <TextView
-            android:id="@+id/nehal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"

@@ -40,4 +40,15 @@ public  class Constants {
             window.setStatusBarColor(Color.parseColor("#141414"));
         }
     }
+
+    public static final String API = "apiUrl";
+    public static final String DETAILS = "details";
+    public static final String RESULTSTATUS = "resultStatus";
+    public static final String SHOWRESULT = "showResult";
+    public static final String UNDERMAINTAINECE = "underMaintenance";
+    public static final String REGISTRATION_NUMBER = "registrationNumber";
+    public static final String RESULTS = "result";
+    public static final String STUDENT_NAME = "studentName";
+    public static final String LOGIN = "loginCheck";
+    public static final String NOATTENDANCE = "noAttendance";
 }
