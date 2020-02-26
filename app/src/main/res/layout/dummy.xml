@@ -28,12 +28,13 @@
             card_view:layout_constraintVertical_bias="0.046"
             tools:layout_editor_absoluteX="0dp">
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/ta"
-                android:layout_width="70sp"
-                android:layout_height="40sp"
+                style="@style/Widget.MaterialComponents.Button.Icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:background="@drawable/percent_back_yellow"
+                android:backgroundTint="@color/blue"
                 android:clickable="false"
                 android:gravity="center"
                 android:shadowColor="@color/darkColorPrimary"

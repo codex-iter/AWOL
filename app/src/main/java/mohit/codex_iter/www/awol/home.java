@@ -45,10 +45,12 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
 import com.android.volley.ServerError;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.play.core.appupdate.AppUpdateManager;
@@ -100,8 +102,8 @@ public class home extends BaseThemedActivity {
     RecyclerView recyclerView;
     @BindView(R.id.NA)
     ConstraintLayout noAttendanceLayout;
-    @BindView(R.id.bottomSheet_view)
-    ConstraintLayout bottomSheetView;
+//    @BindView(R.id.bottomSheet_view)
+//    ConstraintLayout bottomSheetView;
 
     private String result;
     private ListData[] ld;
@@ -122,10 +124,9 @@ public class home extends BaseThemedActivity {
     private AppUpdateManager appUpdateManager;
     private boolean no_attendance;
     private static final int MY_REQUEST_CODE = 1011;
-    private String studentName;
     private String api;
     private boolean showResult;
-    private BottomSheetBehavior bottomSheetBehavior;
+    private BottomSheetDialog dialog;
 
     int[][] state = new int[][]{
             new int[]{android.R.attr.state_checked}, // checked
@@ -162,7 +163,7 @@ public class home extends BaseThemedActivity {
         ButterKnife.bind(this);
         Bundle bundle = getIntent().getExtras();
 //        appUpdateManager = AppUpdateManagerFactory.create(home.this);
-//
+
         CollectionReference apiCollection = FirebaseFirestore.getInstance().collection(RESULTSTATUS);
         apiCollection.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
@@ -212,8 +213,8 @@ public class home extends BaseThemedActivity {
 //        };
 //
 //        appUpdateManager.registerListener(updatedListener);
-        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetView);
-        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+//        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetView);
+//        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
         boolean logincheck = false;
         if (bundle != null) {
@@ -222,7 +223,7 @@ public class home extends BaseThemedActivity {
             no_attendance = bundle.getBoolean(NOATTENDANCE);
         }
         studentnamePrefernces = this.getSharedPreferences(STUDENT_NAME, MODE_PRIVATE);
-        studentName = studentnamePrefernces.getString(STUDENT_NAME, "");
+        String studentName = studentnamePrefernces.getString(STUDENT_NAME, "");
 
         if (logincheck) {
             Snackbar snackbar = Snackbar.make(mainLayout, "Success!", Snackbar.LENGTH_SHORT);
@@ -409,14 +410,13 @@ public class home extends BaseThemedActivity {
         pd.setMessage("Fetching Result...");
         pd.setCanceledOnTouchOutside(false);
 //        pd.show();
-        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        drawerLayout.setBackgroundColor(getResources().getColor(R.color.grey50));
-        bottomSheetBehavior.setPeekHeight(convertDpToPixel(60));
+//        bottomSheetBehavior.setPeekHeight(convertDpToPixel(60));
         userm = getSharedPreferences("user",
                 Context.MODE_PRIVATE);
         String u = userm.getString("user", "");
         String p = userm.getString("pass", "");
         getData(api, u, p);
+        showBottomSheetDialog();
     }
 
     public static int convertDpToPixel(float dp) {
@@ -487,15 +487,17 @@ public class home extends BaseThemedActivity {
 //                            }
 //                        });
 
+
     private void getData(final String... param) {
         RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
         StringRequest postRequest = new StringRequest(Request.Method.POST, param[0] + "/result",
                 response -> {
-                    bottomSheetBehavior.setPeekHeight(convertDpToPixel(0));
                     if (response.equals("900")) {
+                        hideBottomSheetDialog();
                         Snackbar snackbar = Snackbar.make(mainLayout, "Results not found", Snackbar.LENGTH_SHORT);
                         snackbar.show();
                     } else {
+                        hideBottomSheetDialog();
                         Intent intent = new Intent(home.this, ResultActivity.class);
                         response += "kkk" + param[1];
                         intent.putExtra(RESULTS, response);
@@ -503,18 +505,23 @@ public class home extends BaseThemedActivity {
                         startActivity(intent);
                     }
                 },
-                error -> {
-                    bottomSheetBehavior.setPeekHeight(convertDpToPixel(0));
-                    if (error instanceof AuthFailureError) {
-                        Snackbar snackbar = Snackbar.make(mainLayout, "Wrong Credentials!", Snackbar.LENGTH_SHORT);
-                        snackbar.show();
-                    } else if (error instanceof ServerError) {
-                        Snackbar snackbar = Snackbar.make(mainLayout, "Cannot connect to ITER servers right now.Try again", Snackbar.LENGTH_SHORT);
-                        snackbar.show();
-                    } else if (error instanceof NetworkError) {
-                        Log.e("Volley_error", String.valueOf(error));
-                        Snackbar snackbar = Snackbar.make(mainLayout, "Cannot establish connection", Snackbar.LENGTH_SHORT);
-                        snackbar.show();
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if (error instanceof AuthFailureError) {
+                            hideBottomSheetDialog();
+                            Snackbar snackbar = Snackbar.make(mainLayout, "Wrong Credentials!", Snackbar.LENGTH_SHORT);
+                            snackbar.show();
+                        } else if (error instanceof ServerError) {
+                            hideBottomSheetDialog();
+                            Snackbar snackbar = Snackbar.make(mainLayout, "Cannot connect to ITER servers right now.Try again", Snackbar.LENGTH_SHORT);
+                            snackbar.show();
+                        } else if (error instanceof NetworkError) {
+                            hideBottomSheetDialog();
+                            Log.e("Volley_error", String.valueOf(error));
+                            Snackbar snackbar = Snackbar.make(mainLayout, "Cannot establish connection", Snackbar.LENGTH_SHORT);
+                            snackbar.show();
+                        }
                     }
                 }
         ) {
@@ -626,6 +633,23 @@ public class home extends BaseThemedActivity {
         startActivity(Intent.createChooser(intent, getString(R.string.share_title)));
     }
 
+    public void showBottomSheetDialogFragment() {
+        BottomSheetFragment bottomSheetFragment = new BottomSheetFragment();
+        bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
+    }
+
+    public void showBottomSheetDialog() {
+        //    private BottomSheetBehavior bottomSheetBehavior;
+        View view = getLayoutInflater().inflate(R.layout.bottomprogress, null);
+        dialog = new BottomSheetDialog(this);
+        dialog.setContentView(view);
+        dialog.setCancelable(false);
+        dialog.show();
+    }
+
+    public void hideBottomSheetDialog() {
+        dialog.dismiss();
+    }
     @Override
     public void onBackPressed() {
         if (this.drawerLayout.isDrawerOpen(GravityCompat.START)) {
@@ -635,8 +659,6 @@ public class home extends BaseThemedActivity {
         }
 
     }
-
-
 }
 
 

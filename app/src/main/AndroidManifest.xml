@@ -34,34 +34,34 @@
         <activity
             android:name=".MainActivity"
             android:configChanges="uiMode"
-            android:screenOrientation="portrait">
+            android:screenOrientation="fullSensor">
 
         </activity>
         <activity
             android:name=".home"
             android:configChanges="uiMode"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="fullSensor" />
         <activity
             android:name=".Bunk"
             android:configChanges="uiMode"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="fullSensor" />
         <activity
             android:name=".Abt"
             android:configChanges="uiMode"
-            android:screenOrientation="portrait"
+            android:screenOrientation="fullSensor"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".SettingsActivity"
             android:configChanges="uiMode"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="fullSensor" />
         <activity
             android:name=".ResultActivity"
             android:configChanges="uiMode"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="fullSensor" />
         <activity
             android:name=".DetailedResultActivity"
             android:configChanges="uiMode"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="fullSensor" />
 
         <receiver
             android:name=".AlramReceiver"

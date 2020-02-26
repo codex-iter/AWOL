@@ -108,19 +108,19 @@ public class MainActivity extends BaseThemedActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Constants.setDarkStatusBar(this);
         ButterKnife.bind(this);
+        userm = getSharedPreferences("user",
+                Context.MODE_PRIVATE);
+        logout = getSharedPreferences("sub",
+                Context.MODE_PRIVATE);
+        preferences = this.getSharedPreferences(STUDENT_NAME, MODE_PRIVATE);
 
-        if (dark) {
-            mainLayout.setBackgroundResource(R.color.black);
-        }
         appUpdateManager = AppUpdateManagerFactory.create(MainActivity.this);
 
         Task<AppUpdateInfo> appUpdateInfoTask = appUpdateManager.getAppUpdateInfo();
 
         appUpdateInfoTask.addOnSuccessListener(appUpdateInfo -> {
             if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
-                updateAvailable = true;
                 if (appUpdateInfo.isUpdateTypeAllowed(IMMEDIATE)) {
                     try {
                         appUpdateManager.startUpdateFlowForResult(
@@ -143,6 +143,12 @@ public class MainActivity extends BaseThemedActivity {
                         e.printStackTrace();
                     }
                 }
+            } else {
+                if (userm.contains("user") && userm.contains("pass") && logout.contains("logout") && !logout.getBoolean("logout", false)) {
+                    user.setText(userm.getString("user", ""));
+                    pass.setText(userm.getString("pass", ""));
+                    this.login.performClick();
+                }
             }
 
         });
@@ -162,7 +168,7 @@ public class MainActivity extends BaseThemedActivity {
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
         Handler handler = new Handler();
-        handler.postDelayed(() -> bottomSheetBehavior.setPeekHeight(convertDpToPixel(600)),400);
+        handler.postDelayed(() -> bottomSheetBehavior.setPeekHeight(convertDpToPixel(600)), 400);
 
         bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
@@ -200,13 +206,6 @@ public class MainActivity extends BaseThemedActivity {
                 }
             }
         });
-
-
-        userm = getSharedPreferences("user",
-                Context.MODE_PRIVATE);
-        logout = getSharedPreferences("sub",
-                Context.MODE_PRIVATE);
-        preferences = this.getSharedPreferences(STUDENT_NAME, MODE_PRIVATE);
         if (preferences.contains(STUDENT_NAME)) {
             String str = preferences.getString(STUDENT_NAME, "");
             String[] split = str.split("\\s+");
@@ -250,15 +249,18 @@ public class MainActivity extends BaseThemedActivity {
                 imm.hideSoftInputFromWindow(pass.getWindowToken(), 0);
             }
         });
-        if (userm.contains("user") && userm.contains("pass") && logout.contains("logout") && !logout.getBoolean("logout", false)) {
-            user.setText(userm.getString("user", ""));
-            pass.setText(userm.getString("pass", ""));
-            if (!updateAvailable) {
-                this.login.performClick();
-            }
-        }
+//        if (userm.contains("user") && userm.contains("pass") && logout.contains("logout") && !logout.getBoolean("logout", false)) {
+//            user.setText(userm.getString("user", ""));
+//            pass.setText(userm.getString("pass", ""));
+//            Toast.makeText(this, String.valueOf(updateAvailable), Toast.LENGTH_SHORT).show();
+//            Log.d("status", String.valueOf(updateAvailable));
+////            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
+////                this.login.performClick();
+////            }
+//        }
     }
-    public static int convertDpToPixel(float dp){
+
+    public static int convertDpToPixel(float dp) {
         DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
         float px = dp * (metrics.densityDpi / 160f);
         return Math.round(px);

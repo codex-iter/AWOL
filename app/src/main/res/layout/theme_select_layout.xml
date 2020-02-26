@@ -21,14 +21,13 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:layout_margin="16dp"
         android:layout_gravity="end"
-
         android:id="@+id/apply_btn"
         android:background="@null"
         android:text="Apply"
-        android:textColor="@color/darkColorAccent"
+        android:textColor="@color/white"
         android:theme="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>

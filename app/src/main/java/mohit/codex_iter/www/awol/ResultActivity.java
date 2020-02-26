@@ -13,12 +13,10 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -29,8 +27,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.ServerError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONArray;
@@ -55,8 +52,8 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
     LinearLayout main_layout;
     @BindView(R.id.recyclerViewDetailedResult)
     RecyclerView recyclerView;
-    @BindView(R.id.bottomSheet_view)
-    ConstraintLayout bottomSheetView;
+//    @BindView(R.id.bottomSheet_view)
+//    ConstraintLayout bottomSheetView;
 
     SharedPreferences userm;
     private String result;
@@ -66,7 +63,9 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
     private int sem;
     private String totalCredit, sgpa, status, api;
     private ProgressDialog pd;
-    private BottomSheetBehavior bottomSheetBehavior;
+    //    private BottomSheetBehavior bottomSheetBehavior;
+    private View view;
+    private BottomSheetDialog dialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,8 +82,8 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
         userm = getSharedPreferences("user",
                 Context.MODE_PRIVATE);
 
-        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetView);
-        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+//        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetView);
+//        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
         Bundle bundle = getIntent().getExtras();
         if (dark) {
@@ -156,32 +155,37 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
         pd = new ProgressDialog(this, R.style.DialogLight);
         pd.setMessage("Fetching Result...");
         pd.setCanceledOnTouchOutside(false);
-        bottomSheetBehavior.setPeekHeight(convertDpToPixel(60));
+//        bottomSheetBehavior.setPeekHeight(convertDpToPixel(60));
         //pd.show();
         String u = userm.getString("user", "");
         String p = userm.getString("pass", "");
         String s = String.valueOf(sem);
         Log.d("SEM", "onResultClicked: " + s);
         getData(api, u, p, s);
+        showBottomSheetDialog();
     }
-    public static int convertDpToPixel(float dp){
+
+    public static int convertDpToPixel(float dp) {
         DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
         float px = dp * (metrics.densityDpi / 160f);
         return Math.round(px);
     }
+
     private void getData(final String... param) {
         RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
         StringRequest postRequest = new StringRequest(Request.Method.POST, param[0] + "/detailedResult",
                 response -> {
-                    bottomSheetBehavior.setPeekHeight(convertDpToPixel(0));
+//                    bottomSheetBehavior.setPeekHeight(convertDpToPixel(0));
                     if (response.equals("169")) {
+                        hideBottomSheetDialog();
                         Snackbar snackbar = Snackbar.make(main_layout, "Results not found", Snackbar.LENGTH_SHORT);
                         snackbar.show();
                     } else {
+                        hideBottomSheetDialog();
                         Intent intent = new Intent(ResultActivity.this, DetailedResultActivity.class);
                         response += "kkk" + param[1];
                         intent.putExtra("result", response);
-                        intent.putExtra("Semester",String.valueOf(sem));
+                        intent.putExtra("Semester", String.valueOf(sem));
                         intent.putExtra("SGPA", sgpa);
                         intent.putExtra("TotalCredit", totalCredit);
                         intent.putExtra("Status", status);
@@ -191,14 +195,17 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
                 error -> {
                     // error
                     //showData(param[1], param[2]);
-                    bottomSheetBehavior.setPeekHeight(convertDpToPixel(0));
+//                    bottomSheetBehavior.setPeekHeight(convertDpToPixel(0));
                     if (error instanceof AuthFailureError) {
+                        hideBottomSheetDialog();
                         Snackbar snackbar = Snackbar.make(main_layout, "Wrong Credentials!", Snackbar.LENGTH_SHORT);
                         snackbar.show();
                     } else if (error instanceof ServerError) {
+                        hideBottomSheetDialog();
                         Snackbar snackbar = Snackbar.make(main_layout, "Cannot connect to ITER servers right now.Try again", Snackbar.LENGTH_SHORT);
                         snackbar.show();
                     } else if (error instanceof NetworkError) {
+                        hideBottomSheetDialog();
                         Log.e("Volley_error", String.valueOf(error));
                         Snackbar snackbar = Snackbar.make(main_layout, "Cannot establish connection", Snackbar.LENGTH_SHORT);
                         snackbar.show();
@@ -218,6 +225,20 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
             }
         };
         queue.add(postRequest);
+    }
+    public void showBottomSheetDialog() {
+        //    private BottomSheetBehavior bottomSheetBehavior;
+
+            view = getLayoutInflater().inflate(R.layout.bottomprogress, null);
+        dialog = new BottomSheetDialog(this);
+        dialog.setContentView(view);
+        dialog.setCancelable(false);
+        dialog.show();
+    }
+
+
+    public void hideBottomSheetDialog() {
+        dialog.dismiss();
     }
 
     @Override

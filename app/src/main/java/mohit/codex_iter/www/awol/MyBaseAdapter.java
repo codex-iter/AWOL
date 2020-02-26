@@ -46,21 +46,21 @@ public class MyBaseAdapter extends RecyclerView.Adapter<MyBaseAdapter.myViewHold
 
         double percent = 0;
         if (p != null) {
-            percent = Double.valueOf(p);
+            percent = Double.parseDouble(p);
         }
 
         if (percent > (float) 80) {
-            holder.ta.setBackgroundResource(R.drawable.percent_back_green);
+            holder.ta.setBackgroundColor(Color.parseColor("#0BBE62"));
         } else if (percent >= (float) 60 && percent <= 80) {
-            holder.ta.setBackgroundResource(R.drawable.percent_back_yellow);
+            holder.ta.setBackgroundColor(Color.parseColor("#FFFF66"));
         } else {
-            holder.ta.setBackgroundResource(R.drawable.percent_back_red);
+            holder.ta.setBackgroundColor(Color.parseColor("#F5FC0101"));
         }
         holder.ta.setText(datalist.get(position).getPercent() + "%");
         String s = datalist.get(position).getOld();
         if (!s.equals("")) {
-            double n = Double.valueOf(datalist.get(position).getPercent());
-            double o = Double.valueOf(s);
+            double n = Double.parseDouble(datalist.get(position).getPercent());
+            double o = Double.parseDouble(s);
             //    Toast.makeText(context, "New Attendance : " + n, Toast.LENGTH_SHORT).show();
             if (n >= o) {
                 holder.up.setBackgroundResource(R.drawable.up);
@@ -70,8 +70,8 @@ public class MyBaseAdapter extends RecyclerView.Adapter<MyBaseAdapter.myViewHold
         }
 
         if (!s.equals("")) {
-            double n = Double.valueOf(datalist.get(position).getPercent());
-            double o = Double.valueOf(s);
+            double n = Double.parseDouble(datalist.get(position).getPercent());
+            double o = Double.parseDouble(s);
             //    Toast.makeText(context, "New Attendance : " + n, Toast.LENGTH_SHORT).show();
             if (n >= o) {
                 holder.up.setBackgroundResource(R.drawable.up);

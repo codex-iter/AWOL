@@ -101,11 +101,5 @@
                 app:menu="@menu/menu" />
         </androidx.drawerlayout.widget.DrawerLayout>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/progresstheme"
-        android:visibility="gone" />
-
-    <include layout="@layout/bottomprogress" />
+<!--    <include layout="@layout/bottomprogress" />-->
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

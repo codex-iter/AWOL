@@ -95,13 +95,14 @@
                 tools:ignore="LabelFor" />
         </LinearLayout>
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/target"
+            style="@style/Widget.MaterialComponents.Button.Icon"
             android:layout_width="wrap_content"
-            android:layout_height="30dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
-            android:background="@drawable/btnr"
+            android:backgroundTint="@color/colorPrimary"
             android:text="@string/result"
             android:textSize="14sp" />
 
@@ -149,13 +150,14 @@
                 tools:ignore="Autofill,LabelFor" />
         </LinearLayout>
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/bunk"
+            style="@style/Widget.MaterialComponents.Button.Icon"
             android:layout_width="wrap_content"
-            android:layout_height="30dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
-            android:background="@drawable/btnr"
+            android:backgroundTint="@color/colorPrimary"
             android:text="@string/bunk"
             android:textSize="14sp" />
 
@@ -201,14 +203,15 @@
                 tools:ignore="Autofill,LabelFor" />
         </LinearLayout>
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/attend"
+            style="@style/Widget.MaterialComponents.Button.Icon"
             android:layout_width="wrap_content"
-            android:layout_height="30dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="20dp"
-            android:background="@drawable/btnr"
+            android:backgroundTint="@color/colorPrimary"
             android:text="@string/attend"
             android:textSize="14sp" />
 
@@ -240,7 +243,5 @@
             android:text=""
             android:textColor="@color/colorPrimary"
             android:textSize="14sp" />
-
-
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

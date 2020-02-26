@@ -1,7 +1,6 @@
 package mohit.codex_iter.www.awol;
 
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -11,8 +10,7 @@ public abstract class BaseThemedActivity extends AppCompatActivity {
     protected boolean dark;
     private static final String PREF_DARK_THEME = "dark_theme";
     private static final String PREFS_NAME = "prefs";
-    private static final String THEME="theme_pref";
-
+    private static final String THEME = "theme_pref";
 
 
     @Override
@@ -21,7 +19,7 @@ public abstract class BaseThemedActivity extends AppCompatActivity {
         SharedPreferences preferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
 
         SharedPreferences theme = getSharedPreferences("theme", 0);
-         dark = theme.getBoolean(PREF_DARK_THEME, false);
+        dark = theme.getBoolean(PREF_DARK_THEME, false);
 //        if (useDarkTheme && dark) {
 //                super.setTheme(getDarkTheme());
 //        }
@@ -29,10 +27,7 @@ public abstract class BaseThemedActivity extends AppCompatActivity {
         super.setTheme(theme.getInt(THEME, R.style.AppTheme_NoActionBar));
 
 
-
     }
-
-
 
 
 }
