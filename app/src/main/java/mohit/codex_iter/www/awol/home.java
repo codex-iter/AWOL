@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,6 +35,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.FileProvider;
 import androidx.core.view.GravityCompat;
@@ -102,8 +104,20 @@ public class home extends BaseThemedActivity {
     RecyclerView recyclerView;
     @BindView(R.id.NA)
     ConstraintLayout noAttendanceLayout;
-//    @BindView(R.id.bottomSheet_view)
-//    ConstraintLayout bottomSheetView;
+    @BindView(R.id.who_layout)
+    ConstraintLayout who_layout;
+    @BindView(R.id.who_button)
+    Button who_button;
+    @BindView(R.id.removetile)
+    ImageView removetile;
+    @BindView(R.id.covid19)
+    TextView covid19;
+    @BindView(R.id.covid_desp)
+    TextView covid_desp;
+    @BindView(R.id.whoCard)
+    CardView cardView;
+    @BindView(R.id.whologo)
+    ImageView whologo;
 
     private String result;
     private ListData[] ld;
@@ -160,10 +174,34 @@ public class home extends BaseThemedActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recycle);
 
+        SharedPreferences preferences = getSharedPreferences("CLOSE", MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+
         ButterKnife.bind(this);
         Bundle bundle = getIntent().getExtras();
-//        appUpdateManager = AppUpdateManagerFactory.create(home.this);
 
+        who_button.setOnClickListener(view -> {
+            Uri uri = Uri.parse("https://www.who.int/emergencies/diseases/novel-coronavirus-2019");
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            startActivity(intent);
+        });
+
+        if (preferences.getBoolean("close", false)) {
+            who_layout.setVisibility(View.GONE);
+        }
+        removetile.setOnClickListener(view -> {
+            editor.putBoolean("close", true);
+            who_layout.setVisibility(View.GONE);
+            editor.apply();
+        });
+
+        if (dark) {
+            whologo.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            cardView.setBackgroundColor(Color.parseColor("#141414"));
+            covid19.setTextColor(Color.parseColor("#FFFFFFFF"));
+            covid_desp.setTextColor(Color.parseColor("#FFCCCCCC"));
+            recyclerView.setBackgroundColor(Color.parseColor("#141414"));
+        }
         CollectionReference apiCollection = FirebaseFirestore.getInstance().collection(RESULTSTATUS);
         apiCollection.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
@@ -175,47 +213,6 @@ public class home extends BaseThemedActivity {
                 }
             }
         });
-//
-//        Task<AppUpdateInfo> appUpdateInfoTask = appUpdateManager.getAppUpdateInfo();
-//
-//        appUpdateInfoTask.addOnSuccessListener(appUpdateInfo -> {
-//            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
-//                if (appUpdateInfo.isUpdateTypeAllowed(IMMEDIATE)) {
-//                    try {
-//                        appUpdateManager.startUpdateFlowForResult(
-//                                appUpdateInfo,
-//                                IMMEDIATE,
-//                                home.this,
-//                                MY_REQUEST_CODE);
-//                    } catch (IntentSender.SendIntentException e) {
-//                        e.printStackTrace();
-//                    }
-//                } else {
-//                    //FLEXIBLE
-//                    try {
-//                        appUpdateManager.startUpdateFlowForResult(
-//                                appUpdateInfo,
-//                                AppUpdateType.FLEXIBLE,
-//                                home.this,
-//                                MY_REQUEST_CODE);
-//                    } catch (IntentSender.SendIntentException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//
-//        });
-//
-//        InstallStateUpdatedListener updatedListener = state -> {
-//            if (state.installStatus() == InstallStatus.DOWNLOADED) {
-//                popupSnackbarForCompleteUpdate();
-//            }
-//        };
-//
-//        appUpdateManager.registerListener(updatedListener);
-//        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetView);
-//        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-
         boolean logincheck = false;
         if (bundle != null) {
             logincheck = bundle.getBoolean(LOGIN);
@@ -228,9 +225,6 @@ public class home extends BaseThemedActivity {
         if (logincheck) {
             Snackbar snackbar = Snackbar.make(mainLayout, "Success!", Snackbar.LENGTH_SHORT);
             snackbar.show();
-        }
-        if (dark) {
-            recyclerView.setBackgroundColor(Color.parseColor("#141414"));
         }
         Menu menu = navigationView.getMenu();
         if (no_attendance) {
@@ -347,6 +341,8 @@ public class home extends BaseThemedActivity {
                                     edit = studentnamePrefernces.edit();
                                     edit.putString(STUDENT_NAME, null);
                                     edit.apply();
+                                    editor.putBoolean("close",false);
+                                    editor.apply();
                                     Intent intent3 = new Intent(getApplicationContext(), MainActivity.class);
                                     intent3.putExtra("logout_status", "0");
                                     startActivity(intent3);
@@ -650,6 +646,7 @@ public class home extends BaseThemedActivity {
     public void hideBottomSheetDialog() {
         dialog.dismiss();
     }
+
     @Override
     public void onBackPressed() {
         if (this.drawerLayout.isDrawerOpen(GravityCompat.START)) {

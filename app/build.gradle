@@ -1,3 +1,16 @@
+buildscript {
+    repositories {
+        maven { url 'https://plugins.gradle.org/m2/' }
+    }
+    dependencies {
+        classpath 'gradle.plugin.com.onesignal:onesignal-gradle-plugin:0.12.6'
+    }
+}
+apply plugin: 'com.onesignal.androidsdk.onesignal-gradle-plugin'
+
+repositories {
+    maven { url 'https://maven.google.com' }
+}
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 android {
@@ -7,9 +20,16 @@ android {
         minSdkVersion 21
         targetSdkVersion 29
         multiDexEnabled true
-        versionCode 39
-        versionName "1.1.7"
+        versionCode 40
+        versionName "1.1.9"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        manifestPlaceholders = [
+                onesignal_app_id               : 'ad3f405d-fb4f-4374-9a37-2b55e221b7bc',
+                // Project number pulled from dashboard, local value is ignored.
+                onesignal_google_project_number: 'REMOTE'
+        ]
+
     }
     buildTypes {
         release {
@@ -25,13 +45,13 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-//    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'com.google.android.material:material:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'com.android.volley:volley:1.1.1'
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'com.google.firebase:firebase-analytics:17.2.2'
+    implementation 'com.google.firebase:firebase-analytics:17.2.3'
     implementation 'com.github.judemanutd:autostarter:1.0.3'
 
     // Add dependency
@@ -42,15 +62,17 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'com.squareup.okhttp3:okhttp:3.14.4'
 
-    implementation 'com.airbnb.android:lottie:3.1.0'
-    implementation 'com.google.android.play:core:1.6.5'
+    implementation 'com.airbnb.android:lottie:3.4.0'
+    implementation 'com.google.android.play:core:1.7.1'
 
     //FireStore
-    implementation 'com.google.firebase:firebase-analytics:17.2.2'
-    implementation 'com.google.firebase:firebase-firestore:21.4.0'
+    implementation 'com.google.firebase:firebase-analytics:17.2.3'
+    implementation 'com.google.firebase:firebase-firestore:21.4.1'
 
     //Multi-dex
     implementation 'androidx.multidex:multidex:2.0.1'
+    // OneSignal SDK
+    implementation 'com.onesignal:OneSignal:3.12.4'
 
     //ButterKnife
     implementation 'com.jakewharton:butterknife:10.2.1'

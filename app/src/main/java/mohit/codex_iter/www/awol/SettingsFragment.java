@@ -55,17 +55,17 @@ public class SettingsFragment extends PreferenceFragment {
 //       if (!dark) {
 
 //        }
-        SharedPreferences preferences1 = getActivity().getSharedPreferences("Dark", MODE_PRIVATE);
+        SharedPreferences preferences1 = getContext().getSharedPreferences("Dark", MODE_PRIVATE);
         boolean white = preferences1.getBoolean("dark", false);
         if (white) {
             Spannable title = new SpannableString(notifications.getTitle().toString());
             title.setSpan(new ForegroundColorSpan(Color.BLACK), 0, title.length(), 0);
             notifications.setTitle(title);
         }
-        final SharedPreferences stop = getActivity().getSharedPreferences("STOP", 0);
+        final SharedPreferences stop = getContext().getSharedPreferences("STOP", 0);
         final SharedPreferences.Editor editor1 = stop.edit();
 
-        SharedPreferences device_time = getActivity().getSharedPreferences("Set_time", 0);
+        SharedPreferences device_time = getContext().getSharedPreferences("Set_time", 0);
         final SharedPreferences.Editor set_time = device_time.edit();
 
         final SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Notification_date", 0);

@@ -36,6 +36,7 @@ import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.android.material.textview.MaterialTextView;
 import com.google.android.play.core.appupdate.AppUpdateInfo;
 import com.google.android.play.core.appupdate.AppUpdateManager;
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
@@ -47,6 +48,7 @@ import com.google.android.play.core.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.onesignal.OneSignal;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -87,6 +89,10 @@ public class MainActivity extends BaseThemedActivity {
     ConstraintLayout bottomSheetView;
     @BindView(R.id.hello)
     TextView welcomeMessage;
+    @BindView(R.id.manual)
+    MaterialTextView maual;
+    @BindView(R.id.manaul_layout)
+    ConstraintLayout manual_layout;
 
     private SharedPreferences userm, logout, apiUrl;
     private SharedPreferences.Editor edit;
@@ -108,6 +114,12 @@ public class MainActivity extends BaseThemedActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        OneSignal.startInit(this)
+                .inFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification)
+                .unsubscribeWhenNotificationsAreDisabled(true)
+                .init();
+
         userm = getSharedPreferences("user",
                 Context.MODE_PRIVATE);
         logout = getSharedPreferences("sub",
@@ -143,15 +155,16 @@ public class MainActivity extends BaseThemedActivity {
                     }
                 }
             } else {
-                if (userm.contains("user") && userm.contains("pass") && logout.contains("logout") && !logout.getBoolean("logout", false)) {
-                    user.setText(userm.getString("user", ""));
-                    pass.setText(userm.getString("pass", ""));
-                    this.login.performClick();
-                }
+                autofill();
             }
 
         });
-
+        maual.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                autofill();
+            }
+        });
         InstallStateUpdatedListener updatedListener = state -> {
             if (state.installStatus() == InstallStatus.DOWNLOADED) {
                 updateAvailable = false;
@@ -210,6 +223,7 @@ public class MainActivity extends BaseThemedActivity {
             String[] split = str.split("\\s+");
             welcomeMessage.setText("Welcome {" + convertToTitleCaseIteratingChars(split[0]) + "}");
         } else {
+            manual_layout.setVisibility(View.INVISIBLE);
             welcomeMessage.setText("Welcome {User}");
         }
         login.setOnClickListener(view -> {
@@ -248,15 +262,6 @@ public class MainActivity extends BaseThemedActivity {
                 imm.hideSoftInputFromWindow(pass.getWindowToken(), 0);
             }
         });
-//        if (userm.contains("user") && userm.contains("pass") && logout.contains("logout") && !logout.getBoolean("logout", false)) {
-//            user.setText(userm.getString("user", ""));
-//            pass.setText(userm.getString("pass", ""));
-//            Toast.makeText(this, String.valueOf(updateAvailable), Toast.LENGTH_SHORT).show();
-//            Log.d("status", String.valueOf(updateAvailable));
-////            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
-////                this.login.performClick();
-////            }
-//        }
     }
 
     public static int convertDpToPixel(float dp) {
@@ -311,6 +316,15 @@ public class MainActivity extends BaseThemedActivity {
                         }
                 );
             }
+        }
+    }
+
+    public void autofill() {
+        if (userm.contains("user") && userm.contains("pass") && logout.contains("logout") && !logout.getBoolean("logout", false)) {
+            user.setText(userm.getString("user", ""));
+            pass.setText(userm.getString("pass", ""));
+            manual_layout.setVisibility(View.INVISIBLE);
+            this.login.performClick();
         }
     }
 
