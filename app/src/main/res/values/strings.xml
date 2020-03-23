@@ -1,0 +1,58 @@
+<resources>
+    <string name="app_name">AWOL</string>
+    <string name="avgat">AVERAGE\nATTENDANCE</string>
+    <string name="avgab">AVERAGE\nABSENTS</string>
+    <!--    <string name="link">https://codexawol.herokuapp.com</string>-->
+    <string name="github_url">https://github.com/codex-iter/AWOL</string>
+    <string name="abtAPP">THIS APP DOES NOT PROMOTE BUNKING. THE APP WAS DESIGNED TO ENSURE THAT YOU CAN MANAGE A PROPER
+    ATTENDANCE AND BUNK SAFELY.THE ATTENDANCE SHOWN IS COMPLETELY MANAGED BY COLLEGE.THE DEVELOPER IS NOT RESPONSIBLE FOR
+        INACCURATE ATTENDANCE OR DELAY IN ATTENDANCE UPDATE.</string>
+    <string name="absents">Absents :</string>
+    <string name="classes">Classes :</string>
+    <string name="practical">Practical :</string>
+    <string name="theory">Theory :</string>
+    <string name="_22_12_2017">22/12/2017</string>
+    <string name="updated_on">Updated On:</string>
+    <string name="_95_5">95.5%</string>
+    <string name="number_theory">Number Theory</string>
+    <string name="not_applicable">not_applicable</string>
+    <string name="developers">Developers</string>
+    <string name="made_with_as_a_project_for_codex">MADE WITH 💚 AS A PROJECT FOR CODEX</string>
+    <string name="disclaimer">DISCLAIMER</string>
+    <string name="todo">TODO</string>
+    <string name="sharing_text">ScreenShot by AWOL-ITER\n Download it bit.do/iter_awol</string>
+    <string name="share_title">Share Attendance</string>
+    <string name="pawan_gorai">Pawan Kumar Gorai</string>
+    <string name="nehal_kumar_singh">Nehal Kumar Singh</string>
+    <string name="your_target_attendance">Your Target Attendance:</string>
+    <string name="result">Result</string>
+    <string name="or">OR</string>
+    <string name="classes_you_wanna_bunk">Classes you want to bunk:</string>
+    <string name="bunk">Bunk</string>
+    <string name="classes_you_gonna_attend">Classes you gonna attend:</string>
+    <string name="attend">Attend</string>
+    <string name="username">USERNAME</string>
+    <string name="password">PASSWORD</string>
+    <string name="login">Login</string>
+    <string name="mohit_agarwal">Mohit Agarwal</string>
+    <string name="codex">CODEX</string>
+    <string name="_1641017271">404</string>
+    <string name="_98_76">98.76%</string>
+    <string name="plan_bunk">Plan@Bunk</string>
+    <string name="share_app">Share app</string>
+    <string name="settings">Settings</string>
+    <string name="about_us">About Us</string>
+    <string name="open_source_geek">Open Source Geek?</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="logout">Logout</string>
+    <string name="change_theme">Change Theme</string>
+    <string name="share">Share</string>
+    <string name="Select_Subject">Select Subject</string>
+    <string name="oops_attendance_not_available">Oops! Attendance not available!</string>
+    <string name="results">Results</string>
+    <string name="avinav">Avinaba Ray</string>
+    <string name="check_result"><u>Check Results</u></string>
+    <string name="welcome_back">Welcome back</string>
+    <string name="data_is_not_automatically_filled_do_it_manually">Data not filled automatically?<u> Do it manually</u></string>
+</resources>
+
