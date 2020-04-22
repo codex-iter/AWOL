@@ -3,10 +3,8 @@ package mohit.codex_iter.www.awol;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -14,7 +12,6 @@ import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -37,14 +34,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.android.material.textview.MaterialTextView;
-import com.google.android.play.core.appupdate.AppUpdateInfo;
 import com.google.android.play.core.appupdate.AppUpdateManager;
-import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
-import com.google.android.play.core.install.InstallStateUpdatedListener;
-import com.google.android.play.core.install.model.AppUpdateType;
-import com.google.android.play.core.install.model.InstallStatus;
-import com.google.android.play.core.install.model.UpdateAvailability;
-import com.google.android.play.core.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -59,16 +49,17 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import mohit.codex_iter.www.awol.activity.AttendanceActivity;
+import mohit.codex_iter.www.awol.activity.BaseThemedActivity;
+import mohit.codex_iter.www.awol.utilities.Constants;
 
-import static com.crashlytics.android.Crashlytics.log;
-import static com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE;
-import static mohit.codex_iter.www.awol.Constants.API;
-import static mohit.codex_iter.www.awol.Constants.DETAILS;
-import static mohit.codex_iter.www.awol.Constants.LOGIN;
-import static mohit.codex_iter.www.awol.Constants.NOATTENDANCE;
-import static mohit.codex_iter.www.awol.Constants.REGISTRATION_NUMBER;
-import static mohit.codex_iter.www.awol.Constants.RESULTS;
-import static mohit.codex_iter.www.awol.Constants.STUDENT_NAME;
+import static mohit.codex_iter.www.awol.utilities.Constants.API;
+import static mohit.codex_iter.www.awol.utilities.Constants.DETAILS;
+import static mohit.codex_iter.www.awol.utilities.Constants.LOGIN;
+import static mohit.codex_iter.www.awol.utilities.Constants.NOATTENDANCE;
+import static mohit.codex_iter.www.awol.utilities.Constants.REGISTRATION_NUMBER;
+import static mohit.codex_iter.www.awol.utilities.Constants.RESULTS;
+import static mohit.codex_iter.www.awol.utilities.Constants.STUDENT_NAME;
 
 
 public class MainActivity extends BaseThemedActivity {
@@ -126,53 +117,55 @@ public class MainActivity extends BaseThemedActivity {
                 Context.MODE_PRIVATE);
         preferences = this.getSharedPreferences(STUDENT_NAME, MODE_PRIVATE);
 
-        appUpdateManager = AppUpdateManagerFactory.create(MainActivity.this);
+        //In-App Update
+//        appUpdateManager = AppUpdateManagerFactory.create(MainActivity.this);
+//
+//        Task<AppUpdateInfo> appUpdateInfoTask = appUpdateManager.getAppUpdateInfo();
+//
+//        appUpdateInfoTask.addOnSuccessListener(appUpdateInfo -> {
+//            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
+//                if (appUpdateInfo.isUpdateTypeAllowed(IMMEDIATE)) {
+//                    try {
+//                        appUpdateManager.startUpdateFlowForResult(
+//                                appUpdateInfo,
+//                                IMMEDIATE,
+//                                MainActivity.this,
+//                                MY_REQUEST_CODE);
+//                    } catch (IntentSender.SendIntentException e) {
+//                        e.printStackTrace();
+//                    }
+//                } else {
+//                    //FLEXIBLE
+//                    try {
+//                        appUpdateManager.startUpdateFlowForResult(
+//                                appUpdateInfo,
+//                                AppUpdateType.FLEXIBLE,
+//                                MainActivity.this,
+//                                MY_REQUEST_CODE);
+//                    } catch (IntentSender.SendIntentException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            } else {
+//                autofill();
+//            }
+//
+//        });
+//        InstallStateUpdatedListener updatedListener = state -> {
+//            if (state.installStatus() == InstallStatus.DOWNLOADED) {
+//                updateAvailable = false;
+//                popupSnackbarForCompleteUpdate();
+//            }
+//        };
+//
+//        appUpdateManager.registerListener(updatedListener);
 
-        Task<AppUpdateInfo> appUpdateInfoTask = appUpdateManager.getAppUpdateInfo();
-
-        appUpdateInfoTask.addOnSuccessListener(appUpdateInfo -> {
-            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
-                if (appUpdateInfo.isUpdateTypeAllowed(IMMEDIATE)) {
-                    try {
-                        appUpdateManager.startUpdateFlowForResult(
-                                appUpdateInfo,
-                                IMMEDIATE,
-                                MainActivity.this,
-                                MY_REQUEST_CODE);
-                    } catch (IntentSender.SendIntentException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    //FLEXIBLE
-                    try {
-                        appUpdateManager.startUpdateFlowForResult(
-                                appUpdateInfo,
-                                AppUpdateType.FLEXIBLE,
-                                MainActivity.this,
-                                MY_REQUEST_CODE);
-                    } catch (IntentSender.SendIntentException e) {
-                        e.printStackTrace();
-                    }
-                }
-            } else {
-                autofill();
-            }
-
-        });
-        maual.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                autofill();
-            }
-        });
-        InstallStateUpdatedListener updatedListener = state -> {
-            if (state.installStatus() == InstallStatus.DOWNLOADED) {
-                updateAvailable = false;
-                popupSnackbarForCompleteUpdate();
-            }
-        };
-
-        appUpdateManager.registerListener(updatedListener);
+        //        maual.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                autofill();
+//            }
+//        });
 
         Bundle extras = getIntent().getExtras();
 
@@ -221,10 +214,10 @@ public class MainActivity extends BaseThemedActivity {
         if (preferences.contains(STUDENT_NAME)) {
             String str = preferences.getString(STUDENT_NAME, "");
             String[] split = str.split("\\s+");
-            welcomeMessage.setText("Welcome {" + convertToTitleCaseIteratingChars(split[0]) + "}");
+            welcomeMessage.setText("Welcome " + convertToTitleCaseIteratingChars(split[0]) + "!");
         } else {
             manual_layout.setVisibility(View.INVISIBLE);
-            welcomeMessage.setText("Welcome {User}");
+            welcomeMessage.setText("Welcome User!");
         }
         login.setOnClickListener(view -> {
             String u = user.getText().toString().trim();
@@ -234,35 +227,92 @@ public class MainActivity extends BaseThemedActivity {
                 Snackbar snackbar = Snackbar.make(mainLayout, "Enter your Details", Snackbar.LENGTH_SHORT);
                 snackbar.show();
             } else {
-                if (haveNetworkConnection()) {
-                    progressBar.setVisibility(View.VISIBLE);
-                    login.setVisibility(View.GONE);
-                    user.setEnabled(false);
-                    pass.setEnabled(false);
-                    passLayout.setPasswordVisibilityToggleEnabled(false);
-                    if (!preferences.contains(STUDENT_NAME)) {
-                        getname(api, u, p);
-                    }
-                    getData(api, u, p);
-                    edit = userm.edit();
-                    edit.putString("user", u);
-                    edit.putString(u + "pass", p);
-                    edit.putString("pass", p);
-                    edit.apply();
-                    edit = logout.edit();
-                    edit.putBoolean("logout", false);
-                    edit.apply();
-                } else {
-                    Snackbar snackbar = Snackbar.make(mainLayout, "Something, went wrong.Try Again", Snackbar.LENGTH_SHORT);
-                    snackbar.show();
+                progressBar.setVisibility(View.VISIBLE);
+                login.setVisibility(View.GONE);
+                user.setEnabled(false);
+                pass.setEnabled(false);
+                passLayout.setPasswordVisibilityToggleEnabled(false);
+                if (!preferences.contains(STUDENT_NAME)) {
+                    getName(api, u, p);
                 }
-            }
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            if (imm != null) {
-                imm.hideSoftInputFromWindow(pass.getWindowToken(), 0);
+                getData(api, u, p);
+                edit = userm.edit();
+                edit.putString("user", u);
+                edit.putString(u + "pass", p);
+                edit.putString("pass", p);
+                edit.apply();
+                edit = logout.edit();
+                edit.putBoolean("logout", false);
+                edit.apply();
             }
         });
+        autofill();
     }
+
+    //CallBack In-app Update
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if (requestCode == MY_REQUEST_CODE) {
+//            if (resultCode != RESULT_OK) {
+//                log("Update flow failed! Result code: " + resultCode);
+//                appUpdateManager.getAppUpdateInfo().addOnSuccessListener(
+//                        appUpdateInfo -> {
+//                            if (appUpdateInfo.isUpdateTypeAllowed(IMMEDIATE)) {
+//                                finish();
+//                            } else {
+//                                Snackbar snackbar =
+//                                        Snackbar.make(
+//                                                findViewById(android.R.id.content),
+//                                                "Update has been failed.",
+//                                                Snackbar.LENGTH_INDEFINITE);
+//                                snackbar.setAction("RETRY", view -> appUpdateManager.completeUpdate());
+//                                snackbar.setActionTextColor(Color.RED);
+//                                snackbar.show();
+//                            }
+//                        }
+//                );
+//            }
+//        }
+//    }
+
+//    private void popupSnackbarForCompleteUpdate() {
+//        Snackbar snackbar =
+//                Snackbar.make(
+//                        findViewById(android.R.id.content),
+//                        "An update has just been downloaded.",
+//                        Snackbar.LENGTH_INDEFINITE);
+//        snackbar.setAction("RESTART", view -> appUpdateManager.completeUpdate());
+//        snackbar.setActionTextColor(Color.RED);
+//        snackbar.show();
+//    }
+
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        appUpdateManager
+//                .getAppUpdateInfo()
+//                .addOnSuccessListener(
+//                        appUpdateInfo -> {
+//                            if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED) {
+//                                popupSnackbarForCompleteUpdate();
+//                            }
+//                            if (appUpdateInfo.updateAvailability()
+//                                    == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
+//                                // If an in-app update is already running, resume the update.
+//                                try {
+//                                    appUpdateManager.startUpdateFlowForResult(
+//                                            appUpdateInfo,
+//                                            IMMEDIATE,
+//                                            this,
+//                                            MY_REQUEST_CODE);
+//                                } catch (IntentSender.SendIntentException e) {
+//                                    e.printStackTrace();
+//                                }
+//                            }
+//
+//                        });
+//    }
 
     public static int convertDpToPixel(float dp) {
         DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
@@ -293,98 +343,40 @@ public class MainActivity extends BaseThemedActivity {
         return converted.toString();
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == MY_REQUEST_CODE) {
-            if (resultCode != RESULT_OK) {
-                log("Update flow failed! Result code: " + resultCode);
-                appUpdateManager.getAppUpdateInfo().addOnSuccessListener(
-                        appUpdateInfo -> {
-                            if (appUpdateInfo.isUpdateTypeAllowed(IMMEDIATE)) {
-                                finish();
-                            } else {
-                                Snackbar snackbar =
-                                        Snackbar.make(
-                                                findViewById(android.R.id.content),
-                                                "Update has been failed.",
-                                                Snackbar.LENGTH_INDEFINITE);
-                                snackbar.setAction("RETRY", view -> appUpdateManager.completeUpdate());
-                                snackbar.setActionTextColor(Color.RED);
-                                snackbar.show();
-                            }
-                        }
-                );
-            }
-        }
-    }
-
     public void autofill() {
         if (userm.contains("user") && userm.contains("pass") && logout.contains("logout") && !logout.getBoolean("logout", false)) {
+            user.setFocusable(false);
+            pass.setFocusable(false);
             user.setText(userm.getString("user", ""));
             pass.setText(userm.getString("pass", ""));
-            manual_layout.setVisibility(View.INVISIBLE);
             this.login.performClick();
         }
-    }
-
-    private void popupSnackbarForCompleteUpdate() {
-        Snackbar snackbar =
-                Snackbar.make(
-                        findViewById(android.R.id.content),
-                        "An update has just been downloaded.",
-                        Snackbar.LENGTH_INDEFINITE);
-        snackbar.setAction("RESTART", view -> appUpdateManager.completeUpdate());
-        snackbar.setActionTextColor(Color.RED);
-        snackbar.show();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        appUpdateManager
-                .getAppUpdateInfo()
-                .addOnSuccessListener(
-                        appUpdateInfo -> {
-                            if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED) {
-                                popupSnackbarForCompleteUpdate();
-                            }
-                            if (appUpdateInfo.updateAvailability()
-                                    == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
-                                // If an in-app update is already running, resume the update.
-                                try {
-                                    appUpdateManager.startUpdateFlowForResult(
-                                            appUpdateInfo,
-                                            IMMEDIATE,
-                                            this,
-                                            MY_REQUEST_CODE);
-                                } catch (IntentSender.SendIntentException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-
-                        });
     }
 
     private void getData(final String... param) {
         if (param[0] == null) {
             param[0] = apiUrl.getString(API, "");
         }
+        editor = preferences.edit();
         RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
         StringRequest postRequest = new StringRequest(Request.Method.POST, param[0] + "/attendance",
                 response -> {
                     response_d = response;
                     if (response.equals("404")) {
+                        //User Credential wrong or user doesn't exists.
                         progressBar.setVisibility(View.INVISIBLE);
                         login.setVisibility(View.VISIBLE);
                         user.setEnabled(true);
                         pass.setEnabled(true);
                         passLayout.setPasswordVisibilityToggleEnabled(true);
-                        welcomeMessage.setText("Welcome {User}");
+                        welcomeMessage.setText("Welcome User!");
                         Snackbar snackbar = Snackbar.make(mainLayout, "Wrong credentials", Snackbar.LENGTH_SHORT);
                         snackbar.show();
                     } else if (response.equals("390")) {
-                        Intent intent = new Intent(MainActivity.this, home.class);
+                        //Attendance not present
+                        editor.putBoolean("User_exists", true);
+                        editor.apply();
+                        Intent intent = new Intent(MainActivity.this, AttendanceActivity.class);
                         intent.putExtra(REGISTRATION_NUMBER, user.getText().toString());
                         intent.putExtra(NOATTENDANCE, true);
                         intent.putExtra(LOGIN, true);
@@ -392,7 +384,10 @@ public class MainActivity extends BaseThemedActivity {
                         intent.putExtra(API, api);
                         startActivity(intent);
                     } else {
-                        Intent intent = new Intent(MainActivity.this, home.class);
+                        //User exists and attendance too.
+                        editor.putBoolean("User_exists", true);
+                        editor.apply();
+                        Intent intent = new Intent(MainActivity.this, AttendanceActivity.class);
                         param_1 = param[1];
                         response += "kkk" + param[1];
                         intent.putExtra(RESULTS, response);
@@ -409,35 +404,56 @@ public class MainActivity extends BaseThemedActivity {
                     progressBar.setVisibility(View.INVISIBLE);
                     login.setVisibility(View.VISIBLE);
                     passLayout.setPasswordVisibilityToggleEnabled(true);
+                    user.setEnabled(true);
+                    pass.setEnabled(true);
+                    user.setFocusableInTouchMode(true);
+                    user.setFocusable(true);
+                    pass.setFocusableInTouchMode(true);
+                    pass.setFocusable(true);
+
                     if (error instanceof AuthFailureError) {
-                        user.setEnabled(true);
-                        pass.setEnabled(true);
-                        welcomeMessage.setText("Welcome {User}");
+                        welcomeMessage.setText("Welcome User!");
                         Snackbar snackbar = Snackbar.make(mainLayout, "Wrong Credentials!", Snackbar.LENGTH_SHORT);
                         snackbar.show();
                     } else if (error instanceof ServerError) {
-                        user.setEnabled(true);
-                        pass.setEnabled(true);
-                        welcomeMessage.setText("Welcome {User}");
-                        Snackbar snackbar = Snackbar.make(mainLayout, "Wrong Credentials!", Snackbar.LENGTH_SHORT);
-                        snackbar.show();
+                        if (!preferences.getBoolean("User_exists", false)) {
+                            Snackbar snackbar = Snackbar.make(mainLayout, "Cannot connect to ITER servers right now.Try again", Snackbar.LENGTH_SHORT);
+                            snackbar.show();
+                        } else {
+                            Constants.Offlin_mode = true;
+                            Intent intent = new Intent(MainActivity.this, AttendanceActivity.class);
+                            startActivity(intent);
+                        }
                     } else if (error instanceof NetworkError) {
-                        Log.e("Volley_error", String.valueOf(error));
-                        Snackbar snackbar = Snackbar.make(mainLayout, "Cannot establish connection", Snackbar.LENGTH_SHORT);
-                        snackbar.show();
+                        if (!preferences.getBoolean("User_exists", false)) {
+                            Snackbar snackbar = Snackbar.make(mainLayout, "Cannot establish connection", Snackbar.LENGTH_SHORT);
+                            snackbar.show();
+                        } else {
+                            Constants.Offlin_mode = true;
+                            Intent intent = new Intent(MainActivity.this, AttendanceActivity.class);
+                            startActivity(intent);
+                        }
                     } else if (error instanceof TimeoutError) {
                         if (!track) {
                             progressBar.setVisibility(View.VISIBLE);
                             login.setVisibility(View.GONE);
                             user.setEnabled(false);
                             pass.setEnabled(false);
+                            user.setFocusable(true);
+                            pass.setFocusable(true);
                             passLayout.setPasswordVisibilityToggleEnabled(false);
                             track = true;
                             login.performClick();
                         } else {
-                            Snackbar snackbar = Snackbar.make(mainLayout, "Cannot connect to ITER servers right now.Try again", Snackbar.LENGTH_SHORT);
-                            snackbar.show();
-                            track = false;
+                            if (!preferences.getBoolean("User_exists", false)) {
+                                Snackbar snackbar = Snackbar.make(mainLayout, "Cannot connect to ITER servers right now.Try again", Snackbar.LENGTH_SHORT);
+                                snackbar.show();
+                                track = false;
+                            } else {
+                                Constants.Offlin_mode = true;
+                                Intent intent = new Intent(MainActivity.this, AttendanceActivity.class);
+                                startActivity(intent);
+                            }
                         }
                     }
 
@@ -454,7 +470,7 @@ public class MainActivity extends BaseThemedActivity {
         queue.add(postRequest);
     }
 
-    private void getname(final String... param) {
+    private void getName(final String... param) {
         RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
         StringRequest postRequest = new StringRequest(Request.Method.POST, param[0] + "/studentinfo",
                 response -> {

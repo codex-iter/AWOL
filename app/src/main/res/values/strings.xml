@@ -20,7 +20,7 @@
     <string name="made_with_as_a_project_for_codex">MADE WITH 💚 AS A PROJECT FOR CODEX</string>
     <string name="disclaimer">DISCLAIMER</string>
     <string name="todo">TODO</string>
-    <string name="sharing_text">ScreenShot by AWOL-ITER\n Download it bit.do/iter_awol</string>
+    <string name="sharing_text">ScreenShot by AWOL-ITER\n Download it tiny.cc/iter_awol</string>
     <string name="share_title">Share Attendance</string>
     <string name="pawan_gorai">Pawan Kumar Gorai</string>
     <string name="nehal_kumar_singh">Nehal Kumar Singh</string>
@@ -54,5 +54,18 @@
     <string name="check_result"><u>Check Results</u></string>
     <string name="welcome_back">Welcome back</string>
     <string name="data_is_not_automatically_filled_do_it_manually">Data not filled automatically?<u> Do it manually</u></string>
+    <string name="covid_19">COVID-19</string>
+    <string name="get_the_latest_info_from_who_about_covid_19">Get the latest info from WHO about COVID-19</string>
+    <string name="learn_more">Learn more</string>
+    <string name="please_wait">Please Wait</string>
+    <string name="subject_name">Subject Name</string>
+    <string name="sub_code">Sub Code</string>
+    <string name="textview">TextView</string>
+    <string name="grade">Grade</string>
+    <string name="credits_earned">Credits Earned</string>
+    <string name="semester">Semester</string>
+    <string name="sgpa">SGPA</string>
+    <string name="select_theme">Select Theme</string>
+    <string name="apply">Apply</string>
 </resources>
 

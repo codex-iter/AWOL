@@ -6,6 +6,6 @@
     android:background="@color/black"
     android:fitsSystemWindows="true">
 
-    <include layout="@layout/loginbottom_sheet" />
+    <include layout="@layout/item_bottomlogin" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
