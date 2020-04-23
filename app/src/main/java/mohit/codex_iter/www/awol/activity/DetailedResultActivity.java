@@ -44,7 +44,6 @@ public class DetailedResultActivity extends BaseThemedActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detailresults);
-
         Bundle bundle = getIntent().getExtras();
         Toolbar toolbar = findViewById(R.id.toolbar);
         RecyclerView recyclerView = findViewById(R.id.recyclerViewDetailedResult);
@@ -129,18 +128,19 @@ public class DetailedResultActivity extends BaseThemedActivity {
     }
 
     public void saveAttendance(ArrayList attendanceDataArrayList, String sem) {
-        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("DetailResult", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
+//        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("DetailResult", MODE_PRIVATE);
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Constants.offlineDataEditor = Constants.offlineDataPreference.edit();
         Gson gson = new Gson();
         String json = gson.toJson(attendanceDataArrayList);
-        editor.putString("StudentDetailResult" + msem, json);
-        editor.apply();
+        Constants.offlineDataEditor.putString("StudentDetailResult" + msem, json);
+        Constants.offlineDataEditor.apply();
     }
 
     public void getSavedAttendance(String sem) {
-        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("DetailResult", MODE_PRIVATE);
+//        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("DetailResult", MODE_PRIVATE);
         Gson gson = new Gson();
-        String json = sharedPreferences.getString("StudentDetailResult" + msem, null);
+        String json = Constants.offlineDataPreference.getString("StudentDetailResult" + msem, null);
         Type type = new TypeToken<ArrayList<DetailResultData>>() {
         }.getType();
         detailResultDataArrayList = gson.fromJson(json, type);

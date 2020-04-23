@@ -95,6 +95,7 @@ import static mohit.codex_iter.www.awol.utilities.Constants.RESULTS;
 import static mohit.codex_iter.www.awol.utilities.Constants.RESULTSTATUS;
 import static mohit.codex_iter.www.awol.utilities.Constants.SHOWRESULT;
 import static mohit.codex_iter.www.awol.utilities.Constants.STUDENT_NAME;
+import static mohit.codex_iter.www.awol.utilities.Constants.offlineDataPreference;
 
 public class AttendanceActivity extends BaseThemedActivity {
 
@@ -183,6 +184,8 @@ public class AttendanceActivity extends BaseThemedActivity {
 
         SharedPreferences preferences = getSharedPreferences("CLOSE", MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
+
+        Constants.offlineDataPreference = this.getSharedPreferences("OFFLINEDATA", Context.MODE_PRIVATE);
 
         ButterKnife.bind(this);
         Bundle bundle = getIntent().getExtras();
@@ -348,11 +351,12 @@ public class AttendanceActivity extends BaseThemedActivity {
                                     edit.putBoolean("logout", true);
                                     edit.apply();
                                     edit = studentnamePrefernces.edit();
-                                    edit.putBoolean("User_exists", false);
                                     edit.putString(STUDENT_NAME, null);
                                     edit.apply();
                                     editor.putBoolean("close", false);
                                     editor.apply();
+                                    //Clearing the saved data
+                                    offlineDataPreference.edit().clear().apply();
                                     Intent intent3 = new Intent(getApplicationContext(), MainActivity.class);
                                     intent3.putExtra("logout_status", "0");
                                     startActivity(intent3);
@@ -412,20 +416,18 @@ public class AttendanceActivity extends BaseThemedActivity {
     }
 
     public void saveAttendance(ArrayList attendanceDataArrayList) {
-        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("Attendance", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Constants.offlineDataEditor = Constants.offlineDataPreference.edit();
         Gson gson = new Gson();
         String json = gson.toJson(attendanceDataArrayList);
-        editor.putString("StudentAttendance", json);
-        editor.apply();
+        Constants.offlineDataEditor.putString("StudentAttendance", json);
+        Constants.offlineDataEditor.apply();
     }
 
     public void getSavedAttendance() {
         Snackbar snackbar = Snackbar.make(mainLayout, "Offline mode enabled", Snackbar.LENGTH_SHORT);
         snackbar.show();
-        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("Attendance", MODE_PRIVATE);
         Gson gson = new Gson();
-        String json = sharedPreferences.getString("StudentAttendance", null);
+        String json = Constants.offlineDataPreference.getString("StudentAttendance", null);
         Type type = new TypeToken<ArrayList<AttendanceData>>() {
         }.getType();
         attendanceDataArrayList = gson.fromJson(json, type);

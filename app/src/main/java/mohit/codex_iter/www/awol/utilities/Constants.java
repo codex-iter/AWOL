@@ -1,6 +1,8 @@
 package mohit.codex_iter.www.awol.utilities;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.view.Window;
@@ -53,4 +55,6 @@ public  class Constants {
     public static final String LOGIN = "loginCheck";
     public static final String NOATTENDANCE = "noAttendance";
     public static Boolean Offlin_mode = false;
+    public static SharedPreferences offlineDataPreference;
+    public static SharedPreferences.Editor offlineDataEditor;
 }

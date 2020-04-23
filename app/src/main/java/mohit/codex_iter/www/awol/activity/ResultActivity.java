@@ -66,12 +66,12 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
     private int sem;
     private String totalCredit, sgpa, status, api;
     private BottomSheetDialog dialog;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detailresults);
 
+        Constants.offlineDataPreference = this.getSharedPreferences("OFFLINEDATA",Context.MODE_PRIVATE);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle("Results");
@@ -147,18 +147,16 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
     }
 
     public void saveAttendance(ArrayList resultDataArrayList) {
-        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("Result", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Constants.offlineDataEditor = Constants.offlineDataPreference.edit();
         Gson gson = new Gson();
         String json = gson.toJson(resultDataArrayList);
-        editor.putString("StudentResult", json);
-        editor.apply();
+        Constants.offlineDataEditor.putString("StudentResult", json);
+        Constants.offlineDataEditor.apply();
     }
 
     public void getSavedAttendance() {
-        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("Result", MODE_PRIVATE);
         Gson gson = new Gson();
-        String json = sharedPreferences.getString("StudentResult", null);
+        String json = Constants.offlineDataPreference.getString("StudentResult", null);
         Type type = new TypeToken<ArrayList<ResultData>>() {
         }.getType();
         resultDataArrayList = gson.fromJson(json, type);
@@ -189,7 +187,6 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
     }
 
     private void getData(final String... param) {
-        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("DetailResult", MODE_PRIVATE);
         RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
         StringRequest postRequest = new StringRequest(Request.Method.POST, param[0] + "/detailedResult",
                 response -> {
@@ -212,7 +209,7 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
                 error -> {
                     hideBottomSheetDialog();
                     if (error instanceof AuthFailureError) {
-                        if (sharedPreferences.getString("StudentDetailResult" + sem, null) == null) {
+                        if (Constants.offlineDataPreference.getString("StudentDetailResult" + sem, null) == null) {
                             Snackbar snackbar = Snackbar.make(main_layout, "Wrong Credentials!", Snackbar.LENGTH_SHORT);
                             snackbar.show();
                         } else {
@@ -221,7 +218,7 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
                             startActivity(intent);
                         }
                     } else if (error instanceof ServerError) {
-                        if (sharedPreferences.getString("StudentDetailResult" + sem, null) == null) {
+                        if (Constants.offlineDataPreference.getString("StudentDetailResult" + sem, null) == null) {
                             Snackbar snackbar = Snackbar.make(main_layout, "Cannot connect to ITER servers right now.Try again", Snackbar.LENGTH_SHORT);
                             snackbar.show();
                         } else {
@@ -231,7 +228,7 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
                         }
                     } else if (error instanceof NetworkError) {
                         Log.e("Volley_error", String.valueOf(error));
-                        if (sharedPreferences.getString("StudentDetailResult" + sem, null) == null) {
+                        if (Constants.offlineDataPreference.getString("StudentDetailResult" + sem, null) == null) {
                             Snackbar snackbar = Snackbar.make(main_layout, "Cannot establish connection", Snackbar.LENGTH_SHORT);
                             snackbar.show();
                         } else {
@@ -240,7 +237,7 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
                             startActivity(intent);
                         }
                     } else {
-                        if (sharedPreferences.getString("StudentDetailResult" + sem, null) == null) {
+                        if (Constants.offlineDataPreference.getString("StudentDetailResult" + sem, null) == null) {
                             Snackbar snackbar = Snackbar.make(main_layout, "Cannot establish connection", Snackbar.LENGTH_SHORT);
                             snackbar.show();
                         } else {

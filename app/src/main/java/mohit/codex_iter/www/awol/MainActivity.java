@@ -106,6 +106,7 @@ public class MainActivity extends BaseThemedActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        Constants.offlineDataPreference = this.getSharedPreferences("OFFLINEDATA", Context.MODE_PRIVATE);
         OneSignal.startInit(this)
                 .inFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification)
                 .unsubscribeWhenNotificationsAreDisabled(true)
@@ -231,6 +232,8 @@ public class MainActivity extends BaseThemedActivity {
                 login.setVisibility(View.GONE);
                 user.setEnabled(false);
                 pass.setEnabled(false);
+                user.setFocusable(false);
+                pass.setFocusable(false);
                 passLayout.setPasswordVisibilityToggleEnabled(false);
                 if (!preferences.contains(STUDENT_NAME)) {
                     getName(api, u, p);
@@ -357,7 +360,6 @@ public class MainActivity extends BaseThemedActivity {
         if (param[0] == null) {
             param[0] = apiUrl.getString(API, "");
         }
-        editor = preferences.edit();
         RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
         StringRequest postRequest = new StringRequest(Request.Method.POST, param[0] + "/attendance",
                 response -> {
@@ -374,8 +376,6 @@ public class MainActivity extends BaseThemedActivity {
                         snackbar.show();
                     } else if (response.equals("390")) {
                         //Attendance not present
-                        editor.putBoolean("User_exists", true);
-                        editor.apply();
                         Intent intent = new Intent(MainActivity.this, AttendanceActivity.class);
                         intent.putExtra(REGISTRATION_NUMBER, user.getText().toString());
                         intent.putExtra(NOATTENDANCE, true);
@@ -385,8 +385,6 @@ public class MainActivity extends BaseThemedActivity {
                         startActivity(intent);
                     } else {
                         //User exists and attendance too.
-                        editor.putBoolean("User_exists", true);
-                        editor.apply();
                         Intent intent = new Intent(MainActivity.this, AttendanceActivity.class);
                         param_1 = param[1];
                         response += "kkk" + param[1];
@@ -404,19 +402,19 @@ public class MainActivity extends BaseThemedActivity {
                     progressBar.setVisibility(View.INVISIBLE);
                     login.setVisibility(View.VISIBLE);
                     passLayout.setPasswordVisibilityToggleEnabled(true);
-                    user.setEnabled(true);
-                    pass.setEnabled(true);
-                    user.setFocusableInTouchMode(true);
-                    user.setFocusable(true);
-                    pass.setFocusableInTouchMode(true);
-                    pass.setFocusable(true);
 
                     if (error instanceof AuthFailureError) {
                         welcomeMessage.setText("Welcome User!");
                         Snackbar snackbar = Snackbar.make(mainLayout, "Wrong Credentials!", Snackbar.LENGTH_SHORT);
                         snackbar.show();
                     } else if (error instanceof ServerError) {
-                        if (!preferences.getBoolean("User_exists", false)) {
+                        if (Constants.offlineDataPreference.getString("StudentAttendance", null) == null) {
+                            user.setEnabled(true);
+                            pass.setEnabled(true);
+                            user.setFocusableInTouchMode(true);
+                            user.setFocusable(true);
+                            pass.setFocusableInTouchMode(true);
+                            pass.setFocusable(true);
                             Snackbar snackbar = Snackbar.make(mainLayout, "Cannot connect to ITER servers right now.Try again", Snackbar.LENGTH_SHORT);
                             snackbar.show();
                         } else {
@@ -425,7 +423,13 @@ public class MainActivity extends BaseThemedActivity {
                             startActivity(intent);
                         }
                     } else if (error instanceof NetworkError) {
-                        if (!preferences.getBoolean("User_exists", false)) {
+                        if (Constants.offlineDataPreference.getString("StudentAttendance", null) == null) {
+                            user.setEnabled(true);
+                            pass.setEnabled(true);
+                            user.setFocusableInTouchMode(true);
+                            user.setFocusable(true);
+                            pass.setFocusableInTouchMode(true);
+                            pass.setFocusable(true);
                             Snackbar snackbar = Snackbar.make(mainLayout, "Cannot establish connection", Snackbar.LENGTH_SHORT);
                             snackbar.show();
                         } else {
@@ -445,7 +449,13 @@ public class MainActivity extends BaseThemedActivity {
                             track = true;
                             login.performClick();
                         } else {
-                            if (!preferences.getBoolean("User_exists", false)) {
+                            if (Constants.offlineDataPreference.getString("StudentAttendance", null) == null) {
+                                user.setEnabled(true);
+                                pass.setEnabled(true);
+                                user.setFocusableInTouchMode(true);
+                                user.setFocusable(true);
+                                pass.setFocusableInTouchMode(true);
+                                pass.setFocusable(true);
                                 Snackbar snackbar = Snackbar.make(mainLayout, "Cannot connect to ITER servers right now.Try again", Snackbar.LENGTH_SHORT);
                                 snackbar.show();
                                 track = false;
