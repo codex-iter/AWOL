@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -61,7 +62,7 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.ResultHold
             //poor
             holder.imageViewResultEmotion.setImageResource(R.drawable.ic_poor);
         }
-        holder.recyclerResultParent.setOnClickListener(view -> {
+        holder.cardView.setOnClickListener(view -> {
             if (listener != null) {
                 listener.onResultClicked(resultData.get(position).getStynumber(), resultData.get(position).getTotalearnedcredit(),
                         resultData.get(position).getFail(), resultData.get(position).getSgpaR());
@@ -71,7 +72,6 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.ResultHold
         if (!dark) {
             holder.semTextView.setTextColor(Color.parseColor("#141831"));
             holder.sgpaTextView.setTextColor(Color.parseColor("#141831"));
-            ;
             holder.creditsTextView.setTextColor(Color.parseColor("#141831"));
         }
     }
@@ -85,9 +85,11 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.ResultHold
         TextView semTextView, sgpaTextView, creditsTextView;
         LinearLayout recyclerResultParent;
         ImageView imageViewResultEmotion;
+        CardView cardView;
 
         public ResultHolder(@NonNull View itemView) {
             super(itemView);
+            cardView = itemView.findViewById(R.id.card_view);
             recyclerResultParent = itemView.findViewById(R.id.recyclerResultParent);
             semTextView = itemView.findViewById(R.id.textViewSem);
             creditsTextView = itemView.findViewById(R.id.textViewCredits);

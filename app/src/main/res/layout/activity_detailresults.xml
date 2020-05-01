@@ -41,12 +41,10 @@
                 android:clipToPadding="false"
                 android:divider="@null"
                 android:focusable="true"
-                android:foreground="?android:attr/selectableItemBackground"
                 android:textColor="#000"
                 android:textSize="25sp"
                 android:textStyle="bold" />
 
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-<!--    <include layout="@layout/bottomprogressbar" />-->
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

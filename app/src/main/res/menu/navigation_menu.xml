@@ -10,6 +10,11 @@
         android:id="@+id/result"
         android:icon="@drawable/clipboard_text_outline"/>
     <item
+        android:id="@+id/lecture"
+        android:icon="@drawable/video"
+        android:title="@string/video_lectures" />
+
+    <item
         android:id="@+id/sa"
         android:icon="@drawable/ic_send"
         android:title="@string/share_app" />

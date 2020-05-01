@@ -15,7 +15,6 @@
         android:layout_height="match_parent"
         android:layout_margin="5dp"
         android:elevation="10dp"
-
         app:cardCornerRadius="7dp"
         app:contentPadding="3dp">
 

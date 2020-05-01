@@ -1,5 +1,6 @@
 package mohit.codex_iter.www.awol.activity;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -30,7 +31,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
@@ -55,10 +55,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.play.core.appupdate.AppUpdateManager;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -94,6 +91,7 @@ import static mohit.codex_iter.www.awol.utilities.Constants.REGISTRATION_NUMBER;
 import static mohit.codex_iter.www.awol.utilities.Constants.RESULTS;
 import static mohit.codex_iter.www.awol.utilities.Constants.RESULTSTATUS;
 import static mohit.codex_iter.www.awol.utilities.Constants.SHOWRESULT;
+import static mohit.codex_iter.www.awol.utilities.Constants.STUDENTSEMESTER;
 import static mohit.codex_iter.www.awol.utilities.Constants.STUDENT_NAME;
 import static mohit.codex_iter.www.awol.utilities.Constants.offlineDataPreference;
 
@@ -138,7 +136,7 @@ public class AttendanceActivity extends BaseThemedActivity {
     private String[] r;
     public ArrayList<AttendanceData> attendanceDataArrayList = new ArrayList<>();
     @SuppressWarnings("FieldCanBeLocal")
-    private String code;
+    private String code, student_semester;
     @SuppressWarnings("FieldCanBeLocal")
     private SharedPreferences sub, userm, studentnamePrefernces;
     private SharedPreferences.Editor edit;
@@ -219,13 +217,10 @@ public class AttendanceActivity extends BaseThemedActivity {
             recyclerView.setBackgroundColor(Color.parseColor("#141414"));
         }
         CollectionReference apiCollection = FirebaseFirestore.getInstance().collection(RESULTSTATUS);
-        apiCollection.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                if (queryDocumentSnapshots != null) {
-                    for (DocumentChange documentChange : queryDocumentSnapshots.getDocumentChanges()) {
-                        showResult = documentChange.getDocument().getBoolean(SHOWRESULT);
-                    }
+        apiCollection.addSnapshotListener((queryDocumentSnapshots, e) -> {
+            if (queryDocumentSnapshots != null) {
+                for (DocumentChange documentChange : queryDocumentSnapshots.getDocumentChanges()) {
+                    showResult = documentChange.getDocument().getBoolean(SHOWRESULT);
                 }
             }
         });
@@ -334,10 +329,17 @@ public class AttendanceActivity extends BaseThemedActivity {
                                 sendIntent.setType("text/plain");
                                 startActivity(sendIntent);
                                 break;
-                            case R.id.abt:
-                                Intent intenta = new Intent(AttendanceActivity.this, AboutActivity.class);
-                                startActivity(intenta);
+                            case R.id.lecture: {
+                                Intent intent = new Intent(AttendanceActivity.this, OnlineLectureSubjects.class);
+                                intent.putExtra(STUDENTSEMESTER, "2nd");
+                                startActivity(intent);
                                 break;
+                            }
+                            case R.id.abt: {
+                                Intent intent = new Intent(AttendanceActivity.this, AboutActivity.class);
+                                startActivity(intent);
+                                break;
+                            }
                             case R.id.cd:
                                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().getString(R.string.github_url))));
                                 break;
@@ -383,10 +385,11 @@ public class AttendanceActivity extends BaseThemedActivity {
                                 Button pbutton = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
                                 pbutton.setBackgroundColor(Color.GREEN);
                                 break;
-                            case R.id.pab:
+                            case R.id.pab: {
                                 Intent intent = new Intent(AttendanceActivity.this, BunkActivity.class);
                                 startActivity(intent);
                                 break;
+                            }
                             case R.id.result:
                                 if (!showResult) {
                                     Snackbar snackbar = Snackbar.make(mainLayout, "We will be back within 3-4 days", Snackbar.LENGTH_LONG);
@@ -396,8 +399,8 @@ public class AttendanceActivity extends BaseThemedActivity {
                                 }
                                 break;
                             case R.id.setting:
-                                Intent intent1 = new Intent(getApplicationContext(), SettingsActivity.class);
-                                startActivity(intent1);
+                                Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+                                startActivity(intent);
                                 break;
                             case R.id.policy:
                                 Uri uri = Uri.parse("https://awol-iter.flycricket.io/privacy.html");
@@ -415,6 +418,7 @@ public class AttendanceActivity extends BaseThemedActivity {
         }
     }
 
+    @SuppressLint("CommitPrefEdits")
     public void saveAttendance(ArrayList attendanceDataArrayList) {
         Constants.offlineDataEditor = Constants.offlineDataPreference.edit();
         Gson gson = new Gson();
@@ -686,7 +690,7 @@ public class AttendanceActivity extends BaseThemedActivity {
 
     public void showBottomSheetDialog() {
         //    private BottomSheetBehavior bottomSheetBehavior;
-        View view = getLayoutInflater().inflate(R.layout.bottomprogressbar, null);
+        @SuppressLint("InflateParams") View view = getLayoutInflater().inflate(R.layout.bottomprogressbar, null);
         dialog = new BottomSheetDialog(this);
         dialog.setContentView(view);
         dialog.setCancelable(false);
