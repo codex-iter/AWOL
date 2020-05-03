@@ -53,7 +53,9 @@ public  class Constants {
     public static final String STUDENT_NAME = "studentName";
     public static final String LOGIN = "loginCheck";
     public static final String NOATTENDANCE = "noAttendance";
-    public static final String STUDENTSEMESTER = "semester";
+    public static final String STUDENTSEMESTER = "stynumber";
+    public static final String STUDENTBRANCH = "branchdesc";
+    public static final String VIDEOURL = "url";
     public static Boolean Offlin_mode = false;
     public static SharedPreferences offlineDataPreference;
     public static SharedPreferences.Editor offlineDataEditor;

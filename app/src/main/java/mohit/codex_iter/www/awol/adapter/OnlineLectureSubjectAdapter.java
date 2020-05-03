@@ -4,11 +4,12 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.textview.MaterialTextView;
 
 import java.util.ArrayList;
 
@@ -33,7 +34,7 @@ public class OnlineLectureSubjectAdapter extends RecyclerView.Adapter<OnlineLect
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(mcontext);
-        View view = inflater.inflate(R.layout.item_results, parent, false);
+        View view = inflater.inflate(R.layout.item_lectures, parent, false);
         return new ViewHolder(view);
     }
 
@@ -41,8 +42,6 @@ public class OnlineLectureSubjectAdapter extends RecyclerView.Adapter<OnlineLect
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
         if (!fromSubject) {
-            holder.creditsTextView.setVisibility(View.GONE);
-            holder.sgpaTextView.setVisibility(View.GONE);
             holder.subject.setText(subjectArrayList.get(position).getSubject());
         } else {
             holder.subject.setText(subjectArrayList.get(position).getName());
@@ -60,16 +59,14 @@ public class OnlineLectureSubjectAdapter extends RecyclerView.Adapter<OnlineLect
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView subject, sgpaTextView, creditsTextView;
+        MaterialTextView subject;
         CardView cardView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             cardView = itemView.findViewById(R.id.card_view);
-            subject = itemView.findViewById(R.id.textViewSem);
-            creditsTextView = itemView.findViewById(R.id.textViewCredits);
-            sgpaTextView = itemView.findViewById(R.id.textViewSGPA);
+            subject = itemView.findViewById(R.id.subject_name);
 
         }
     }

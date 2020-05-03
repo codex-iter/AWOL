@@ -274,6 +274,8 @@ public class AttendanceActivity extends BaseThemedActivity {
                 attendanceData[i].setBunk();
                 avgat += Double.parseDouble(jObj.getString("TotalAttandence").trim());
                 avgab += Integer.parseInt(attendanceData[i].getAbsent());
+
+                student_semester = jObj.getString(STUDENTSEMESTER);
             }
             avgat /= l;
             avgab /= l;

@@ -6,14 +6,14 @@
          "Principles of Microeconomics",
          "University Physics Electromagnetism"
       ],
-      "Computer Science & Engineering":[
+     "Computer Science and Engineering": [
          "Calculus-II",
          "Critical Thinking & Communication",
          "Data Structure & Algorithms",
          "Introduction to Graph Theory",
          "University Physics Electromagnetism"
       ],
-      "Computer Science & Information Technology":[
+     "Computer Science and Information Technology": [
          "Calculus-II",
          "Data Structure & Algorithms",
          "Introduction to Graph Theory",
@@ -27,14 +27,14 @@
          "Logic Design",
          "University Physics Electromagnetism"
       ],
-      "Electrical & Electronics Engineering":[
+     "Electrical and Electronics Engineering": [
          "Calculus-II",
          "Data Structure & Algorithms",
          "Electrical & Electronics Workshop",
          "Logic Design",
          "University Physics Electromagnetism"
       ],
-      "Electronics & Communication Engineering":[
+     "Electronics and Communication Engineering": [
          "Calculus-II",
          "Critical Thinking & Communication",
          "Data Structure & Algorithms",
@@ -54,13 +54,13 @@
          "Applied Linear Algebra",
          "Probability and Statistics"
       ],
-      "Computer Science & Engineering":[
+     "Computer Science and Engineering": [
          "Algorithm Design-I",
          "Advanced Discrete Mathematics",
          "Computer Organisation & Architecture",
          "Environmental Studies"
       ],
-      "Computer Science & Information Technology":[
+     "Computer Science and Information Technology": [
          "Algorithm Design-I",
          "Advanced Discrete Mathematics",
          "Computer Organisation & Architecture",
@@ -74,7 +74,7 @@
          "Numerical Methods",
          "Probability & Statistics"
       ],
-      "Electrical & Electronics Engineering":[
+     "Electrical and Electronics Engineering": [
          "Applied Linear Algebra",
          "Complex Analysis",
          "Circuit Theory",
@@ -82,7 +82,7 @@
          "Numerical Methods",
          "Probability & Statistics"
       ],
-      "Electronics & Communication Engineering":[
+     "Electronics and Communication Engineering": [
          "Applied Linear Algebra",
          "Complex Analysis",
          "Circuit Theory",

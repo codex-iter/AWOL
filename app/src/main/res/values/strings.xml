@@ -58,7 +58,6 @@
     <string name="get_the_latest_info_from_who_about_covid_19">Get the latest info from WHO about COVID-19</string>
     <string name="learn_more">Learn more</string>
     <string name="please_wait">Please Wait</string>
-    <string name="subject_name">Subject Name</string>
     <string name="sub_code">Sub Code</string>
     <string name="textview">TextView</string>
     <string name="grade">Grade</string>
@@ -68,5 +67,6 @@
     <string name="select_theme">Select Theme</string>
     <string name="apply">Apply</string>
     <string name="video_lectures">Video Lectures</string>
+    <string name="subject_name">Subject Name</string>
 </resources>
 

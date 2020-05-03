@@ -1,11 +1,14 @@
 package mohit.codex_iter.www.awol.activity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.widget.Toast;
+import android.view.MenuItem;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -14,6 +17,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,18 +26,34 @@ import mohit.codex_iter.www.awol.adapter.OnlineLectureSubjectAdapter;
 import mohit.codex_iter.www.awol.model.Lecture;
 
 import static mohit.codex_iter.www.awol.utilities.Constants.STUDENT_NAME;
+import static mohit.codex_iter.www.awol.utilities.Constants.VIDEOURL;
 
-public class OnlineLectureVideos extends AppCompatActivity implements OnlineLectureSubjectAdapter.OnItemClickListener {
+public class OnlineLectureVideos extends BaseThemedActivity implements OnlineLectureSubjectAdapter.OnItemClickListener {
 
-    @BindView(R.id.recyclerViewDetailedResult)
+    @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_detailresults);
+        setContentView(R.layout.activity_lectures);
 
         ButterKnife.bind(this);
+        setSupportActionBar(toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Video Lectures");
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setElevation(0);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowHomeEnabled(true);
+        if (dark) {
+            toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+            recyclerView.setBackgroundColor(Color.parseColor("#141414"));
+        } else {
+            toolbar.setTitleTextColor(getResources().getColor(R.color.black));
+            Objects.requireNonNull(toolbar.getNavigationIcon()).setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP);
+        }
+
         SharedPreferences sharedPreferences = getSharedPreferences(STUDENT_NAME, MODE_PRIVATE);
         Gson gson = new Gson();
         String json = sharedPreferences.getString("SubjectLinks", null);
@@ -52,6 +72,17 @@ public class OnlineLectureVideos extends AppCompatActivity implements OnlineLect
 
     @Override
     public void onClicked(String subject_name, String video_link) {
-        Toast.makeText(this, video_link, Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(OnlineLectureVideos.this, VideoPlayer.class);
+        intent.putExtra(VIDEOURL, video_link);
+        startActivity(intent);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            finish();
+        }
+        return true;
     }
 }

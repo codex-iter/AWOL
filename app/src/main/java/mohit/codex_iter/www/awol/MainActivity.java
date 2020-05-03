@@ -59,6 +59,7 @@ import static mohit.codex_iter.www.awol.utilities.Constants.LOGIN;
 import static mohit.codex_iter.www.awol.utilities.Constants.NOATTENDANCE;
 import static mohit.codex_iter.www.awol.utilities.Constants.REGISTRATION_NUMBER;
 import static mohit.codex_iter.www.awol.utilities.Constants.RESULTS;
+import static mohit.codex_iter.www.awol.utilities.Constants.STUDENTBRANCH;
 import static mohit.codex_iter.www.awol.utilities.Constants.STUDENT_NAME;
 
 
@@ -89,7 +90,7 @@ public class MainActivity extends BaseThemedActivity {
     private SharedPreferences.Editor edit;
     private boolean track;
     private String param_1, response_d;
-    private String studentName;
+    private String studentName, student_branch;
     private String api;
     private static final String TAG = "MainActivity";
     private SharedPreferences preferences;
@@ -489,8 +490,11 @@ public class MainActivity extends BaseThemedActivity {
                         JSONArray jarr = jobj.getJSONArray("detail");
                         JSONObject jobj1 = jarr.getJSONObject(0);
                         studentName = jobj1.getString("name");
+                        student_branch = jobj1.getString(STUDENTBRANCH);
+                        Log.d("branch", student_branch);
                         editor = preferences.edit();
                         editor.putString(STUDENT_NAME, studentName);
+                        editor.putString(STUDENTBRANCH, student_branch);
                         editor.apply();
                         Log.d("Student", studentName);
                     } catch (JSONException e) {
