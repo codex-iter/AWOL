@@ -1,19 +1,34 @@
 package mohit.codex_iter.www.awol.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.NetworkError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.ServerError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -34,6 +49,11 @@ public class OnlineLectureVideos extends BaseThemedActivity implements OnlineLec
     RecyclerView recyclerView;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    @BindView(R.id.main_Layout)
+    ConstraintLayout mainLayout;
+
+    private String direct_link;
+    private BottomSheetDialog dialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -72,9 +92,9 @@ public class OnlineLectureVideos extends BaseThemedActivity implements OnlineLec
 
     @Override
     public void onClicked(String subject_name, String video_link) {
-        Intent intent = new Intent(OnlineLectureVideos.this, VideoPlayer.class);
-        intent.putExtra(VIDEOURL, video_link);
-        startActivity(intent);
+        //Fetching Direct link from url of box
+        showBottomSheetDialog();
+        getDirectLink("https://soa-lectures.herokuapp.com", video_link);
     }
 
     @Override
@@ -84,5 +104,56 @@ public class OnlineLectureVideos extends BaseThemedActivity implements OnlineLec
             finish();
         }
         return true;
+    }
+
+    private void getDirectLink(final String... param) {
+        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+
+        JSONObject jsonObjec = new JSONObject();
+        try {
+            jsonObjec.put("link", param[1]);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, param[0] + "/fetch", jsonObjec,
+                response -> {
+                    try {
+                        hideBottomSheetDialog();
+                        direct_link = response.getString("direct_url") + ".mp4";
+                        Log.d("link", direct_link);
+                        Intent intent = new Intent(OnlineLectureVideos.this, VideoPlayer.class);
+                        intent.putExtra(VIDEOURL, direct_link);
+                        startActivity(intent);
+                    } catch (JSONException e) {
+                        Log.d("error", Objects.requireNonNull(e.toString()));
+                    }
+                }, error -> {
+            hideBottomSheetDialog();
+            Log.d("volleyerror", error.toString());
+            if (error instanceof ServerError) {
+                Snackbar snackbar = Snackbar.make(mainLayout, "Something went wrong, Please try again!", Snackbar.LENGTH_SHORT);
+                snackbar.show();
+            } else if (error instanceof NetworkError) {
+                Snackbar snackbar = Snackbar.make(mainLayout, "Cannot establish connection", Snackbar.LENGTH_SHORT);
+                snackbar.show();
+            } else {
+                Snackbar snackbar = Snackbar.make(mainLayout, "Cannot establish connection", Snackbar.LENGTH_SHORT);
+                snackbar.show();
+            }
+        });
+        queue.add(jsonObjectRequest);
+    }
+
+    public void showBottomSheetDialog() {
+        //    private BottomSheetBehavior bottomSheetBehavior;
+        @SuppressLint("InflateParams") View view = getLayoutInflater().inflate(R.layout.bottomprogressbar, null);
+        dialog = new BottomSheetDialog(this);
+        dialog.setContentView(view);
+        dialog.setCancelable(false);
+        dialog.show();
+    }
+
+    public void hideBottomSheetDialog() {
+        dialog.dismiss();
     }
 }

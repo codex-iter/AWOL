@@ -77,7 +77,6 @@ import butterknife.ButterKnife;
 import mohit.codex_iter.www.awol.MainActivity;
 import mohit.codex_iter.www.awol.R;
 import mohit.codex_iter.www.awol.adapter.AttendanceAdapter;
-import mohit.codex_iter.www.awol.bottomsheet.BottomSheetFragment;
 import mohit.codex_iter.www.awol.model.AttendanceData;
 import mohit.codex_iter.www.awol.setting.SettingsActivity;
 import mohit.codex_iter.www.awol.theme.ThemeFragment;
@@ -683,11 +682,6 @@ public class AttendanceActivity extends BaseThemedActivity {
         intent.putExtra(android.content.Intent.EXTRA_TEXT, getString(R.string.sharing_text));
         intent.putExtra(Intent.EXTRA_STREAM, uri);//pass uri here
         startActivity(Intent.createChooser(intent, getString(R.string.share_title)));
-    }
-
-    public void showBottomSheetDialogFragment() {
-        BottomSheetFragment bottomSheetFragment = new BottomSheetFragment();
-        bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
     }
 
     public void showBottomSheetDialog() {
