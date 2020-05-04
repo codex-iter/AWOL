@@ -17,7 +17,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:context="mohit.codex_iter.www.awol.activity.BunkActivity">
+        tools:context="codex.codex_iter.www.awol.activity.BunkActivity">
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"

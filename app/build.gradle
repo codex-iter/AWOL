@@ -16,7 +16,7 @@ apply plugin: 'io.fabric'
 android {
     compileSdkVersion 29
     defaultConfig {
-        applicationId "mohit.codex_iter.www.awol"
+        applicationId "codex.codex_iter.www.awol"
         minSdkVersion 21
         targetSdkVersion 29
         multiDexEnabled true
@@ -76,6 +76,13 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics:17.4.0'
     implementation 'com.google.firebase:firebase-firestore:21.4.3'
 
+    //Database
+    implementation 'com.google.firebase:firebase-database:19.3.0'
+    implementation 'com.google.firebase:firebase-storage:19.1.1'
+
+    //firebase messaging
+    implementation 'com.google.firebase:firebase-messaging:20.1.6'
+
     //Multi-dex
     implementation 'androidx.multidex:multidex:2.0.1'
 
@@ -86,11 +93,17 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.5'
 
     //exo-player
-    implementation 'com.google.android.exoplayer:exoplayer:2.10.1'
+    implementation 'com.google.android.exoplayer:exoplayer:2.11.1'
 
     //ads
     implementation 'com.google.android.gms:play-services-ads:19.1.0'
-    implementation 'com.google.android.exoplayer:extension-ima:2.10.1'
+
+    //Firebase Remote Config
+    implementation 'com.google.firebase:firebase-config:19.1.4'
+    implementation 'com.google.firebase:firebase-analytics:17.4.0'
+
+    //picasso
+    implementation 'com.squareup.picasso:picasso:2.71828'
 
     //ButterKnife
     implementation 'com.jakewharton:butterknife:10.2.1'

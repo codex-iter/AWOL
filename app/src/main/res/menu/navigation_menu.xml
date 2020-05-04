@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/lecture"
+        android:icon="@drawable/video"
+        android:title="@string/video_lectures" />
 
     <item
         android:id="@+id/pab"
         android:icon="@drawable/ic_hotel"
         android:title="@string/plan_bunk" />
     <item
-        android:title="@string/results"
         android:id="@+id/result"
-        android:icon="@drawable/clipboard_text_outline"/>
-    <item
-        android:id="@+id/lecture"
-        android:icon="@drawable/video"
-        android:title="@string/video_lectures" />
-
+        android:icon="@drawable/clipboard_text_outline"
+        android:title="@string/results" />
     <item
         android:id="@+id/sa"
         android:icon="@drawable/ic_send"

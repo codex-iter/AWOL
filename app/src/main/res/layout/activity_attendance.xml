@@ -93,11 +93,9 @@
                         android:layout_height="match_parent">
 
                         <ImageView
-                            android:id="@+id/whologo"
+                            android:id="@+id/logo"
                             android:layout_width="131dp"
                             android:layout_height="139dp"
-                            android:scaleType="centerCrop"
-                            android:src="@drawable/who_text"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
                             android:contentDescription="@string/todo" />
@@ -110,7 +108,7 @@
                             android:layout_marginStart="5dp"
                             android:textColor="@color/black"
                             android:textSize="20sp"
-                            app:layout_constraintStart_toEndOf="@+id/whologo"
+                            app:layout_constraintStart_toEndOf="@+id/logo"
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <TextView
@@ -122,7 +120,7 @@
                             android:text="@string/get_the_latest_info_from_who_about_covid_19"
                             android:textColor="@color/black"
                             android:textSize="15sp"
-                            app:layout_constraintStart_toEndOf="@+id/whologo"
+                            app:layout_constraintStart_toEndOf="@+id/logo"
                             app:layout_constraintTop_toBottomOf="@+id/covid19" />
 
                         <com.google.android.material.button.MaterialButton
@@ -137,7 +135,7 @@
                             android:textColor="@color/colorPrimary"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@+id/whologo" />
+                            app:layout_constraintStart_toEndOf="@+id/logo" />
 
                         <ImageView
                             android:id="@+id/removetile"

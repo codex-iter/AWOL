@@ -68,5 +68,7 @@
     <string name="apply">Apply</string>
     <string name="video_lectures">Video Lectures</string>
     <string name="subject_name">Subject Name</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 </resources>
 

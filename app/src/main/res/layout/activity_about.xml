@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        tools:context="mohit.codex_iter.www.awol.MainActivity"
+        tools:context="codex.codex_iter.www.awol.MainActivity"
         tools:targetApi="o">
 
         <com.google.android.material.appbar.AppBarLayout
