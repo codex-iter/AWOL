@@ -197,8 +197,8 @@ public class MainActivity extends BaseThemedActivity {
 
         apiUrl = getSharedPreferences(API, MODE_PRIVATE);
 
-        FirebaseConfig firebaseConfig = new FirebaseConfig();
-        read_database = firebaseConfig.read_database(this);
+//        FirebaseConfig firebaseConfig = new FirebaseConfig();
+//        read_database = firebaseConfig.read_database(this);
 
 //        if (apiUrl.getInt(READ_DATABASE, 0) < read_database) {
 //            apiUrl.edit().putInt(READ_DATABASE, read_database).apply();
