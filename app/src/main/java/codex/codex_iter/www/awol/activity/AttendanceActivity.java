@@ -209,7 +209,6 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
         String json = firebaseConfig.fetch_latest_news(this);
         try {
             JSONObject jsonObject = new JSONObject(json);
-            Toast.makeText(this, String.valueOf(jsonObject.getInt("version")), Toast.LENGTH_SHORT).show();
             if (jsonObject.getInt("version") >= 1) {
                 if (who_layout.getVisibility() == View.GONE && preferences.getInt("version", 0) < jsonObject.getInt("version")) {
                     Toast.makeText(this, "true", Toast.LENGTH_SHORT).show();
@@ -247,10 +246,16 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
             Log.d("error_cardtile", e.toString());
         }
         setSupportActionBar(toolbar);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+        navigationView.setNavigationItemSelectedListener(this);
+
         Objects.requireNonNull(getSupportActionBar()).setTitle("Home");
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         Objects.requireNonNull(getSupportActionBar()).setElevation(0);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.bell_ring);
 
         if (dark) {
             cardView.setBackgroundColor(Color.parseColor("#141414"));
@@ -281,11 +286,6 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
 
         studentnamePrefernces = this.getSharedPreferences(STUDENT_NAME, MODE_PRIVATE);
         String studentName = studentnamePrefernces.getString(STUDENT_NAME, "");
-
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
-        navigationView.setNavigationItemSelectedListener(this);
 
         Menu menu = navigationView.getMenu();
         if (no_attendance) {
@@ -618,7 +618,33 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
             case R.id.lecture: {
                 if (!sharedPreferences.getString(SHOWLECTUURES, "").equals("0")) {
                     Intent intent = new Intent(AttendanceActivity.this, OnlineLectureSubjects.class);
-                    intent.putExtra(STUDENTSEMESTER, "2nd");
+                    switch (student_semester) {
+                        case "1":
+                            student_semester = "1st";
+                            break;
+                        case "2":
+                            student_semester = "2nd";
+                            break;
+                        case "3":
+                            student_semester = "3rd";
+                            break;
+                        case "4":
+                            student_semester = "4th";
+                            break;
+                        case "5":
+                            student_semester = "5th";
+                            break;
+                        case "6":
+                            student_semester = "6th";
+                            break;
+                        case "7":
+                            student_semester = "7th";
+                            break;
+                        case "8":
+                            student_semester = "8th";
+                            break;
+                    }
+                    intent.putExtra(STUDENTSEMESTER, student_semester);
                     startActivity(intent);
                 } else {
                     Menu menu = navigationView.getMenu();

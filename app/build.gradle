@@ -87,7 +87,7 @@ dependencies {
     implementation 'androidx.multidex:multidex:2.0.1'
 
     // OneSignal SDK
-    implementation 'com.onesignal:OneSignal:3.12.4'
+    implementation 'com.onesignal:OneSignal:3.13.2'
 
     //Gson
     implementation 'com.google.code.gson:gson:2.8.5'

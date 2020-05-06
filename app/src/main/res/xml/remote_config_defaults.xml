@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<defaultMap>
+    <entry>
+        <key>news_link</key>
+        <value>{
+            "version": 0,
+            "link": "https://github.com/codex-iter",
+            "news_text": "Join Us",
+            "image_url": "",
+            "news_title": "Codex"
+            }
+        </value>
+    </entry>
+    <entry>
+        <key>read_database</key>
+        <value>1</value>
+    </entry>
+</defaultMap>

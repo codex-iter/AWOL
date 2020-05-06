@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -50,6 +51,8 @@ public class OnlineLectureSubjects extends BaseThemedActivity implements OnlineL
     RecyclerView recyclerView;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    @BindView(R.id.main_Layout)
+    ConstraintLayout main_layout;
 
     private ArrayList<Lecture> subjectName = new ArrayList<>();
     private ArrayList<Lecture> subjectLinks = new ArrayList<>();
@@ -98,6 +101,10 @@ public class OnlineLectureSubjects extends BaseThemedActivity implements OnlineL
             sharedPreferences.edit().putString(STUDENTSEMESTER, sem).apply();
         }
         getJSONdata("");
+        if (subjectName.size() <= 0) {
+            Toast.makeText(this, "No lectures found!", Toast.LENGTH_SHORT).show();
+            finish();
+        }
         OnlineLectureSubjectAdapter lecturesAdapter = new OnlineLectureSubjectAdapter(this, subjectName, false, this);
         recyclerView.setAdapter(lecturesAdapter);
         recyclerView.setHasFixedSize(true);
@@ -136,7 +143,7 @@ public class OnlineLectureSubjects extends BaseThemedActivity implements OnlineL
             if (jsonVideosLinks != null && jsonSubjectNames != null) {
                 JSONObject lectures = new JSONObject(jsonVideosLinks);
                 JSONObject subject = new JSONObject(jsonSubjectNames);
-                String[] semester = {"2nd", "4th"};
+                String[] semester = {"2nd", "3rd", "4th", "5th", "6th", "7th", "8th"};
                 for (String s : semester) {
                     if (Objects.requireNonNull(sharedPreferences.getString(STUDENTSEMESTER, null)).trim().equals(s)) {
                         JSONObject subjects = lectures.getJSONObject(s);
