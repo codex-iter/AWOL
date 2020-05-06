@@ -91,7 +91,6 @@ import static codex.codex_iter.www.awol.utilities.Constants.API;
 import static codex.codex_iter.www.awol.utilities.Constants.LOGIN;
 import static codex.codex_iter.www.awol.utilities.Constants.NOATTENDANCE;
 import static codex.codex_iter.www.awol.utilities.Constants.READ_DATABASE;
-import static codex.codex_iter.www.awol.utilities.Constants.READ_DATABASE2;
 import static codex.codex_iter.www.awol.utilities.Constants.REGISTRATION_NUMBER;
 import static codex.codex_iter.www.awol.utilities.Constants.RESULTS;
 import static codex.codex_iter.www.awol.utilities.Constants.RESULTSTATUS;
@@ -267,23 +266,21 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
             Objects.requireNonNull(toolbar.getNavigationIcon()).setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP);
         }
 
-        sharedPreferences = getSharedPreferences(API, MODE_PRIVATE);
-        if (sharedPreferences.getInt(READ_DATABASE2, 0) <= read_database) {
-            sharedPreferences.edit().putInt(READ_DATABASE2, read_database).apply();
-            CollectionReference apiCollection = FirebaseFirestore.getInstance().collection(RESULTSTATUS);
-            apiCollection.addSnapshotListener((queryDocumentSnapshots, e) -> {
-                if (queryDocumentSnapshots != null) {
-                    for (DocumentChange documentChange : queryDocumentSnapshots.getDocumentChanges()) {
-                        showResult = documentChange.getDocument().getString(SHOWRESULT);
-                        showlectures = documentChange.getDocument().getString(SHOWLECTUURES);
-                        sharedPreferences.edit().putString(SHOWRESULT, showResult).apply();
-                        sharedPreferences.edit().putString(SHOWLECTUURES, showlectures).apply();
-                    }
+//        sharedPreferences = getSharedPreferences(API, MODE_PRIVATE);
+//        if (sharedPreferences.getInt(READ_DATABASE2, 0) <= read_database) {
+//            sharedPreferences.edit().putInt(READ_DATABASE2, read_database).apply();
+        CollectionReference apiCollection = FirebaseFirestore.getInstance().collection(RESULTSTATUS);
+        apiCollection.addSnapshotListener((queryDocumentSnapshots, e) -> {
+            if (queryDocumentSnapshots != null) {
+                for (DocumentChange documentChange : queryDocumentSnapshots.getDocumentChanges()) {
+                    showResult = documentChange.getDocument().getString(SHOWRESULT);
+                    showlectures = documentChange.getDocument().getString(SHOWLECTUURES);
+                    sharedPreferences.edit().putString(SHOWRESULT, showResult).apply();
+                    sharedPreferences.edit().putString(SHOWLECTUURES, showlectures).apply();
                 }
-            });
-
-        }
-
+            }
+        });
+//        }
         studentnamePrefernces = this.getSharedPreferences(STUDENT_NAME, MODE_PRIVATE);
         String studentName = studentnamePrefernces.getString(STUDENT_NAME, "");
 

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "334392427707",
+    "firebase_url": "https://awol-64d31.firebaseio.com",
+    "project_id": "awol-64d31",
+    "storage_bucket": "awol-64d31.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:334392427707:android:a60795a49fb8af2ba8559e",
+        "android_client_info": {
+          "package_name": "codex.codex_iter.www.awol"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "334392427707-3kqsi5iqtttoo1qqdcbel41tb22916cl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "codex.codex_iter.www.awol",
+            "certificate_hash": "2ecb499e4260a542f956655a23c5ed53de8e28c7"
+          }
+        },
+        {
+          "client_id": "334392427707-3lc9iv6o0n20ojs9bktb9n2jloadid73.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDi1wCSap3wRvEKcfcCL3Op-ccWjJ-IMA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "334392427707-3lc9iv6o0n20ojs9bktb9n2jloadid73.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

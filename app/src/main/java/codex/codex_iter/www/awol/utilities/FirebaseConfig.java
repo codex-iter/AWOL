@@ -29,11 +29,11 @@ public class FirebaseConfig {
         String new_value = mFirebaseRemoteConfig.getString("news_link");
         mFirebaseRemoteConfig.fetchAndActivate()
                 .addOnCompleteListener((Activity) context, task -> {
-                    if (task.isSuccessful()) {
-//                            Toast.makeText(context, "Fetched successfully", Toast.LENGTH_SHORT).show();
-                    } else {
-//                        Toast.makeText(context, "UnFetched successfully", Toast.LENGTH_SHORT).show();
-                    }
+//                    if (task.isSuccessful()) {
+////                            Toast.makeText(context, "Fetched successfully", Toast.LENGTH_SHORT).show();
+//                    } else {
+////                        Toast.makeText(context, "UnFetched successfully", Toast.LENGTH_SHORT).show();
+//                    }
                 }).addOnFailureListener(e -> {
             Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
             Log.d("error", e.toString());
@@ -41,19 +41,19 @@ public class FirebaseConfig {
         return new_value;
     }
 
-    public int read_database(Context context) {
-        String new_value = mFirebaseRemoteConfig.getString("read_database");
-        mFirebaseRemoteConfig.fetchAndActivate()
-                .addOnCompleteListener((Activity) context, task -> {
-                    if (task.isSuccessful()) {
-//                            Toast.makeText(context, "Fetched successfully", Toast.LENGTH_SHORT).show();
-                    } else {
-//                        Toast.makeText(context, "UnFetched successfully", Toast.LENGTH_SHORT).show();
-                    }
-                }).addOnFailureListener(e -> {
-            Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
-            Log.d("error", e.toString());
-        });
-        return Integer.parseInt(new_value);
-    }
+//    public int read_database(Context context) {
+//        String new_value = mFirebaseRemoteConfig.getString("read_database");
+//        mFirebaseRemoteConfig.fetchAndActivate()
+//                .addOnCompleteListener((Activity) context, task -> {
+//                    if (task.isSuccessful()) {
+////                            Toast.makeText(context, "Fetched successfully", Toast.LENGTH_SHORT).show();
+//                    } else {
+////                        Toast.makeText(context, "UnFetched successfully", Toast.LENGTH_SHORT).show();
+//                    }
+//                }).addOnFailureListener(e -> {
+//            Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
+//            Log.d("error", e.toString());
+//        });
+//        return Integer.parseInt(new_value);
+//    }
 }

@@ -200,21 +200,21 @@ public class MainActivity extends BaseThemedActivity {
         FirebaseConfig firebaseConfig = new FirebaseConfig();
         read_database = firebaseConfig.read_database(this);
 
-        if (apiUrl.getInt(READ_DATABASE, 0) < read_database) {
-            apiUrl.edit().putInt(READ_DATABASE, read_database).apply();
-            CollectionReference apiCollection = FirebaseFirestore.getInstance().collection(DETAILS);
-            apiCollection.addSnapshotListener((queryDocumentSnapshots, e) -> {
-                if (queryDocumentSnapshots != null) {
-                    for (DocumentChange documentChange : queryDocumentSnapshots.getDocumentChanges()) {
-                        api = documentChange.getDocument().getString(API);
-                        edit = apiUrl.edit();
-                        edit.putString(API, api);
-                        edit.apply();
-                        Log.d(TAG, api);
-                    }
+//        if (apiUrl.getInt(READ_DATABASE, 0) < read_database) {
+//            apiUrl.edit().putInt(READ_DATABASE, read_database).apply();
+        CollectionReference apiCollection = FirebaseFirestore.getInstance().collection(DETAILS);
+        apiCollection.addSnapshotListener((queryDocumentSnapshots, e) -> {
+            if (queryDocumentSnapshots != null) {
+                for (DocumentChange documentChange : queryDocumentSnapshots.getDocumentChanges()) {
+                    api = documentChange.getDocument().getString(API);
+                    edit = apiUrl.edit();
+                    edit.putString(API, api);
+                    edit.apply();
+                    Log.d(TAG, api);
                 }
-            });
-        }
+            }
+        });
+//        }
         if (preferences.contains(STUDENT_NAME)) {
             String str = preferences.getString(STUDENT_NAME, "");
             String[] split = str.split("\\s+");
