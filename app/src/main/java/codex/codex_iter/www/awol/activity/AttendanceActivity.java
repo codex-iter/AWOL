@@ -266,7 +266,7 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
             Objects.requireNonNull(toolbar.getNavigationIcon()).setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP);
         }
 
-//        sharedPreferences = getSharedPreferences(API, MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(API, MODE_PRIVATE);
 //        if (sharedPreferences.getInt(READ_DATABASE2, 0) <= read_database) {
 //            sharedPreferences.edit().putInt(READ_DATABASE2, read_database).apply();
         CollectionReference apiCollection = FirebaseFirestore.getInstance().collection(RESULTSTATUS);
@@ -275,6 +275,7 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                 for (DocumentChange documentChange : queryDocumentSnapshots.getDocumentChanges()) {
                     showResult = documentChange.getDocument().getString(SHOWRESULT);
                     showlectures = documentChange.getDocument().getString(SHOWLECTUURES);
+                    sharedPreferences.edit().putString(READ_DATABASE, documentChange.getDocument().getString("fetch_file")).apply();
                     sharedPreferences.edit().putString(SHOWRESULT, showResult).apply();
                     sharedPreferences.edit().putString(SHOWLECTUURES, showlectures).apply();
                 }

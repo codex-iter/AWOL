@@ -36,11 +36,10 @@ import codex.codex_iter.www.awol.R;
 import codex.codex_iter.www.awol.adapter.OnlineLectureSubjectAdapter;
 import codex.codex_iter.www.awol.model.Lecture;
 import codex.codex_iter.www.awol.utilities.DownloadScrapFile;
-import codex.codex_iter.www.awol.utilities.FirebaseConfig;
 import codex.codex_iter.www.awol.utilities.Utils;
 
 import static codex.codex_iter.www.awol.utilities.Constants.API;
-import static codex.codex_iter.www.awol.utilities.Constants.READ_DATABASE3;
+import static codex.codex_iter.www.awol.utilities.Constants.READ_DATABASE;
 import static codex.codex_iter.www.awol.utilities.Constants.STUDENTBRANCH;
 import static codex.codex_iter.www.awol.utilities.Constants.STUDENTSEMESTER;
 import static codex.codex_iter.www.awol.utilities.Constants.STUDENT_NAME;
@@ -66,15 +65,13 @@ public class OnlineLectureSubjects extends BaseThemedActivity implements OnlineL
         setContentView(R.layout.activity_lectures);
 
         ButterKnife.bind(this);
-
-        FirebaseConfig firebaseConfig = new FirebaseConfig();
-        int read_storage = firebaseConfig.read_database(this);
+        
         SharedPreferences preferences = getSharedPreferences(API, MODE_PRIVATE);
-        if (preferences.getInt(READ_DATABASE3, 0) < read_storage) {
+        if (preferences.getString(READ_DATABASE, "0").equals("1")) {
             showBottomSheetDialog();
-            preferences.edit().putInt(READ_DATABASE3, read_storage).apply();
             downloadfile();
         }
+
         jsonVideosLinks = Utils.getJsonFromStorage(getApplicationContext(), "data.txt");
         Log.d("tesxt", jsonVideosLinks);
         jsonSubjectNames = Utils.getJsonFromStorage(getApplicationContext(), "video.txt");
