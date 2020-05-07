@@ -26,8 +26,10 @@
             android:layout_marginBottom="10dp"
             android:layout_marginEnd="10dp"
             android:text="@string/welcome_back"
-            android:textColor="@color/colorPrimary"
+            android:textAlignment="textStart"
+            android:textColor="@color/black"
             android:textSize="25sp"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

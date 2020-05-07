@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.DisplayMetrics;
@@ -52,7 +50,6 @@ import butterknife.ButterKnife;
 import codex.codex_iter.www.awol.activity.AttendanceActivity;
 import codex.codex_iter.www.awol.activity.BaseThemedActivity;
 import codex.codex_iter.www.awol.utilities.Constants;
-import codex.codex_iter.www.awol.utilities.FirebaseConfig;
 
 import static codex.codex_iter.www.awol.utilities.Constants.API;
 import static codex.codex_iter.www.awol.utilities.Constants.DETAILS;
@@ -214,15 +211,7 @@ public class MainActivity extends BaseThemedActivity {
                 }
             }
         });
-//        }
-        if (preferences.contains(STUDENT_NAME)) {
-            String str = preferences.getString(STUDENT_NAME, "");
-            String[] split = str.split("\\s+");
-            welcomeMessage.setText("Welcome " + convertToTitleCaseIteratingChars(split[0]) + "!");
-        } else {
-            manual_layout.setVisibility(View.INVISIBLE);
-            welcomeMessage.setText("Welcome User!");
-        }
+
         login.setOnClickListener(view -> {
             String u = user.getText().toString().trim();
             String p = pass.getText().toString().trim();
@@ -232,15 +221,15 @@ public class MainActivity extends BaseThemedActivity {
                 snackbar.show();
             } else {
                 progressBar.setVisibility(View.VISIBLE);
+                welcomeMessage.setVisibility(View.VISIBLE);
                 login.setVisibility(View.GONE);
                 user.setEnabled(false);
                 pass.setEnabled(false);
                 user.setFocusable(false);
                 pass.setFocusable(false);
                 passLayout.setPasswordVisibilityToggleEnabled(false);
-                if (!preferences.contains(STUDENT_NAME)) {
+                if (!preferences.contains(STUDENT_NAME))
                     getName(api, u, p);
-                }
                 getData(api, u, p);
                 edit = userm.edit();
                 edit.putString("user", u);
@@ -325,29 +314,6 @@ public class MainActivity extends BaseThemedActivity {
         return Math.round(px);
     }
 
-    public static String convertToTitleCaseIteratingChars(String text) {
-        if (text == null || text.isEmpty()) {
-            return text;
-        }
-
-        StringBuilder converted = new StringBuilder();
-
-        boolean convertNext = true;
-        for (char ch : text.toCharArray()) {
-            if (Character.isSpaceChar(ch)) {
-                convertNext = true;
-            } else if (convertNext) {
-                ch = Character.toTitleCase(ch);
-                convertNext = false;
-            } else {
-                ch = Character.toLowerCase(ch);
-            }
-            converted.append(ch);
-        }
-
-        return converted.toString();
-    }
-
     public void autofill() {
         if (userm.contains("user") && userm.contains("pass") && logout.contains("logout") && !logout.getBoolean("logout", false)) {
             user.setFocusable(false);
@@ -369,11 +335,11 @@ public class MainActivity extends BaseThemedActivity {
                     if (response.equals("404")) {
                         //User Credential wrong or user doesn't exists.
                         progressBar.setVisibility(View.INVISIBLE);
+                        welcomeMessage.setVisibility(View.GONE);
                         login.setVisibility(View.VISIBLE);
                         user.setEnabled(true);
                         pass.setEnabled(true);
                         passLayout.setPasswordVisibilityToggleEnabled(true);
-                        welcomeMessage.setText("Welcome User!");
                         Snackbar snackbar = Snackbar.make(mainLayout, "Wrong credentials", Snackbar.LENGTH_SHORT);
                         snackbar.show();
                     } else if (response.equals("390")) {
@@ -382,9 +348,10 @@ public class MainActivity extends BaseThemedActivity {
                         intent.putExtra(REGISTRATION_NUMBER, user.getText().toString());
                         intent.putExtra(NOATTENDANCE, true);
                         intent.putExtra(LOGIN, true);
-                        Toast.makeText(this, studentName, Toast.LENGTH_SHORT).show();
                         intent.putExtra(API, api);
                         intent.putExtra(READ_DATABASE, read_database);
+                        if (!preferences.contains(STUDENT_NAME))
+                            getName(api, param[1], param[2]);
                         startActivity(intent);
                     } else {
                         //User exists and attendance too.
@@ -399,16 +366,18 @@ public class MainActivity extends BaseThemedActivity {
                         intent.putExtra(READ_DATABASE, read_database);
                         edit.putString(param[1], response);
                         edit.apply();
+                        if (!preferences.contains(STUDENT_NAME))
+                            getName(api, param[1], param[2]);
                         startActivity(intent);
                     }
                 },
                 error -> {
                     progressBar.setVisibility(View.INVISIBLE);
+                    welcomeMessage.setVisibility(View.GONE);
                     login.setVisibility(View.VISIBLE);
                     passLayout.setPasswordVisibilityToggleEnabled(true);
 
                     if (error instanceof AuthFailureError) {
-                        welcomeMessage.setText("Welcome User!");
                         Snackbar snackbar = Snackbar.make(mainLayout, "Wrong Credentials!", Snackbar.LENGTH_SHORT);
                         snackbar.show();
                     } else if (error instanceof ServerError) {
@@ -444,6 +413,7 @@ public class MainActivity extends BaseThemedActivity {
                     } else if (error instanceof TimeoutError) {
                         if (!track) {
                             progressBar.setVisibility(View.VISIBLE);
+                            welcomeMessage.setVisibility(View.VISIBLE);
                             login.setVisibility(View.GONE);
                             user.setEnabled(false);
                             pass.setEnabled(false);
@@ -494,17 +464,16 @@ public class MainActivity extends BaseThemedActivity {
                         JSONObject jobj1 = jarr.getJSONObject(0);
                         studentName = jobj1.getString("name");
                         student_branch = jobj1.getString(STUDENTBRANCH);
-                        Log.d("branch", student_branch);
                         editor = preferences.edit();
                         editor.putString(STUDENT_NAME, studentName);
                         editor.putString(STUDENTBRANCH, student_branch);
                         editor.apply();
-                        Log.d("Student", studentName);
                     } catch (JSONException e) {
                         Toast.makeText(getApplicationContext(), "Cannot fetch name!!", Toast.LENGTH_SHORT).show();
                     }
                 },
                 error -> {
+                    Log.d("error_name", error.toString());
                 }
         ) {
             @Override
@@ -516,28 +485,6 @@ public class MainActivity extends BaseThemedActivity {
             }
         };
         queue.add(postRequest);
-    }
-
-    private boolean haveNetworkConnection() {
-        boolean haveConnectedWifi = false;
-        boolean haveConnectedMobile = false;
-
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm != null ? cm.getActiveNetworkInfo() : null;
-        // connected to the internet
-
-
-        if (activeNetwork != null) {
-            if (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI) {
-                // connected to wifi
-                haveConnectedWifi = true;
-            } else if (activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE) {
-                // connected to mobile data
-                haveConnectedMobile = true;
-            }
-        }
-
-        return haveConnectedWifi || haveConnectedMobile;
     }
 
     @Override

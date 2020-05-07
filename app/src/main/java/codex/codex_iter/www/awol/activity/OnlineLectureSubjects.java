@@ -40,6 +40,7 @@ import codex.codex_iter.www.awol.utilities.Utils;
 
 import static codex.codex_iter.www.awol.utilities.Constants.API;
 import static codex.codex_iter.www.awol.utilities.Constants.READ_DATABASE;
+import static codex.codex_iter.www.awol.utilities.Constants.READ_DATABASE2;
 import static codex.codex_iter.www.awol.utilities.Constants.STUDENTBRANCH;
 import static codex.codex_iter.www.awol.utilities.Constants.STUDENTSEMESTER;
 import static codex.codex_iter.www.awol.utilities.Constants.STUDENT_NAME;
@@ -65,9 +66,10 @@ public class OnlineLectureSubjects extends BaseThemedActivity implements OnlineL
         setContentView(R.layout.activity_lectures);
 
         ButterKnife.bind(this);
-        
+
         SharedPreferences preferences = getSharedPreferences(API, MODE_PRIVATE);
-        if (preferences.getString(READ_DATABASE, "0").equals("1")) {
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null && preferences.getInt(READ_DATABASE, 0) > bundle.getInt(READ_DATABASE2)) {
             showBottomSheetDialog();
             downloadfile();
         }
@@ -92,7 +94,7 @@ public class OnlineLectureSubjects extends BaseThemedActivity implements OnlineL
             Objects.requireNonNull(toolbar.getNavigationIcon()).setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP);
         }
         branch = sharedPreferences.getString(STUDENTBRANCH, "");
-        Bundle bundle = getIntent().getExtras();
+
         if (bundle != null) {
             String sem = bundle.getString(STUDENTSEMESTER);
             sharedPreferences.edit().putString(STUDENTSEMESTER, sem).apply();

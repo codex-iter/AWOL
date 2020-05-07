@@ -10,7 +10,6 @@ import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -34,7 +33,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -54,7 +53,7 @@ import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.android.play.core.appupdate.AppUpdateManager;
+import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -91,6 +90,7 @@ import static codex.codex_iter.www.awol.utilities.Constants.API;
 import static codex.codex_iter.www.awol.utilities.Constants.LOGIN;
 import static codex.codex_iter.www.awol.utilities.Constants.NOATTENDANCE;
 import static codex.codex_iter.www.awol.utilities.Constants.READ_DATABASE;
+import static codex.codex_iter.www.awol.utilities.Constants.READ_DATABASE2;
 import static codex.codex_iter.www.awol.utilities.Constants.REGISTRATION_NUMBER;
 import static codex.codex_iter.www.awol.utilities.Constants.RESULTS;
 import static codex.codex_iter.www.awol.utilities.Constants.RESULTSTATUS;
@@ -149,13 +149,12 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
     private SharedPreferences.Editor edit;
     @SuppressWarnings("FieldCanBeLocal")
     private AttendanceAdapter adapter;
-    private AppUpdateManager appUpdateManager;
     private boolean no_attendance;
-    private static final int MY_REQUEST_CODE = 1011;
     private String api;
     private String showResult, showlectures;
     private BottomSheetDialog dialog;
     private int read_database;
+    private ImageView share;
 
     int[][] state = new int[][]{
             new int[]{android.R.attr.state_checked}, // checked
@@ -179,21 +178,48 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
             (Color.GRAY)
     };
 
-    ColorStateList csl2 = new ColorStateList(state2, color2);
+    public static String convertToTitleCaseIteratingChars(String text) {
+        if (text == null || text.isEmpty()) {
+            return text;
+        }
 
-    private static final String TAG = "Home";
+        StringBuilder converted = new StringBuilder();
+
+        boolean convertNext = true;
+        for (char ch : text.toCharArray()) {
+            if (Character.isSpaceChar(ch)) {
+                convertNext = true;
+            } else if (convertNext) {
+                ch = Character.toTitleCase(ch);
+                convertNext = false;
+            } else {
+                ch = Character.toLowerCase(ch);
+            }
+            converted.append(ch);
+        }
+
+        return converted.toString();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attendance);
 
+        ButterKnife.bind(this);
+
+        setSupportActionBar(toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setTitle("");
+        Objects.requireNonNull(this.getSupportActionBar()).setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getSupportActionBar().setDisplayShowCustomEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setCustomView(R.layout.activity_action_bar);
+        View view_cus = getSupportActionBar().getCustomView();
+        MaterialTextView title = view_cus.findViewById(R.id.title);
+        ImageView icon = view_cus.findViewById(R.id.image);
         preferences = getSharedPreferences("CLOSE", MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
 
         Constants.offlineDataPreference = this.getSharedPreferences("OFFLINEDATA", Context.MODE_PRIVATE);
-
-        ButterKnife.bind(this);
         Bundle bundle = getIntent().getExtras();
 
         if (bundle != null) {
@@ -201,7 +227,6 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
             api = bundle.getString(API);
             no_attendance = bundle.getBoolean(NOATTENDANCE);
             result = bundle.getString(RESULTS);
-            read_database = bundle.getInt(READ_DATABASE);
         }
 
         FirebaseConfig firebaseConfig = new FirebaseConfig();
@@ -244,17 +269,10 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
         } catch (JSONException e) {
             Log.d("error_cardtile", e.toString());
         }
-        setSupportActionBar(toolbar);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
+
+        icon.setOnClickListener(view -> drawerLayout.openDrawer(GravityCompat.START));
         navigationView.setNavigationItemSelectedListener(this);
 
-        Objects.requireNonNull(getSupportActionBar()).setTitle("Home");
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        Objects.requireNonNull(getSupportActionBar()).setElevation(0);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.bell_ring);
 
         if (dark) {
             cardView.setBackgroundColor(Color.parseColor("#141414"));
@@ -262,26 +280,24 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
             covid_desp.setTextColor(Color.parseColor("#FFCCCCCC"));
             recyclerView.setBackgroundColor(Color.parseColor("#141414"));
         } else {
-            toolbar.setTitleTextColor(getResources().getColor(R.color.black));
-            Objects.requireNonNull(toolbar.getNavigationIcon()).setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP);
+            title.setTextColor(Color.parseColor("#141414"));
         }
 
         sharedPreferences = getSharedPreferences(API, MODE_PRIVATE);
-//        if (sharedPreferences.getInt(READ_DATABASE2, 0) <= read_database) {
-//            sharedPreferences.edit().putInt(READ_DATABASE2, read_database).apply();
         CollectionReference apiCollection = FirebaseFirestore.getInstance().collection(RESULTSTATUS);
         apiCollection.addSnapshotListener((queryDocumentSnapshots, e) -> {
             if (queryDocumentSnapshots != null) {
                 for (DocumentChange documentChange : queryDocumentSnapshots.getDocumentChanges()) {
                     showResult = documentChange.getDocument().getString(SHOWRESULT);
                     showlectures = documentChange.getDocument().getString(SHOWLECTUURES);
-                    sharedPreferences.edit().putString(READ_DATABASE, documentChange.getDocument().getString("fetch_file")).apply();
+                    read_database = Integer.parseInt(Objects.requireNonNull(documentChange.getDocument().getString("fetch_file")));
+                    sharedPreferences.edit().putInt(READ_DATABASE, read_database).apply();
                     sharedPreferences.edit().putString(SHOWRESULT, showResult).apply();
                     sharedPreferences.edit().putString(SHOWLECTUURES, showlectures).apply();
                 }
             }
         });
-//        }
+
         studentnamePrefernces = this.getSharedPreferences(STUDENT_NAME, MODE_PRIVATE);
         String studentName = studentnamePrefernces.getString(STUDENT_NAME, "");
 
@@ -367,6 +383,8 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
             TextView name = headerView.findViewById(R.id.name);
             TextView reg = headerView.findViewById(R.id.reg);
             name.setText(studentName);
+            String[] split = studentName.split("\\s+");
+            title.setText("Hi, " + convertToTitleCaseIteratingChars(split[0]) + "!");
             reg.setText(preferences.getString("RegistrationNumber", null));
             TextView avat = headerView.findViewById(R.id.avat);
             avat.setText(preferences.getInt("AveragePresent", 0) + "%");
@@ -480,12 +498,6 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
             }
         };
         queue.add(postRequest);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_share, menu);
-        return super.onCreateOptionsMenu(menu);
     }
 
     private String Updated(JSONObject jObj, SharedPreferences sub, String code, int i) throws JSONException {
@@ -643,6 +655,7 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                             break;
                     }
                     intent.putExtra(STUDENTSEMESTER, student_semester);
+                    intent.putExtra(READ_DATABASE2, read_database);
                     startActivity(intent);
                 } else {
                     Menu menu = navigationView.getMenu();
@@ -668,9 +681,7 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                     edit = sub.edit();
                     edit.putBoolean("logout", true);
                     edit.apply();
-                    edit = studentnamePrefernces.edit();
-                    edit.putString(STUDENT_NAME, null);
-                    edit.apply();
+                    studentnamePrefernces.edit().clear().apply();
                     editor.putBoolean("close", false);
                     editor.apply();
                     //Clearing the saved data

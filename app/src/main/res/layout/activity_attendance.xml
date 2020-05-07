@@ -22,6 +22,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:theme="@style/AppTheme.AppBarOverlay"
+                app:elevation="0dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
@@ -31,8 +32,7 @@
                     android:layout_height="?actionBarSize"
                     android:layout_gravity="center_horizontal"
                     android:background="?toolbarColor"
-                    android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-                    app:titleTextColor="@color/colorAccent">
+                    android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
 
                 </androidx.appcompat.widget.Toolbar>
             </com.google.android.material.appbar.AppBarLayout>
@@ -77,7 +77,7 @@
                 android:id="@+id/who_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp">
+                android:layout_marginTop="5dp">
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/whoCard"
@@ -96,16 +96,18 @@
                             android:id="@+id/logo"
                             android:layout_width="131dp"
                             android:layout_height="139dp"
+                            android:layout_margin="10dp"
+                            android:contentDescription="@string/todo"
+                            app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            android:contentDescription="@string/todo" />
+                            app:layout_constraintTop_toTopOf="parent" />
 
                         <TextView
                             android:id="@+id/covid19"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/covid_19"
-                            android:layout_marginStart="5dp"
+                            android:layout_margin="10dp"
+                            android:text="@string/codex"
                             android:textColor="@color/black"
                             android:textSize="20sp"
                             app:layout_constraintStart_toEndOf="@+id/logo"
@@ -115,11 +117,12 @@
                             android:id="@+id/covid_desp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginStart="149dp"
                             android:layout_marginTop="8dp"
-                            android:layout_marginStart="137dp"
-                            android:text="@string/get_the_latest_info_from_who_about_covid_19"
+                            android:text="@string/codex_info"
                             android:textColor="@color/black"
                             android:textSize="15sp"
+                            app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toEndOf="@+id/logo"
                             app:layout_constraintTop_toBottomOf="@+id/covid19" />
 
@@ -128,9 +131,9 @@
                             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/learn_more"
-                            android:layout_marginStart="137dp"
+                            android:layout_marginStart="149dp"
                             android:layout_marginEnd="4dp"
+                            android:text="@string/learn_more"
                             android:textAllCaps="true"
                             android:textColor="@color/colorPrimary"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -141,10 +144,11 @@
                             android:id="@+id/removetile"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:contentDescription="@string/todo"
                             android:src="@drawable/closedark"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            android:contentDescription="@string/todo" />
+                            app:layout_constraintTop_toTopOf="parent" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
