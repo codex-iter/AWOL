@@ -228,9 +228,11 @@ public class MainActivity extends BaseThemedActivity {
                 user.setFocusable(false);
                 pass.setFocusable(false);
                 passLayout.setPasswordVisibilityToggleEnabled(false);
-                if (!preferences.contains(STUDENT_NAME))
+                if (!preferences.contains(STUDENT_NAME)) {
                     getName(api, u, p);
-                getData(api, u, p);
+                } else {
+                    getData(api, u, p);
+                }
                 edit = userm.edit();
                 edit.putString("user", u);
                 edit.putString(u + "pass", p);
@@ -350,8 +352,6 @@ public class MainActivity extends BaseThemedActivity {
                         intent.putExtra(LOGIN, true);
                         intent.putExtra(API, api);
                         intent.putExtra(READ_DATABASE, read_database);
-                        if (!preferences.contains(STUDENT_NAME))
-                            getName(api, param[1], param[2]);
                         startActivity(intent);
                     } else {
                         //User exists and attendance too.
@@ -366,8 +366,6 @@ public class MainActivity extends BaseThemedActivity {
                         intent.putExtra(READ_DATABASE, read_database);
                         edit.putString(param[1], response);
                         edit.apply();
-                        if (!preferences.contains(STUDENT_NAME))
-                            getName(api, param[1], param[2]);
                         startActivity(intent);
                     }
                 },
@@ -468,6 +466,7 @@ public class MainActivity extends BaseThemedActivity {
                         editor.putString(STUDENT_NAME, studentName);
                         editor.putString(STUDENTBRANCH, student_branch);
                         editor.apply();
+                        getData(api, param[1], param[2]);
                     } catch (JSONException e) {
                         Toast.makeText(getApplicationContext(), "Cannot fetch name!!", Toast.LENGTH_SHORT).show();
                     }

@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
@@ -17,7 +16,6 @@ import android.os.FileUriExposedException;
 import android.os.Vibrator;
 import android.text.Html;
 import android.text.format.DateUtils;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -57,6 +55,8 @@ import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
@@ -83,6 +83,7 @@ import codex.codex_iter.www.awol.model.AttendanceData;
 import codex.codex_iter.www.awol.setting.SettingsActivity;
 import codex.codex_iter.www.awol.theme.ThemeFragment;
 import codex.codex_iter.www.awol.utilities.Constants;
+import codex.codex_iter.www.awol.utilities.DownloadScrapFile;
 import codex.codex_iter.www.awol.utilities.FirebaseConfig;
 import codex.codex_iter.www.awol.utilities.ScreenshotUtils;
 
@@ -222,6 +223,11 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
         Constants.offlineDataPreference = this.getSharedPreferences("OFFLINEDATA", Context.MODE_PRIVATE);
         Bundle bundle = getIntent().getExtras();
 
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        if (pref.getBoolean("is_First_Run2", false)) {
+            pref.edit().putBoolean("is_First_Run2", false).apply();
+            who_layout.setVisibility(View.GONE);
+        }
         if (bundle != null) {
             boolean logincheck = bundle.getBoolean(LOGIN);
             api = bundle.getString(API);
@@ -308,9 +314,14 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                     showResult = documentChange.getDocument().getString(SHOWRESULT);
                     showlectures = documentChange.getDocument().getString(SHOWLECTUURES);
                     read_database = Integer.parseInt(Objects.requireNonNull(documentChange.getDocument().getString("fetch_file")));
-                    sharedPreferences.edit().putInt(READ_DATABASE, read_database).apply();
                     sharedPreferences.edit().putString(SHOWRESULT, showResult).apply();
                     sharedPreferences.edit().putString(SHOWLECTUURES, showlectures).apply();
+
+                    if (sharedPreferences.getInt(READ_DATABASE, 0) < read_database) {
+                        sharedPreferences.edit().putInt(READ_DATABASE, read_database).apply();
+                        showBottomSheetDialog();
+                        downloadfile();
+                    }
                 }
             }
         });
@@ -412,6 +423,30 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
         }
     }
 
+    public void downloadfile() {
+        StorageReference storageReference_data = FirebaseStorage.getInstance().getReference().child("data.txt");
+        StorageReference storageReference_video = FirebaseStorage.getInstance().getReference().child("video.txt");
+        DownloadScrapFile downloadScrapFile = new DownloadScrapFile(AttendanceActivity.this);
+        storageReference_data.getDownloadUrl().addOnSuccessListener(uri -> {
+            downloadScrapFile.newDownload(uri.toString(), "data");
+            storageReference_video.getDownloadUrl().addOnSuccessListener(uri1 -> {
+                downloadScrapFile.newDownload(uri1.toString(), "video");
+                hideBottomSheetDialog();
+                recreate();
+            }).addOnFailureListener(e -> {
+                hideBottomSheetDialog();
+                Toast.makeText(AttendanceActivity.this, "Something went wrong.Please try again.", Toast.LENGTH_SHORT).show();
+                Log.d("errorStorage", e.toString());
+                finish();
+            });
+        }).addOnFailureListener(e -> {
+            hideBottomSheetDialog();
+            Toast.makeText(AttendanceActivity.this, "Something went wrong.Please try again.", Toast.LENGTH_SHORT).show();
+            Log.d("errorStorage", e.toString());
+            finish();
+        });
+    }
+
     @SuppressLint("CommitPrefEdits")
     public void saveAttendance(ArrayList attendanceDataArrayList) {
         Constants.offlineDataEditor = Constants.offlineDataPreference.edit();
@@ -443,12 +478,12 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
         getData(api, u, p);
         showBottomSheetDialog();
     }
-
-    public static int convertDpToPixel(float dp) {
-        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
-        float px = dp * (metrics.densityDpi / 160f);
-        return Math.round(px);
-    }
+//
+//    public static int convertDpToPixel(float dp) {
+//        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
+//        float px = dp * (metrics.densityDpi / 160f);
+//        return Math.round(px);
+//    }
 
     private void getData(final String... param) {
         SharedPreferences sharedPreferences = getApplication().getSharedPreferences("Result", MODE_PRIVATE);

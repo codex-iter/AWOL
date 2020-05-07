@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
@@ -66,13 +67,7 @@ public class OnlineLectureSubjects extends BaseThemedActivity implements OnlineL
         setContentView(R.layout.activity_lectures);
 
         ButterKnife.bind(this);
-
-        SharedPreferences preferences = getSharedPreferences(API, MODE_PRIVATE);
         Bundle bundle = getIntent().getExtras();
-        if (bundle != null && preferences.getInt(READ_DATABASE, 0) > bundle.getInt(READ_DATABASE2)) {
-            showBottomSheetDialog();
-            downloadfile();
-        }
 
         jsonVideosLinks = Utils.getJsonFromStorage(getApplicationContext(), "data.txt");
         Log.d("tesxt", jsonVideosLinks);
@@ -100,39 +95,10 @@ public class OnlineLectureSubjects extends BaseThemedActivity implements OnlineL
             sharedPreferences.edit().putString(STUDENTSEMESTER, sem).apply();
         }
         getJSONdata("");
-        if (subjectName.size() <= 0) {
-            Toast.makeText(this, "No lectures found!", Toast.LENGTH_SHORT).show();
-            finish();
-        }
         OnlineLectureSubjectAdapter lecturesAdapter = new OnlineLectureSubjectAdapter(this, subjectName, false, this);
         recyclerView.setAdapter(lecturesAdapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-    }
-
-    public void downloadfile() {
-        StorageReference storageReference_data = FirebaseStorage.getInstance().getReference().child("data.txt");
-        StorageReference storageReference_video = FirebaseStorage.getInstance().getReference().child("video.txt");
-        DownloadScrapFile downloadScrapFile = new DownloadScrapFile(OnlineLectureSubjects.this);
-        storageReference_data.getDownloadUrl().addOnSuccessListener(uri -> {
-            downloadScrapFile.newDownload(uri.toString(), "data");
-            storageReference_video.getDownloadUrl().addOnSuccessListener(uri1 -> {
-                downloadScrapFile.newDownload(uri1.toString(), "video");
-                hideBottomSheetDialog();
-                recreate();
-            }).addOnFailureListener(e -> {
-                hideBottomSheetDialog();
-                Toast.makeText(OnlineLectureSubjects.this, "Something went wrong.Please try again.", Toast.LENGTH_SHORT).show();
-                Log.d("errorStorage", e.toString());
-                finish();
-            });
-        }).addOnFailureListener(e -> {
-            hideBottomSheetDialog();
-            Toast.makeText(OnlineLectureSubjects.this, "Something went wrong.Please try again.", Toast.LENGTH_SHORT).show();
-            Log.d("errorStorage", e.toString());
-            finish();
-        });
     }
 
     public void getJSONdata(String subname) {
@@ -177,9 +143,13 @@ public class OnlineLectureSubjects extends BaseThemedActivity implements OnlineL
                 Toast.makeText(this, "Something went wrong.", Toast.LENGTH_SHORT).show();
                 finish();
             }
-
         } catch (JSONException e) {
             Log.d("error", e.toString());
+        }
+        if (subjectName.size() == 0)  {
+            MaterialTextView no_lectures = findViewById(R.id.no_lectures);
+            recyclerView.setVisibility(View.GONE);
+            no_lectures.setVisibility(View.VISIBLE);
         }
     }
 
