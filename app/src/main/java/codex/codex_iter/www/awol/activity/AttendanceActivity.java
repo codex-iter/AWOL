@@ -154,7 +154,6 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
     private String showResult, showlectures;
     private BottomSheetDialog dialog;
     private int read_database;
-    private ImageView share;
 
     int[][] state = new int[][]{
             new int[]{android.R.attr.state_checked}, // checked
@@ -216,6 +215,7 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
         View view_cus = getSupportActionBar().getCustomView();
         MaterialTextView title = view_cus.findViewById(R.id.title);
         ImageView icon = view_cus.findViewById(R.id.image);
+        ImageView share = view_cus.findViewById(R.id.share);
         preferences = getSharedPreferences("CLOSE", MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
 
@@ -283,6 +283,23 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
             title.setTextColor(Color.parseColor("#141414"));
         }
 
+        share.setOnClickListener(view -> {
+            if (no_attendance) {
+                Snackbar snackbar = Snackbar.make(mainLayout, "Attendance is currently unavailable", Snackbar.LENGTH_SHORT);
+                snackbar.show();
+            } else {
+                Bitmap bitmap = ScreenshotUtils.getScreenShot(recyclerView);
+                if (bitmap != null) {
+                    File save = ScreenshotUtils.getMainDirectoryName(this);
+                    File file = ScreenshotUtils.store(bitmap, "screenshot.jpg", save);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        shareScreenshot(file);
+                    } else {
+                        shareScreenshot_low(file);
+                    }
+                }
+            }
+        });
         sharedPreferences = getSharedPreferences(API, MODE_PRIVATE);
         CollectionReference apiCollection = FirebaseFirestore.getInstance().collection(RESULTSTATUS);
         apiCollection.addSnapshotListener((queryDocumentSnapshots, e) -> {
@@ -534,32 +551,6 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
             edit.commit();
             return "Just now";
         }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            drawerLayout.openDrawer(GravityCompat.START);
-            return true;
-        }
-        if (item.getItemId() == R.id.mShare) {
-            if (no_attendance) {
-                Snackbar snackbar = Snackbar.make(mainLayout, "Attendance is currently unavailable", Snackbar.LENGTH_SHORT);
-                snackbar.show();
-            } else {
-                Bitmap bitmap = ScreenshotUtils.getScreenShot(recyclerView);
-                if (bitmap != null) {
-                    File save = ScreenshotUtils.getMainDirectoryName(this);
-                    File file = ScreenshotUtils.store(bitmap, "screenshot.jpg", save);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        shareScreenshot(file);
-                    } else {
-                        shareScreenshot_low(file);
-                    }
-                }
-            }
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
