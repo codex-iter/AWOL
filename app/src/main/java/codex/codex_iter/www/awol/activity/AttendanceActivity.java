@@ -285,8 +285,7 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
             covid19.setTextColor(Color.parseColor("#FFFFFFFF"));
             covid_desp.setTextColor(Color.parseColor("#FFCCCCCC"));
             recyclerView.setBackgroundColor(Color.parseColor("#141414"));
-        } else {
-            title.setTextColor(Color.parseColor("#141414"));
+            title.setTextColor(Color.parseColor("#ffffff"));
         }
 
         share.setOnClickListener(view -> {
@@ -377,6 +376,7 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                 avgab += Integer.parseInt(attendanceData[i].getAbsent());
 
                 student_semester = jObj.getString(STUDENTSEMESTER);
+                sharedPreferences.edit().putString(STUDENTSEMESTER, student_semester).apply();
             }
             avgat /= l;
             avgab /= l;
@@ -654,7 +654,7 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
             case R.id.lecture: {
                 if (!sharedPreferences.getString(SHOWLECTUURES, "").equals("0")) {
                     Intent intent = new Intent(AttendanceActivity.this, OnlineLectureSubjects.class);
-                    switch (student_semester) {
+                    switch (sharedPreferences.getString(STUDENTSEMESTER, "1")) {
                         case "1":
                             student_semester = "1st";
                             break;
@@ -712,6 +712,7 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                     editor.apply();
                     //Clearing the saved data
                     offlineDataPreference.edit().clear().apply();
+                    sharedPreferences.edit().clear().apply();
                     Intent intent3 = new Intent(getApplicationContext(), MainActivity.class);
                     intent3.putExtra("logout_status", "0");
                     startActivity(intent3);

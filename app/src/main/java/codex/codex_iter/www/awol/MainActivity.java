@@ -458,6 +458,7 @@ public class MainActivity extends BaseThemedActivity {
                 response -> {
                     try {
                         JSONObject jobj = new JSONObject(response);
+                        Log.d("response",jobj.toString());
                         JSONArray jarr = jobj.getJSONArray("detail");
                         JSONObject jobj1 = jarr.getJSONObject(0);
                         studentName = jobj1.getString("name");

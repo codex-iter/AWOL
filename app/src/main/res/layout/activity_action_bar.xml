@@ -28,6 +28,7 @@
         android:layout_alignStart="@+id/image"
         android:layout_alignEnd="@+id/share"
         android:text="@string/home"
+        android:textStyle="bold"
         android:textColor="@color/black"
         android:textSize="20sp" />
 
