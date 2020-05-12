@@ -4,15 +4,11 @@
         <key>news_link</key>
         <value>{
             "version": 0,
-            "link": "https://github.com/codex-iter",
+            "link": "https://github.com/codex-iter/join-us",
             "news_text": "Join Us",
-            "image_url": "",
+            "image_url": "https://thumbs2.imgbox.com/2d/e1/zPzASpSh_t.png",
             "news_title": "Codex"
             }
         </value>
-    </entry>
-    <entry>
-        <key>under_maintenance</key>
-        <value>0</value>
     </entry>
 </defaultMap>

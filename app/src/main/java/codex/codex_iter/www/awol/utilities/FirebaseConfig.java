@@ -3,9 +3,7 @@ package codex.codex_iter.www.awol.utilities;
 import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.google.firebase.BuildConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
@@ -16,12 +14,11 @@ public class FirebaseConfig {
 
     public FirebaseConfig() {
         mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
-        FirebaseRemoteConfigSettings.Builder configBuilder = new FirebaseRemoteConfigSettings.Builder();
-        if (BuildConfig.DEBUG) {
-            long cacheInterval = 0;
-            configBuilder.setMinimumFetchIntervalInSeconds(cacheInterval);
-        }
-        mFirebaseRemoteConfig.setConfigSettingsAsync(configBuilder.build());
+        FirebaseRemoteConfigSettings configBuilder = new FirebaseRemoteConfigSettings.Builder()
+                .setMinimumFetchIntervalInSeconds(43200)
+                //12 hrs
+                .build();
+        mFirebaseRemoteConfig.setConfigSettingsAsync(configBuilder);
         mFirebaseRemoteConfig.setDefaultsAsync(R.xml.remote_config_defaults);
     }
 
@@ -35,13 +32,13 @@ public class FirebaseConfig {
 //                        Toast.makeText(context, "UnFetched successfully", Toast.LENGTH_SHORT).show();
 //                    }
                 }).addOnFailureListener(e -> {
-            Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
             Log.d("error", e.toString());
         });
-        Log.d("json",new_value);
+        Log.d("json", new_value);
         return new_value;
     }
-//
+
+    //
     public int under_maintenance(Context context) {
         String new_value = mFirebaseRemoteConfig.getString("under_maintenance");
         mFirebaseRemoteConfig.fetchAndActivate()
