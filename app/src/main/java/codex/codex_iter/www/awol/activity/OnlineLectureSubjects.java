@@ -1,5 +1,6 @@
 package codex.codex_iter.www.awol.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -16,6 +17,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.gson.Gson;
 
@@ -51,6 +53,8 @@ public class OnlineLectureSubjects extends BaseThemedActivity implements OnlineL
     private ArrayList<Lecture> subjectLinks = new ArrayList<>();
     private SharedPreferences sharedPreferences;
     private String jsonVideosLinks, jsonSubjectNames, branch;
+    private BottomSheetDialog dialog;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,6 +93,7 @@ public class OnlineLectureSubjects extends BaseThemedActivity implements OnlineL
     }
 
     public void getJSONdata(String subname) {
+        showBottomSheetDialog();
         try {
             subjectName.clear();
             subjectLinks.clear();
@@ -103,8 +108,9 @@ public class OnlineLectureSubjects extends BaseThemedActivity implements OnlineL
                         Iterator<String> key_subject = su.keys();
                         while (key_subject.hasNext()) {
                             String keybranch = key_subject.next();
-                            Log.d("keys_data",keybranch);
+                            Log.d("keys_branch",keybranch);
                             if (keybranch.equals(branch)) {
+                                hideBottomSheetDialog();
                                 Iterator<String> sem_no = subjects.keys();
                                 JSONArray subjectsname = su.getJSONArray(keybranch);
                                 while (sem_no.hasNext()) {
@@ -135,6 +141,7 @@ public class OnlineLectureSubjects extends BaseThemedActivity implements OnlineL
             Log.d("error", e.toString());
         }
         if (subjectName.size() == 0)  {
+            hideBottomSheetDialog();
             MaterialTextView no_lectures = findViewById(R.id.no_lectures);
             recyclerView.setVisibility(View.GONE);
             no_lectures.setVisibility(View.VISIBLE);
@@ -158,5 +165,18 @@ public class OnlineLectureSubjects extends BaseThemedActivity implements OnlineL
             finish();
         }
         return true;
+    }
+
+    public void showBottomSheetDialog() {
+        //    private BottomSheetBehavior bottomSheetBehavior;
+        @SuppressLint("InflateParams") View view = getLayoutInflater().inflate(R.layout.bottomprogressbar, null);
+        dialog = new BottomSheetDialog(this);
+        dialog.setContentView(view);
+        dialog.setCancelable(false);
+        dialog.show();
+    }
+
+    public void hideBottomSheetDialog() {
+        dialog.dismiss();
     }
 }

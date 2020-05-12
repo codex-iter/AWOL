@@ -201,6 +201,7 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
         return converted.toString();
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -224,7 +225,7 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
         Bundle bundle = getIntent().getExtras();
 
         SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
-        if (pref.getBoolean("is_First_Run2", false)) {
+        if (pref.getBoolean("is_First_Run2", true)) {
             pref.edit().putBoolean("is_First_Run2", false).apply();
             who_layout.setVisibility(View.GONE);
         }
@@ -239,10 +240,8 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
         String json = firebaseConfig.fetch_latest_news(this);
         try {
             JSONObject jsonObject = new JSONObject(json);
-//            Toast.makeText(this, String.valueOf(jsonObject.getInt("version")), Toast.LENGTH_SHORT).show();
             if (jsonObject.getInt("version") >= 1) {
                 if (who_layout.getVisibility() == View.GONE && preferences.getInt("version", 0) < jsonObject.getInt("version")) {
-                    Toast.makeText(this, "true", Toast.LENGTH_SHORT).show();
                     who_layout.setVisibility(View.VISIBLE);
                 }
                 preferences.edit().putInt("version", jsonObject.getInt("version")).apply();
@@ -414,7 +413,11 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
             TextView reg = headerView.findViewById(R.id.reg);
             name.setText(studentName);
             String[] split = studentName.split("\\s+");
-            title.setText("Hi, " + convertToTitleCaseIteratingChars(split[0]) + "!");
+            if (!split[0].isEmpty()) {
+                title.setText("Hi, " + convertToTitleCaseIteratingChars(split[0]) + "!");
+            } else {
+                title.setText("Home");
+            }
             reg.setText(preferences.getString("RegistrationNumber", null));
             TextView avat = headerView.findViewById(R.id.avat);
             avat.setText(preferences.getInt("AveragePresent", 0) + "%");
@@ -434,7 +437,6 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
             storageReference_video.getDownloadUrl().addOnSuccessListener(uri1 -> {
                 downloadScrapFile.newDownload(uri1.toString(), "video");
                 hideBottomSheetDialog();
-                recreate();
             }).addOnFailureListener(e -> {
                 hideBottomSheetDialog();
                 Toast.makeText(AttendanceActivity.this, "Something went wrong.Please try again.", Toast.LENGTH_SHORT).show();

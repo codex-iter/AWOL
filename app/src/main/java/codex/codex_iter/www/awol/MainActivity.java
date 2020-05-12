@@ -461,6 +461,7 @@ public class MainActivity extends BaseThemedActivity {
                         studentName = jobj1.getString("name");
                         student_branch = jobj1.getString(STUDENTBRANCH);
                         editor = preferences.edit();
+                        Log.d("branch_portal",student_branch);
                         editor.putString(STUDENT_NAME, studentName);
                         editor.putString(STUDENTBRANCH, student_branch);
                         editor.apply();
