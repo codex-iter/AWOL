@@ -12,7 +12,7 @@
         </value>
     </entry>
     <entry>
-        <key>read_database</key>
-        <value>1</value>
+        <key>under_maintenance</key>
+        <value>0</value>
     </entry>
 </defaultMap>

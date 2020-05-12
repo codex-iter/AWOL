@@ -30,30 +30,30 @@ public class FirebaseConfig {
         mFirebaseRemoteConfig.fetchAndActivate()
                 .addOnCompleteListener((Activity) context, task -> {
 //                    if (task.isSuccessful()) {
-////                            Toast.makeText(context, "Fetched successfully", Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(context, "Fetched successfully", Toast.LENGTH_SHORT).show();
 //                    } else {
-////                        Toast.makeText(context, "UnFetched successfully", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(context, "UnFetched successfully", Toast.LENGTH_SHORT).show();
 //                    }
                 }).addOnFailureListener(e -> {
             Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
             Log.d("error", e.toString());
         });
+        Log.d("json",new_value);
         return new_value;
     }
 //
-//    public int read_database(Context context) {
-//        String new_value = mFirebaseRemoteConfig.getString("read_database");
-//        mFirebaseRemoteConfig.fetchAndActivate()
-//                .addOnCompleteListener((Activity) context, task -> {
+    public int under_maintenance(Context context) {
+        String new_value = mFirebaseRemoteConfig.getString("under_maintenance");
+        mFirebaseRemoteConfig.fetchAndActivate()
+                .addOnCompleteListener((Activity) context, task -> {
 //                    if (task.isSuccessful()) {
-////                            Toast.makeText(context, "Fetched successfully", Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(context, "Fetched successfully", Toast.LENGTH_SHORT).show();
 //                    } else {
-////                        Toast.makeText(context, "UnFetched successfully", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(context, "UnFetched successfully", Toast.LENGTH_SHORT).show();
 //                    }
-//                }).addOnFailureListener(e -> {
-//            Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
-//            Log.d("error", e.toString());
-//        });
-//        return Integer.parseInt(new_value);
-//    }
+                }).addOnFailureListener(e -> {
+            Log.d("error", e.toString());
+        });
+        return Integer.parseInt(new_value);
+    }
 }

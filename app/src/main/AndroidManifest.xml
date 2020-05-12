@@ -75,8 +75,15 @@
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
 
-        <activity android:name="codex.codex_iter.www.awol.activity.OnlineLectureSubjects" />
-        <activity android:name="codex.codex_iter.www.awol.activity.OnlineLectureVideos" />
+        <activity
+            android:name="codex.codex_iter.www.awol.activity.OnlineLectureSubjects"
+            android:configChanges="uiMode"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name="codex.codex_iter.www.awol.activity.OnlineLectureVideos"
+            android:configChanges="keyboardHidden|orientation|screenSize|uiMode" />
+        <activity android:name=".activity.UnderMaintenance" />
         <activity
             android:name="codex.codex_iter.www.awol.activity.VideoPlayer"
             android:configChanges="keyboardHidden|orientation|screenSize" />
@@ -95,6 +102,7 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+
         <provider
             android:name="codex.codex_iter.www.awol.utilities.GenericFileProvider"
             android:authorities="${applicationId}.my.package.name.provider"

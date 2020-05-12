@@ -1,6 +1,5 @@
 package codex.codex_iter.www.awol.activity;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -17,10 +16,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.textview.MaterialTextView;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -36,12 +32,8 @@ import butterknife.ButterKnife;
 import codex.codex_iter.www.awol.R;
 import codex.codex_iter.www.awol.adapter.OnlineLectureSubjectAdapter;
 import codex.codex_iter.www.awol.model.Lecture;
-import codex.codex_iter.www.awol.utilities.DownloadScrapFile;
 import codex.codex_iter.www.awol.utilities.Utils;
 
-import static codex.codex_iter.www.awol.utilities.Constants.API;
-import static codex.codex_iter.www.awol.utilities.Constants.READ_DATABASE;
-import static codex.codex_iter.www.awol.utilities.Constants.READ_DATABASE2;
 import static codex.codex_iter.www.awol.utilities.Constants.STUDENTBRANCH;
 import static codex.codex_iter.www.awol.utilities.Constants.STUDENTSEMESTER;
 import static codex.codex_iter.www.awol.utilities.Constants.STUDENT_NAME;
@@ -59,8 +51,6 @@ public class OnlineLectureSubjects extends BaseThemedActivity implements OnlineL
     private ArrayList<Lecture> subjectLinks = new ArrayList<>();
     private SharedPreferences sharedPreferences;
     private String jsonVideosLinks, jsonSubjectNames, branch;
-    private BottomSheetDialog dialog;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,10 +59,8 @@ public class OnlineLectureSubjects extends BaseThemedActivity implements OnlineL
         ButterKnife.bind(this);
         Bundle bundle = getIntent().getExtras();
 
-        jsonVideosLinks = Utils.getJsonFromStorage(getApplicationContext(), "data.txt");
-        Log.d("tesxt", jsonVideosLinks);
-        jsonSubjectNames = Utils.getJsonFromStorage(getApplicationContext(), "video.txt");
-
+        jsonVideosLinks = Utils.getJsonFromStorage(getApplicationContext(), "video.txt");
+        jsonSubjectNames = Utils.getJsonFromStorage(getApplicationContext(), "data.txt");
 
         sharedPreferences = getSharedPreferences(STUDENT_NAME, MODE_PRIVATE);
         setSupportActionBar(toolbar);
@@ -89,7 +77,6 @@ public class OnlineLectureSubjects extends BaseThemedActivity implements OnlineL
             Objects.requireNonNull(toolbar.getNavigationIcon()).setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP);
         }
         branch = sharedPreferences.getString(STUDENTBRANCH, "");
-
         if (bundle != null) {
             String sem = bundle.getString(STUDENTSEMESTER);
             sharedPreferences.edit().putString(STUDENTSEMESTER, sem).apply();
@@ -116,6 +103,7 @@ public class OnlineLectureSubjects extends BaseThemedActivity implements OnlineL
                         Iterator<String> key_subject = su.keys();
                         while (key_subject.hasNext()) {
                             String keybranch = key_subject.next();
+                            Log.d("keys_data",keybranch);
                             if (keybranch.equals(branch)) {
                                 Iterator<String> sem_no = subjects.keys();
                                 JSONArray subjectsname = su.getJSONArray(keybranch);
@@ -170,18 +158,5 @@ public class OnlineLectureSubjects extends BaseThemedActivity implements OnlineL
             finish();
         }
         return true;
-    }
-
-    public void showBottomSheetDialog() {
-        //    private BottomSheetBehavior bottomSheetBehavior;
-        @SuppressLint("InflateParams") View view = getLayoutInflater().inflate(R.layout.bottomprogressbar, null);
-        dialog = new BottomSheetDialog(this);
-        dialog.setContentView(view);
-        dialog.setCancelable(false);
-        dialog.show();
-    }
-
-    public void hideBottomSheetDialog() {
-        dialog.dismiss();
     }
 }

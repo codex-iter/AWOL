@@ -239,6 +239,7 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
         String json = firebaseConfig.fetch_latest_news(this);
         try {
             JSONObject jsonObject = new JSONObject(json);
+//            Toast.makeText(this, String.valueOf(jsonObject.getInt("version")), Toast.LENGTH_SHORT).show();
             if (jsonObject.getInt("version") >= 1) {
                 if (who_layout.getVisibility() == View.GONE && preferences.getInt("version", 0) < jsonObject.getInt("version")) {
                     Toast.makeText(this, "true", Toast.LENGTH_SHORT).show();
@@ -283,6 +284,7 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
         if (dark) {
             cardView.setBackgroundColor(Color.parseColor("#141414"));
             heading.setTextColor(Color.parseColor("#FFFFFFFF"));
+            heading_desp.setTextColor(Color.parseColor("#FFCCCCCC"));
             heading_desp.setTextColor(Color.parseColor("#FFCCCCCC"));
             recyclerView.setBackgroundColor(Color.parseColor("#141414"));
             title.setTextColor(Color.parseColor("#ffffff"));

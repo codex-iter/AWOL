@@ -15,7 +15,15 @@
       },
       "oauth_client": [
         {
-          "client_id": "334392427707-3kqsi5iqtttoo1qqdcbel41tb22916cl.apps.googleusercontent.com",
+          "client_id": "334392427707-dc8vkejj2bgucgn7486v959ffgme2e61.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "codex.codex_iter.www.awol",
+            "certificate_hash": "8f4cef1e845fba1e19b738e166b690446a1bb73e"
+          }
+        },
+        {
+          "client_id": "334392427707-gpauj80vt2d9t551dgtgr8vu316dr9ls.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "codex.codex_iter.www.awol",

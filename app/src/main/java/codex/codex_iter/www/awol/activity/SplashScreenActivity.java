@@ -3,12 +3,14 @@ package codex.codex_iter.www.awol.activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import codex.codex_iter.www.awol.MainActivity;
 import codex.codex_iter.www.awol.R;
 import codex.codex_iter.www.awol.application.CleanCacheApplication;
+import codex.codex_iter.www.awol.utilities.FirebaseConfig;
 
 public class SplashScreenActivity extends AppCompatActivity {
 
@@ -30,8 +32,17 @@ public class SplashScreenActivity extends AppCompatActivity {
             editor_new.apply();
         }
 
-        Intent intent = new Intent(SplashScreenActivity.this, MainActivity.class);
-        startActivity(intent);
-        finish();
+        FirebaseConfig firebaseConfig = new FirebaseConfig();
+        int check = firebaseConfig.under_maintenance(this);
+//        Toast.makeText(this, String.valueOf(check), Toast.LENGTH_SHORT).show();
+        if (check > pref.getInt("CHECK", 0)) {
+            pref.edit().putInt("CHECK", check).apply();
+            Intent intent = new Intent(SplashScreenActivity.this, UnderMaintenance.class);
+            startActivity(intent);
+        } else {
+            Intent intent = new Intent(SplashScreenActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 }

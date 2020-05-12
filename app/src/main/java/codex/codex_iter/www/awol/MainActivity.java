@@ -3,8 +3,10 @@ package codex.codex_iter.www.awol;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.DisplayMetrics;
@@ -24,6 +26,7 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
 import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.toolbox.StringRequest;
@@ -32,7 +35,14 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.android.material.textview.MaterialTextView;
+import com.google.android.play.core.appupdate.AppUpdateInfo;
 import com.google.android.play.core.appupdate.AppUpdateManager;
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
+import com.google.android.play.core.install.InstallStateUpdatedListener;
+import com.google.android.play.core.install.model.AppUpdateType;
+import com.google.android.play.core.install.model.InstallStatus;
+import com.google.android.play.core.install.model.UpdateAvailability;
+import com.google.android.play.core.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -44,6 +54,7 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -55,11 +66,14 @@ import static codex.codex_iter.www.awol.utilities.Constants.API;
 import static codex.codex_iter.www.awol.utilities.Constants.DETAILS;
 import static codex.codex_iter.www.awol.utilities.Constants.LOGIN;
 import static codex.codex_iter.www.awol.utilities.Constants.NOATTENDANCE;
-import static codex.codex_iter.www.awol.utilities.Constants.READ_DATABASE;
+import static codex.codex_iter.www.awol.utilities.Constants.READ_DATABASE2;
+import static codex.codex_iter.www.awol.utilities.Constants.READ_DATABASE3;
 import static codex.codex_iter.www.awol.utilities.Constants.REGISTRATION_NUMBER;
 import static codex.codex_iter.www.awol.utilities.Constants.RESULTS;
 import static codex.codex_iter.www.awol.utilities.Constants.STUDENTBRANCH;
 import static codex.codex_iter.www.awol.utilities.Constants.STUDENT_NAME;
+import static com.crashlytics.android.Crashlytics.log;
+import static com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE;
 
 
 public class MainActivity extends BaseThemedActivity {
@@ -88,7 +102,6 @@ public class MainActivity extends BaseThemedActivity {
     private SharedPreferences userm, logout, apiUrl;
     private SharedPreferences.Editor edit;
     private boolean track;
-    private String param_1, response_d;
     private String studentName, student_branch;
     private String api;
     private static final String TAG = "MainActivity";
@@ -97,7 +110,6 @@ public class MainActivity extends BaseThemedActivity {
     private AppUpdateManager appUpdateManager;
     private static final int MY_REQUEST_CODE = 1011;
     private BottomSheetBehavior bottomSheetBehavior;
-    private boolean updateAvailable;
     private int read_database;
 
     @SuppressLint({"ClickableViewAccessibility", "SetTextI18n"})
@@ -119,50 +131,7 @@ public class MainActivity extends BaseThemedActivity {
                 Context.MODE_PRIVATE);
         preferences = this.getSharedPreferences(STUDENT_NAME, MODE_PRIVATE);
 
-        //In-App Update
-//        appUpdateManager = AppUpdateManagerFactory.create(MainActivity.this);
-//
-//        Task<AppUpdateInfo> appUpdateInfoTask = appUpdateManager.getAppUpdateInfo();
-//
-//        appUpdateInfoTask.addOnSuccessListener(appUpdateInfo -> {
-//            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
-//                if (appUpdateInfo.isUpdateTypeAllowed(IMMEDIATE)) {
-//                    try {
-//                        appUpdateManager.startUpdateFlowForResult(
-//                                appUpdateInfo,
-//                                IMMEDIATE,
-//                                MainActivity.this,
-//                                MY_REQUEST_CODE);
-//                    } catch (IntentSender.SendIntentException e) {
-//                        e.printStackTrace();
-//                    }
-//                } else {
-//                    //FLEXIBLE
-//                    try {
-//                        appUpdateManager.startUpdateFlowForResult(
-//                                appUpdateInfo,
-//                                AppUpdateType.FLEXIBLE,
-//                                MainActivity.this,
-//                                MY_REQUEST_CODE);
-//                    } catch (IntentSender.SendIntentException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            } else {
-//                autofill();
-//            }
-//
-//        });
-//        InstallStateUpdatedListener updatedListener = state -> {
-//            if (state.installStatus() == InstallStatus.DOWNLOADED) {
-//                updateAvailable = false;
-//                popupSnackbarForCompleteUpdate();
-//            }
-//        };
-//
-//        appUpdateManager.registerListener(updatedListener);
-//
-
+        apiUrl = getSharedPreferences(API, MODE_PRIVATE);
 
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetView);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
@@ -192,26 +161,6 @@ public class MainActivity extends BaseThemedActivity {
         editor.putString("status", status);
         editor.apply();
 
-        apiUrl = getSharedPreferences(API, MODE_PRIVATE);
-
-//        FirebaseConfig firebaseConfig = new FirebaseConfig();
-//        read_database = firebaseConfig.read_database(this);
-
-//        if (apiUrl.getInt(READ_DATABASE, 0) < read_database) {
-//            apiUrl.edit().putInt(READ_DATABASE, read_database).apply();
-        CollectionReference apiCollection = FirebaseFirestore.getInstance().collection(DETAILS);
-        apiCollection.addSnapshotListener((queryDocumentSnapshots, e) -> {
-            if (queryDocumentSnapshots != null) {
-                for (DocumentChange documentChange : queryDocumentSnapshots.getDocumentChanges()) {
-                    api = documentChange.getDocument().getString(API);
-                    edit = apiUrl.edit();
-                    edit.putString(API, api);
-                    edit.apply();
-                    Log.d(TAG, api);
-                }
-            }
-        });
-
         login.setOnClickListener(view -> {
             String u = user.getText().toString().trim();
             String p = pass.getText().toString().trim();
@@ -228,7 +177,7 @@ public class MainActivity extends BaseThemedActivity {
                 user.setFocusable(false);
                 pass.setFocusable(false);
                 passLayout.setPasswordVisibilityToggleEnabled(false);
-                if (!preferences.contains(STUDENT_NAME)) {
+                if (!preferences.contains(STUDENT_NAME) || !preferences.contains(STUDENTBRANCH)) {
                     getName(api, u, p);
                 } else {
                     getData(api, u, p);
@@ -243,72 +192,126 @@ public class MainActivity extends BaseThemedActivity {
                 edit.apply();
             }
         });
-        autofill();
+        CollectionReference apiCollection = FirebaseFirestore.getInstance().collection(DETAILS);
+        apiCollection.addSnapshotListener((queryDocumentSnapshots, e) -> {
+            if (queryDocumentSnapshots != null) {
+                for (DocumentChange documentChange : queryDocumentSnapshots.getDocumentChanges()) {
+                    api = documentChange.getDocument().getString(API);
+                    read_database = Integer.parseInt(Objects.requireNonNull(documentChange.getDocument().getString("update_available")));
+                    edit = apiUrl.edit();
+                    edit.putString(API, api);
+                    edit.apply();
+                    Log.d(TAG, api);
+                }
+            }
+        });
+
+        //In-App Update
+        appUpdateManager = AppUpdateManagerFactory.create(MainActivity.this);
+
+        if (read_database > apiUrl.getInt(READ_DATABASE3, 0)) {
+            Task<AppUpdateInfo> appUpdateInfoTask = appUpdateManager.getAppUpdateInfo();
+            appUpdateInfoTask.addOnSuccessListener(appUpdateInfo -> {
+                if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
+                    if (appUpdateInfo.isUpdateTypeAllowed(IMMEDIATE)) {
+                        try {
+                            appUpdateManager.startUpdateFlowForResult(
+                                    appUpdateInfo,
+                                    IMMEDIATE,
+                                    MainActivity.this,
+                                    MY_REQUEST_CODE);
+                        } catch (IntentSender.SendIntentException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        //FLEXIBLE
+                        try {
+                            appUpdateManager.startUpdateFlowForResult(
+                                    appUpdateInfo,
+                                    AppUpdateType.FLEXIBLE,
+                                    MainActivity.this,
+                                    MY_REQUEST_CODE);
+                        } catch (IntentSender.SendIntentException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            });
+            InstallStateUpdatedListener updatedListener = state -> {
+                if (state.installStatus() == InstallStatus.DOWNLOADED) {
+                    apiUrl.edit().putInt(READ_DATABASE3, read_database).apply();
+                    popupSnackbarForCompleteUpdate();
+                }
+            };
+            appUpdateManager.registerListener(updatedListener);
+        } else {
+            autofill();
+        }
     }
-//
-//    @Override
-//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if (requestCode == MY_REQUEST_CODE) {
-//            if (resultCode != RESULT_OK) {
-//                log("Update flow failed! Result code: " + resultCode);
-//                appUpdateManager.getAppUpdateInfo().addOnSuccessListener(
-//                        appUpdateInfo -> {
-//                            if (appUpdateInfo.isUpdateTypeAllowed(IMMEDIATE)) {
-//                                finish();
-//                            } else {
-//                                Snackbar snackbar =
-//                                        Snackbar.make(
-//                                                findViewById(android.R.id.content),
-//                                                "Update has been failed.",
-//                                                Snackbar.LENGTH_INDEFINITE);
-//                                snackbar.setAction("RETRY", view -> appUpdateManager.completeUpdate());
-//                                snackbar.setActionTextColor(Color.RED);
-//                                snackbar.show();
-//                            }
-//                        }
-//                );
-//            }
-//        }
-//    }
 
-//    private void popupSnackbarForCompleteUpdate() {
-//        Snackbar snackbar =
-//                Snackbar.make(
-//                        findViewById(android.R.id.content),
-//                        "An update has just been downloaded.",
-//                        Snackbar.LENGTH_INDEFINITE);
-//        snackbar.setAction("RESTART", view -> appUpdateManager.completeUpdate());
-//        snackbar.setActionTextColor(Color.RED);
-//        snackbar.show();
-//    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == MY_REQUEST_CODE) {
+            if (resultCode != RESULT_OK) {
+                log("Update flow failed! Result code: " + resultCode);
+                appUpdateManager.getAppUpdateInfo().addOnSuccessListener(
+                        appUpdateInfo -> {
+                            if (appUpdateInfo.isUpdateTypeAllowed(IMMEDIATE)) {
+                                finish();
+                            } else {
+                                Snackbar snackbar =
+                                        Snackbar.make(
+                                                findViewById(android.R.id.content),
+                                                "Update has been failed.",
+                                                Snackbar.LENGTH_INDEFINITE);
+                                snackbar.setAction("RETRY", view -> appUpdateManager.completeUpdate());
+                                snackbar.setActionTextColor(Color.RED);
+                                snackbar.show();
+                            }
+                        }
+                );
+            }
+        }
+    }
 
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        appUpdateManager
-//                .getAppUpdateInfo()
-//                .addOnSuccessListener(
-//                        appUpdateInfo -> {
-//                            if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED) {
-//                                popupSnackbarForCompleteUpdate();
-//                            }
-//                            if (appUpdateInfo.updateAvailability()
-//                                    == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
-//                                // If an in-app update is already running, resume the update.
-//                                try {
-//                                    appUpdateManager.startUpdateFlowForResult(
-//                                            appUpdateInfo,
-//                                            IMMEDIATE,
-//                                            this,
-//                                            MY_REQUEST_CODE);
-//                                } catch (IntentSender.SendIntentException e) {
-//                                    e.printStackTrace();
-//                                }
-//                            }
-//
-//                        });
-//    }
+    private void popupSnackbarForCompleteUpdate() {
+        Snackbar snackbar =
+                Snackbar.make(
+                        findViewById(android.R.id.content),
+                        "An update has just been downloaded.",
+                        Snackbar.LENGTH_INDEFINITE);
+        snackbar.setAction("RESTART", view -> appUpdateManager.completeUpdate());
+        snackbar.setActionTextColor(Color.RED);
+        snackbar.show();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        appUpdateManager
+                .getAppUpdateInfo()
+                .addOnSuccessListener(
+                        appUpdateInfo -> {
+                            if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED) {
+                                popupSnackbarForCompleteUpdate();
+                            }
+                            if (appUpdateInfo.updateAvailability()
+                                    == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
+                                // If an in-app update is already running, resume the update.
+                                try {
+                                    appUpdateManager.startUpdateFlowForResult(
+                                            appUpdateInfo,
+                                            IMMEDIATE,
+                                            this,
+                                            MY_REQUEST_CODE);
+                                } catch (IntentSender.SendIntentException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                        });
+    }
 
     public static int convertDpToPixel(float dp) {
         DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
@@ -333,7 +336,6 @@ public class MainActivity extends BaseThemedActivity {
         RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
         StringRequest postRequest = new StringRequest(Request.Method.POST, param[0] + "/attendance",
                 response -> {
-                    response_d = response;
                     if (response.equals("404")) {
                         //User Credential wrong or user doesn't exists.
                         progressBar.setVisibility(View.INVISIBLE);
@@ -351,19 +353,16 @@ public class MainActivity extends BaseThemedActivity {
                         intent.putExtra(NOATTENDANCE, true);
                         intent.putExtra(LOGIN, true);
                         intent.putExtra(API, api);
-                        intent.putExtra(READ_DATABASE, read_database);
                         startActivity(intent);
                     } else {
                         //User exists and attendance too.
                         Intent intent = new Intent(MainActivity.this, AttendanceActivity.class);
-                        param_1 = param[1];
                         response += "kkk" + param[1];
                         intent.putExtra(RESULTS, response);
                         intent.putExtra(REGISTRATION_NUMBER, user.getText().toString());
                         intent.putExtra(LOGIN, true);
                         intent.putExtra(STUDENT_NAME, studentName);
                         intent.putExtra(API, api);
-                        intent.putExtra(READ_DATABASE, read_database);
                         edit.putString(param[1], response);
                         edit.apply();
                         startActivity(intent);
@@ -374,7 +373,6 @@ public class MainActivity extends BaseThemedActivity {
                     welcomeMessage.setVisibility(View.GONE);
                     login.setVisibility(View.VISIBLE);
                     passLayout.setPasswordVisibilityToggleEnabled(true);
-
                     if (error instanceof AuthFailureError) {
                         Snackbar snackbar = Snackbar.make(mainLayout, "Wrong Credentials!", Snackbar.LENGTH_SHORT);
                         snackbar.show();
@@ -438,7 +436,6 @@ public class MainActivity extends BaseThemedActivity {
                             }
                         }
                     }
-
                 }
         ) {
             @Override
@@ -458,7 +455,7 @@ public class MainActivity extends BaseThemedActivity {
                 response -> {
                     try {
                         JSONObject jobj = new JSONObject(response);
-                        Log.d("response",jobj.toString());
+                        Log.d("response", jobj.toString());
                         JSONArray jarr = jobj.getJSONArray("detail");
                         JSONObject jobj1 = jarr.getJSONObject(0);
                         studentName = jobj1.getString("name");
@@ -467,13 +464,79 @@ public class MainActivity extends BaseThemedActivity {
                         editor.putString(STUDENT_NAME, studentName);
                         editor.putString(STUDENTBRANCH, student_branch);
                         editor.apply();
-                        getData(api, param[1], param[2]);
+                        MainActivity.this.getData(api, param[1], param[2]);
                     } catch (JSONException e) {
-                        Toast.makeText(getApplicationContext(), "Cannot fetch name!!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this.getApplicationContext(), "Cannot fetch name!!", Toast.LENGTH_SHORT).show();
                     }
                 },
                 error -> {
-                    Log.d("error_name", error.toString());
+                    progressBar.setVisibility(View.INVISIBLE);
+                    welcomeMessage.setVisibility(View.GONE);
+                    login.setVisibility(View.VISIBLE);
+                    passLayout.setPasswordVisibilityToggleEnabled(true);
+                    if (error instanceof AuthFailureError) {
+                        Snackbar snackbar = Snackbar.make(mainLayout, "Wrong Credentials!", Snackbar.LENGTH_SHORT);
+                        snackbar.show();
+                    } else if (error instanceof ServerError) {
+                        if (Constants.offlineDataPreference.getString("StudentAttendance", null) == null) {
+                            user.setEnabled(true);
+                            pass.setEnabled(true);
+                            user.setFocusableInTouchMode(true);
+                            user.setFocusable(true);
+                            pass.setFocusableInTouchMode(true);
+                            pass.setFocusable(true);
+                            Snackbar snackbar = Snackbar.make(mainLayout, "Cannot connect to ITER servers right now. Try again with correct credentials.", Snackbar.LENGTH_SHORT);
+                            snackbar.show();
+                        } else {
+                            Constants.Offlin_mode = true;
+                            Intent intent = new Intent(MainActivity.this, AttendanceActivity.class);
+                            startActivity(intent);
+                        }
+                    } else if (error instanceof NetworkError) {
+                        if (Constants.offlineDataPreference.getString("StudentAttendance", null) == null) {
+                            user.setEnabled(true);
+                            pass.setEnabled(true);
+                            user.setFocusableInTouchMode(true);
+                            user.setFocusable(true);
+                            pass.setFocusableInTouchMode(true);
+                            pass.setFocusable(true);
+                            Snackbar snackbar = Snackbar.make(mainLayout, "Cannot establish connection", Snackbar.LENGTH_SHORT);
+                            snackbar.show();
+                        } else {
+                            Constants.Offlin_mode = true;
+                            Intent intent = new Intent(MainActivity.this, AttendanceActivity.class);
+                            startActivity(intent);
+                        }
+                    } else if (error instanceof TimeoutError) {
+                        if (!track) {
+                            progressBar.setVisibility(View.VISIBLE);
+                            welcomeMessage.setVisibility(View.VISIBLE);
+                            login.setVisibility(View.GONE);
+                            user.setEnabled(false);
+                            pass.setEnabled(false);
+                            user.setFocusable(true);
+                            pass.setFocusable(true);
+                            passLayout.setPasswordVisibilityToggleEnabled(false);
+                            track = true;
+                            login.performClick();
+                        } else {
+                            if (Constants.offlineDataPreference.getString("StudentAttendance", null) == null) {
+                                user.setEnabled(true);
+                                pass.setEnabled(true);
+                                user.setFocusableInTouchMode(true);
+                                user.setFocusable(true);
+                                pass.setFocusableInTouchMode(true);
+                                pass.setFocusable(true);
+                                Snackbar snackbar = Snackbar.make(mainLayout, "Cannot connect to ITER servers right now.Try again", Snackbar.LENGTH_SHORT);
+                                snackbar.show();
+                                track = false;
+                            } else {
+                                Constants.Offlin_mode = true;
+                                Intent intent = new Intent(MainActivity.this, AttendanceActivity.class);
+                                startActivity(intent);
+                            }
+                        }
+                    }
                 }
         ) {
             @Override
