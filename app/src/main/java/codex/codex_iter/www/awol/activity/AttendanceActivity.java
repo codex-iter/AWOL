@@ -123,10 +123,10 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
     Button who_button;
     @BindView(R.id.removetile)
     ImageView removetile;
-    @BindView(R.id.covid19)
-    TextView covid19;
-    @BindView(R.id.covid_desp)
-    TextView covid_desp;
+    @BindView(R.id.heading)
+    TextView heading;
+    @BindView(R.id.heading_desp)
+    TextView heading_desp;
     @BindView(R.id.whoCard)
     CardView cardView;
     @BindView(R.id.logo)
@@ -255,8 +255,8 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                         e.printStackTrace();
                     }
                 });
-                covid19.setText(jsonObject.getString("news_title"));
-                covid_desp.setText(jsonObject.getString("news_text"));
+                heading.setText(jsonObject.getString("news_title"));
+                heading_desp.setText(jsonObject.getString("news_text"));
                 Picasso.get()
                         .load(jsonObject.getString("image_url"))
                         .placeholder(R.drawable.ic_image)
@@ -282,8 +282,8 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
 
         if (dark) {
             cardView.setBackgroundColor(Color.parseColor("#141414"));
-            covid19.setTextColor(Color.parseColor("#FFFFFFFF"));
-            covid_desp.setTextColor(Color.parseColor("#FFCCCCCC"));
+            heading.setTextColor(Color.parseColor("#FFFFFFFF"));
+            heading_desp.setTextColor(Color.parseColor("#FFCCCCCC"));
             recyclerView.setBackgroundColor(Color.parseColor("#141414"));
             title.setTextColor(Color.parseColor("#ffffff"));
         }

@@ -103,7 +103,7 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <TextView
-                            android:id="@+id/covid19"
+                            android:id="@+id/heading"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="10dp"
@@ -114,7 +114,7 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <TextView
-                            android:id="@+id/covid_desp"
+                            android:id="@+id/heading_desp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="149dp"
@@ -124,7 +124,7 @@
                             android:textSize="15sp"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toEndOf="@+id/logo"
-                            app:layout_constraintTop_toBottomOf="@+id/covid19" />
+                            app:layout_constraintTop_toBottomOf="@+id/heading" />
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/who_button"

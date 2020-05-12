@@ -95,10 +95,6 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-7255339257613393~2455472174" />
         <provider
             android:name="codex.codex_iter.www.awol.utilities.GenericFileProvider"
             android:authorities="${applicationId}.my.package.name.provider"
