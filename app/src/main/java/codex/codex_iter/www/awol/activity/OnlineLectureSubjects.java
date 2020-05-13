@@ -97,7 +97,7 @@ public class OnlineLectureSubjects extends BaseThemedActivity implements OnlineL
         try {
             subjectName.clear();
             subjectLinks.clear();
-            if (jsonVideosLinks != null && jsonSubjectNames != null) {
+            if (jsonVideosLinks != null && jsonSubjectNames != null && !jsonSubjectNames.isEmpty() && !jsonVideosLinks.isEmpty()) {
                 JSONObject lectures = new JSONObject(jsonVideosLinks);
                 JSONObject subject = new JSONObject(jsonSubjectNames);
                 String[] semester = {"2nd", "3rd", "4th", "5th", "6th", "7th", "8th"};
@@ -108,7 +108,7 @@ public class OnlineLectureSubjects extends BaseThemedActivity implements OnlineL
                         Iterator<String> key_subject = su.keys();
                         while (key_subject.hasNext()) {
                             String keybranch = key_subject.next();
-                            Log.d("keys_branch",keybranch);
+                            Log.d("keys_branch", keybranch);
                             if (keybranch.equals(branch)) {
                                 hideBottomSheetDialog();
                                 Iterator<String> sem_no = subjects.keys();
@@ -134,18 +134,35 @@ public class OnlineLectureSubjects extends BaseThemedActivity implements OnlineL
                     }
                 }
             } else {
+                hideBottomSheetDialog();
                 Toast.makeText(this, "Something went wrong.", Toast.LENGTH_SHORT).show();
                 finish();
             }
+            if (subjectName.size() == 0) {
+                hideBottomSheetDialog();
+                MaterialTextView no_lectures = findViewById(R.id.no_lectures);
+                recyclerView.setVisibility(View.GONE);
+                no_lectures.setVisibility(View.VISIBLE);
+            }
         } catch (JSONException e) {
+            hideBottomSheetDialog();
+            Toast.makeText(this, "Please wait while we are fetching subject list.", Toast.LENGTH_LONG).show();
+            finish();
             Log.d("error", e.toString());
         }
-        if (subjectName.size() == 0)  {
-            hideBottomSheetDialog();
-            MaterialTextView no_lectures = findViewById(R.id.no_lectures);
-            recyclerView.setVisibility(View.GONE);
-            no_lectures.setVisibility(View.VISIBLE);
-        }
+    }
+
+    public void showBottomSheetDialog() {
+        //    private BottomSheetBehavior bottomSheetBehavior;
+        @SuppressLint("InflateParams") View view = getLayoutInflater().inflate(R.layout.bottomprogressbar, null);
+        dialog = new BottomSheetDialog(this);
+        dialog.setContentView(view);
+        dialog.setCancelable(false);
+        dialog.show();
+    }
+
+    public void hideBottomSheetDialog() {
+        dialog.dismiss();
     }
 
     @Override
@@ -165,18 +182,5 @@ public class OnlineLectureSubjects extends BaseThemedActivity implements OnlineL
             finish();
         }
         return true;
-    }
-
-    public void showBottomSheetDialog() {
-        //    private BottomSheetBehavior bottomSheetBehavior;
-        @SuppressLint("InflateParams") View view = getLayoutInflater().inflate(R.layout.bottomprogressbar, null);
-        dialog = new BottomSheetDialog(this);
-        dialog.setContentView(view);
-        dialog.setCancelable(false);
-        dialog.show();
-    }
-
-    public void hideBottomSheetDialog() {
-        dialog.dismiss();
     }
 }

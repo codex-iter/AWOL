@@ -26,7 +26,6 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
 import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.toolbox.StringRequest;
@@ -66,8 +65,6 @@ import static codex.codex_iter.www.awol.utilities.Constants.API;
 import static codex.codex_iter.www.awol.utilities.Constants.DETAILS;
 import static codex.codex_iter.www.awol.utilities.Constants.LOGIN;
 import static codex.codex_iter.www.awol.utilities.Constants.NOATTENDANCE;
-import static codex.codex_iter.www.awol.utilities.Constants.READ_DATABASE2;
-import static codex.codex_iter.www.awol.utilities.Constants.READ_DATABASE3;
 import static codex.codex_iter.www.awol.utilities.Constants.REGISTRATION_NUMBER;
 import static codex.codex_iter.www.awol.utilities.Constants.RESULTS;
 import static codex.codex_iter.www.awol.utilities.Constants.STUDENTBRANCH;
@@ -192,6 +189,9 @@ public class MainActivity extends BaseThemedActivity {
                 edit.apply();
             }
         });
+        //In-App Update
+        appUpdateManager = AppUpdateManagerFactory.create(MainActivity.this);
+
         CollectionReference apiCollection = FirebaseFirestore.getInstance().collection(DETAILS);
         apiCollection.addSnapshotListener((queryDocumentSnapshots, e) -> {
             if (queryDocumentSnapshots != null) {
@@ -201,52 +201,49 @@ public class MainActivity extends BaseThemedActivity {
                     edit = apiUrl.edit();
                     edit.putString(API, api);
                     edit.apply();
-                    Log.d(TAG, api);
+
+                    if (read_database == 1) {
+                        Task<AppUpdateInfo> appUpdateInfoTask = appUpdateManager.getAppUpdateInfo();
+                        appUpdateInfoTask.addOnSuccessListener(appUpdateInfo -> {
+                            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
+                                if (appUpdateInfo.isUpdateTypeAllowed(IMMEDIATE)) {
+                                    try {
+                                        Toast.makeText(this, "Update Available!", Toast.LENGTH_SHORT).show();
+                                        appUpdateManager.startUpdateFlowForResult(
+                                                appUpdateInfo,
+                                                IMMEDIATE,
+                                                MainActivity.this,
+                                                MY_REQUEST_CODE);
+                                    } catch (IntentSender.SendIntentException e2) {
+                                        e2.printStackTrace();
+                                    }
+                                } else {
+                                    //FLEXIBLE
+                                    try {
+                                        Toast.makeText(this, "Update Available!", Toast.LENGTH_SHORT).show();
+                                        appUpdateManager.startUpdateFlowForResult(
+                                                appUpdateInfo,
+                                                AppUpdateType.FLEXIBLE,
+                                                MainActivity.this,
+                                                MY_REQUEST_CODE);
+                                    } catch (IntentSender.SendIntentException e1) {
+                                        e1.printStackTrace();
+                                    }
+                                }
+                            }
+                        });
+                        InstallStateUpdatedListener updatedListener = state -> {
+                            if (state.installStatus() == InstallStatus.DOWNLOADED) {
+                                popupSnackbarForCompleteUpdate();
+                            }
+                        };
+                        appUpdateManager.registerListener(updatedListener);
+                    } else {
+                        autofill();
+                    }
                 }
             }
         });
-
-        //In-App Update
-        appUpdateManager = AppUpdateManagerFactory.create(MainActivity.this);
-
-        if (read_database > apiUrl.getInt(READ_DATABASE3, 0)) {
-            Task<AppUpdateInfo> appUpdateInfoTask = appUpdateManager.getAppUpdateInfo();
-            appUpdateInfoTask.addOnSuccessListener(appUpdateInfo -> {
-                if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
-                    if (appUpdateInfo.isUpdateTypeAllowed(IMMEDIATE)) {
-                        try {
-                            appUpdateManager.startUpdateFlowForResult(
-                                    appUpdateInfo,
-                                    IMMEDIATE,
-                                    MainActivity.this,
-                                    MY_REQUEST_CODE);
-                        } catch (IntentSender.SendIntentException e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-                        //FLEXIBLE
-                        try {
-                            appUpdateManager.startUpdateFlowForResult(
-                                    appUpdateInfo,
-                                    AppUpdateType.FLEXIBLE,
-                                    MainActivity.this,
-                                    MY_REQUEST_CODE);
-                        } catch (IntentSender.SendIntentException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            });
-            InstallStateUpdatedListener updatedListener = state -> {
-                if (state.installStatus() == InstallStatus.DOWNLOADED) {
-                    apiUrl.edit().putInt(READ_DATABASE3, read_database).apply();
-                    popupSnackbarForCompleteUpdate();
-                }
-            };
-            appUpdateManager.registerListener(updatedListener);
-        } else {
-            autofill();
-        }
     }
 
     @Override
@@ -461,7 +458,7 @@ public class MainActivity extends BaseThemedActivity {
                         studentName = jobj1.getString("name");
                         student_branch = jobj1.getString(STUDENTBRANCH);
                         editor = preferences.edit();
-                        Log.d("branch_portal",student_branch);
+                        Log.d("branch_portal", student_branch);
                         editor.putString(STUDENT_NAME, studentName);
                         editor.putString(STUDENTBRANCH, student_branch);
                         editor.apply();

@@ -32,6 +32,7 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Objects;
 
 import butterknife.BindView;
@@ -89,6 +90,7 @@ public class OnlineLectureVideos extends BaseThemedActivity implements OnlineLec
         if (lectureArrayList == null) {
             lectureArrayList = new ArrayList<>();
         }
+        Collections.sort(lectureArrayList, (lecture, t1) -> lecture.getName().compareTo(t1.getName()));
         OnlineLectureSubjectAdapter lecturesAdapter = new OnlineLectureSubjectAdapter(this, lectureArrayList, true, this);
         recyclerView.setAdapter(lecturesAdapter);
         recyclerView.setHasFixedSize(true);
