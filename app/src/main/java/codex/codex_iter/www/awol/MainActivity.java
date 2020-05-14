@@ -208,7 +208,7 @@ public class MainActivity extends BaseThemedActivity {
                             if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
                                 if (appUpdateInfo.isUpdateTypeAllowed(IMMEDIATE)) {
                                     try {
-                                        Toast.makeText(this, "Update Available!", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(MainActivity.this, "Update Available!", Toast.LENGTH_SHORT).show();
                                         appUpdateManager.startUpdateFlowForResult(
                                                 appUpdateInfo,
                                                 IMMEDIATE,
@@ -220,7 +220,7 @@ public class MainActivity extends BaseThemedActivity {
                                 } else {
                                     //FLEXIBLE
                                     try {
-                                        Toast.makeText(this, "Update Available!", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(MainActivity.this, "Update Available!", Toast.LENGTH_SHORT).show();
                                         appUpdateManager.startUpdateFlowForResult(
                                                 appUpdateInfo,
                                                 AppUpdateType.FLEXIBLE,
@@ -230,8 +230,14 @@ public class MainActivity extends BaseThemedActivity {
                                         e1.printStackTrace();
                                     }
                                 }
+                            } else {
+                                MainActivity.this.autofill();
                             }
+                        }).addOnFailureListener(e3 -> {
+                            MainActivity.this.autofill();
+                            Log.e("error_in_app_update", e3.toString());
                         });
+
                         InstallStateUpdatedListener updatedListener = state -> {
                             if (state.installStatus() == InstallStatus.DOWNLOADED) {
                                 popupSnackbarForCompleteUpdate();
@@ -239,7 +245,7 @@ public class MainActivity extends BaseThemedActivity {
                         };
                         appUpdateManager.registerListener(updatedListener);
                     } else {
-                        autofill();
+                        MainActivity.this.autofill();
                     }
                 }
             }

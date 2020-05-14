@@ -137,8 +137,6 @@ public class SettingsFragment extends PreferenceFragment {
                                         }
                                     }
 
-                                } else {
-                                    Snackbar.make(coordinatorLayout,"Notifications set for tomorrow!",Snackbar.LENGTH_LONG).show();
                                 }
                             } else {
                                 Intent intent = new Intent(getActivity(), AlramReceiver.class);
@@ -160,7 +158,6 @@ public class SettingsFragment extends PreferenceFragment {
                                         }
                                     }
                                 } else {
-                                    Snackbar.make(coordinatorLayout,"Notifications set",Snackbar.LENGTH_LONG).show();
                                     intent = new Intent(getActivity(), AlramReceiver.class);
                                     PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                                     AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
@@ -170,7 +167,6 @@ public class SettingsFragment extends PreferenceFragment {
                                 }
                             }
                         } else {
-
                             Snackbar.make(coordinatorLayout,"Notifications Enabled",Snackbar.LENGTH_LONG).show();
                             /*Alram time*/
                             Calendar calendar = Calendar.getInstance();
@@ -243,13 +239,9 @@ public class SettingsFragment extends PreferenceFragment {
                                     }
                                 }
 
-                            } else {
-
-                                Snackbar.make(coordinatorLayout,"Notifications set for tomorrow",Snackbar.LENGTH_LONG).show();
                             }
                         }
                     } else {
-
                         Snackbar.make(coordinatorLayout,"Notifications Disabled",Snackbar.LENGTH_LONG).show();
                         flag = false;
                         editor1.putBoolean("STOP_NOTIFICATION", true);
