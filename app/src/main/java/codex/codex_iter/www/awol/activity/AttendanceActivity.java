@@ -433,9 +433,9 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
         StorageReference storageReference_video = FirebaseStorage.getInstance().getReference().child("video.txt");
         DownloadScrapFile downloadScrapFile = new DownloadScrapFile(AttendanceActivity.this);
         storageReference_data.getDownloadUrl().addOnSuccessListener(uri -> {
-            downloadScrapFile.newDownload(uri.toString(), "data");
+            downloadScrapFile.newDownload(uri.toString(), "data", false,"");
             storageReference_video.getDownloadUrl().addOnSuccessListener(uri1 -> {
-                downloadScrapFile.newDownload(uri1.toString(), "video");
+                downloadScrapFile.newDownload(uri1.toString(), "video", false,"");
                 hideBottomSheetDialog();
             }).addOnFailureListener(e -> {
                 hideBottomSheetDialog();

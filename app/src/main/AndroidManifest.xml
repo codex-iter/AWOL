@@ -9,6 +9,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <application
         android:name="codex.codex_iter.www.awol.application.CleanCacheApplication"
@@ -39,8 +40,8 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"
             tools:ignore="LockedOrientationActivity">
-
         </activity>
+
         <activity
             android:name="codex.codex_iter.www.awol.activity.AttendanceActivity"
             android:configChanges="uiMode"

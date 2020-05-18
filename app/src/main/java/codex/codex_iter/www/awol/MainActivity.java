@@ -1,14 +1,18 @@
 package codex.codex_iter.www.awol;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.graphics.Color;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -21,6 +25,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
@@ -34,17 +40,12 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.android.material.textview.MaterialTextView;
-import com.google.android.play.core.appupdate.AppUpdateInfo;
 import com.google.android.play.core.appupdate.AppUpdateManager;
-import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
-import com.google.android.play.core.install.InstallStateUpdatedListener;
-import com.google.android.play.core.install.model.AppUpdateType;
-import com.google.android.play.core.install.model.InstallStatus;
-import com.google.android.play.core.install.model.UpdateAvailability;
-import com.google.android.play.core.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.onesignal.OneSignal;
 
 import org.json.JSONArray;
@@ -60,6 +61,7 @@ import butterknife.ButterKnife;
 import codex.codex_iter.www.awol.activity.AttendanceActivity;
 import codex.codex_iter.www.awol.activity.BaseThemedActivity;
 import codex.codex_iter.www.awol.utilities.Constants;
+import codex.codex_iter.www.awol.utilities.DownloadScrapFile;
 
 import static codex.codex_iter.www.awol.utilities.Constants.API;
 import static codex.codex_iter.www.awol.utilities.Constants.DETAILS;
@@ -69,8 +71,6 @@ import static codex.codex_iter.www.awol.utilities.Constants.REGISTRATION_NUMBER;
 import static codex.codex_iter.www.awol.utilities.Constants.RESULTS;
 import static codex.codex_iter.www.awol.utilities.Constants.STUDENTBRANCH;
 import static codex.codex_iter.www.awol.utilities.Constants.STUDENT_NAME;
-import static com.crashlytics.android.Crashlytics.log;
-import static com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE;
 
 
 public class MainActivity extends BaseThemedActivity {
@@ -99,15 +99,16 @@ public class MainActivity extends BaseThemedActivity {
     private SharedPreferences userm, logout, apiUrl;
     private SharedPreferences.Editor edit;
     private boolean track;
-    private String studentName, student_branch;
-    private String api;
+    private String studentName, student_branch, api, new_message;
     private static final String TAG = "MainActivity";
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
     private AppUpdateManager appUpdateManager;
     private static final int MY_REQUEST_CODE = 1011;
     private BottomSheetBehavior bottomSheetBehavior;
-    private int read_database;
+    private int updated_version;
+    private int current_version;
+    private static final int EXTERNAL_STORAGE_PERMISSION_CODE = 1002;
 
     @SuppressLint({"ClickableViewAccessibility", "SetTextI18n"})
     @Override
@@ -189,63 +190,34 @@ public class MainActivity extends BaseThemedActivity {
                 edit.apply();
             }
         });
-        //In-App Update
-        appUpdateManager = AppUpdateManagerFactory.create(MainActivity.this);
+
+        try {
+            PackageInfo pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
+            current_version = pInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
 
         CollectionReference apiCollection = FirebaseFirestore.getInstance().collection(DETAILS);
         apiCollection.addSnapshotListener((queryDocumentSnapshots, e) -> {
             if (queryDocumentSnapshots != null) {
                 for (DocumentChange documentChange : queryDocumentSnapshots.getDocumentChanges()) {
                     api = documentChange.getDocument().getString(API);
-                    read_database = Integer.parseInt(Objects.requireNonNull(documentChange.getDocument().getString("update_available")));
+                    updated_version = Integer.parseInt(Objects.requireNonNull(documentChange.getDocument().getString("update_available")));
+                    new_message = documentChange.getDocument().getString("what's_new");
                     edit = apiUrl.edit();
                     edit.putString(API, api);
                     edit.apply();
 
-                    if (read_database == 1) {
-                        Task<AppUpdateInfo> appUpdateInfoTask = appUpdateManager.getAppUpdateInfo();
-                        appUpdateInfoTask.addOnSuccessListener(appUpdateInfo -> {
-                            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
-                                if (appUpdateInfo.isUpdateTypeAllowed(IMMEDIATE)) {
-                                    try {
-                                        Toast.makeText(MainActivity.this, "Update Available!", Toast.LENGTH_SHORT).show();
-                                        appUpdateManager.startUpdateFlowForResult(
-                                                appUpdateInfo,
-                                                IMMEDIATE,
-                                                MainActivity.this,
-                                                MY_REQUEST_CODE);
-                                    } catch (IntentSender.SendIntentException e2) {
-                                        e2.printStackTrace();
-                                    }
-                                } else {
-                                    //FLEXIBLE
-                                    try {
-                                        Toast.makeText(MainActivity.this, "Update Available!", Toast.LENGTH_SHORT).show();
-                                        appUpdateManager.startUpdateFlowForResult(
-                                                appUpdateInfo,
-                                                AppUpdateType.FLEXIBLE,
-                                                MainActivity.this,
-                                                MY_REQUEST_CODE);
-                                    } catch (IntentSender.SendIntentException e1) {
-                                        e1.printStackTrace();
-                                    }
-                                }
-                            } else {
-                                MainActivity.this.autofill();
-                            }
-                        }).addOnFailureListener(e3 -> {
-                            MainActivity.this.autofill();
-                            Log.e("error_in_app_update", e3.toString());
-                        });
-
-                        InstallStateUpdatedListener updatedListener = state -> {
-                            if (state.installStatus() == InstallStatus.DOWNLOADED) {
-                                popupSnackbarForCompleteUpdate();
-                            }
-                        };
-                        appUpdateManager.registerListener(updatedListener);
+                    if (updated_version > current_version && current_version > 0) {
+                        askPermission();
+                        StorageReference storageReference_data = FirebaseStorage.getInstance().getReference().child("apk_version/").child("awol.apk");
+                        storageReference_data.getDownloadUrl().addOnSuccessListener(uri -> {
+                            DownloadScrapFile downloadScrapFile = new DownloadScrapFile(MainActivity.this);
+                            downloadScrapFile.newDownload(uri.toString(), "awol", true, new_message);
+                        }).addOnFailureListener(e1 -> Log.e("error_version", e1.toString()));
                     } else {
-                        MainActivity.this.autofill();
+                        autofill();
                     }
                 }
             }
@@ -253,67 +225,8 @@ public class MainActivity extends BaseThemedActivity {
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == MY_REQUEST_CODE) {
-            if (resultCode != RESULT_OK) {
-                log("Update flow failed! Result code: " + resultCode);
-                appUpdateManager.getAppUpdateInfo().addOnSuccessListener(
-                        appUpdateInfo -> {
-                            if (appUpdateInfo.isUpdateTypeAllowed(IMMEDIATE)) {
-                                finish();
-                            } else {
-                                Snackbar snackbar =
-                                        Snackbar.make(
-                                                findViewById(android.R.id.content),
-                                                "Update has been failed.",
-                                                Snackbar.LENGTH_INDEFINITE);
-                                snackbar.setAction("RETRY", view -> appUpdateManager.completeUpdate());
-                                snackbar.setActionTextColor(Color.RED);
-                                snackbar.show();
-                            }
-                        }
-                );
-            }
-        }
-    }
-
-    private void popupSnackbarForCompleteUpdate() {
-        Snackbar snackbar =
-                Snackbar.make(
-                        findViewById(android.R.id.content),
-                        "An update has just been downloaded.",
-                        Snackbar.LENGTH_INDEFINITE);
-        snackbar.setAction("RESTART", view -> appUpdateManager.completeUpdate());
-        snackbar.setActionTextColor(Color.RED);
-        snackbar.show();
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
-        appUpdateManager
-                .getAppUpdateInfo()
-                .addOnSuccessListener(
-                        appUpdateInfo -> {
-                            if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED) {
-                                popupSnackbarForCompleteUpdate();
-                            }
-                            if (appUpdateInfo.updateAvailability()
-                                    == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
-                                // If an in-app update is already running, resume the update.
-                                try {
-                                    appUpdateManager.startUpdateFlowForResult(
-                                            appUpdateInfo,
-                                            IMMEDIATE,
-                                            this,
-                                            MY_REQUEST_CODE);
-                                } catch (IntentSender.SendIntentException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-
-                        });
     }
 
     public static int convertDpToPixel(float dp) {
@@ -559,4 +472,79 @@ public class MainActivity extends BaseThemedActivity {
         moveTaskToBack(true);
     }
 
+    private void askPermission() {
+        if (!hasPermission()) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                new android.app.AlertDialog.Builder(this)
+                        .setTitle("Permission needed")
+                        .setMessage("Please allow to access storage")
+                        .setCancelable(false)
+                        .setPositiveButton("OK", (dialog, which) -> {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                        Manifest.permission.READ_EXTERNAL_STORAGE}, EXTERNAL_STORAGE_PERMISSION_CODE);
+                            }
+                        })
+                        .setNegativeButton("Cancel", (dialog, which) -> {
+                            dialog.dismiss();
+                            finish();
+                        }).create().show();
+            } else {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, EXTERNAL_STORAGE_PERMISSION_CODE);
+                }
+            }
+
+        }
+    }
+
+    private boolean hasPermission() {
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == EXTERNAL_STORAGE_PERMISSION_CODE) {
+
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                Log.d("permission", "1");
+            } else {
+                if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) || !ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    new android.app.AlertDialog.Builder(this)
+                            .setTitle("Permission needed")
+                            .setMessage("Please allow to access storage. Press OK to enable in settings.")
+                            .setCancelable(false)
+                            .setPositiveButton("OK", (dialog, which) -> {
+                                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                Uri uri = Uri.fromParts("package", getPackageName(), null);
+                                intent.setData(uri);
+                                startActivityForResult(intent, EXTERNAL_STORAGE_PERMISSION_CODE);
+                            })
+                            .setNegativeButton("Cancel", (dialog, which) -> {
+                                dialog.dismiss();
+                                finish();
+                            }).create().show();
+
+
+                } else {
+                    new android.app.AlertDialog.Builder(this)
+                            .setTitle("Permission needed")
+                            .setMessage("Please allow to access storage")
+                            .setCancelable(false)
+                            .setPositiveButton("OK", (dialog, which) -> {
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                            Manifest.permission.READ_EXTERNAL_STORAGE}, EXTERNAL_STORAGE_PERMISSION_CODE);
+                                }
+                            })
+                            .setNegativeButton("Cancel", (dialog, which) -> {
+                                dialog.dismiss();
+                                finish();
+                            }).create().show();
+                }
+            }
+        }
+    }
 }

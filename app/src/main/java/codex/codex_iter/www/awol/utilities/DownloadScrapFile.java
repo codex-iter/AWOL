@@ -1,11 +1,12 @@
 package codex.codex_iter.www.awol.utilities;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.media.MediaScannerConnection;
-import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Environment;
+import android.text.Html;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -18,6 +19,7 @@ import java.net.URL;
 public class DownloadScrapFile {
 
     private Context context;
+    private ProgressDialog progressDialog;
 
     public DownloadScrapFile(Context context) {
         this.context = context;
@@ -28,10 +30,14 @@ public class DownloadScrapFile {
         private Context context;
         String fileN = null;
         private String file;
+        private boolean fromMainActivity;
+        private String message;
 
-        public DownloadTask(Context context, String file) {
+        DownloadTask(Context context, String file, boolean fromMainActivity, String message) {
             this.context = context;
             this.file = file;
+            this.message = message;
+            this.fromMainActivity = fromMainActivity;
         }
 
         @Override
@@ -51,11 +57,16 @@ public class DownloadScrapFile {
 
                 int fileLength = connection.getContentLength();
                 input = connection.getInputStream();
-                fileN = file + ".txt";
-                File filename = new File(context.getFilesDir() + "/", fileN);
-                output = new FileOutputStream(filename);
-
-                byte data[] = new byte[4096];
+                if (!fromMainActivity) {
+                    fileN = file + ".txt";
+                    File filename = new File(context.getFilesDir() + "/", fileN);
+                    output = new FileOutputStream(filename);
+                } else {
+                    fileN = file + ".apk";
+                    File filename = new File(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), fileN);
+                    output = new FileOutputStream(filename);
+                }
+                byte[] data = new byte[4096];
                 long total = 0;
                 int count;
                 while ((count = input.read(data)) != -1) {
@@ -88,18 +99,33 @@ public class DownloadScrapFile {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            if (fromMainActivity) {
+                progressDialog = new ProgressDialog(context);
+                progressDialog.setTitle(Html.fromHtml("<font color='black'>Downloading new updates</font>"));
+                progressDialog.setMessage(Html.fromHtml("<font color='black'>Please wait...</font>"));
+                progressDialog.setCancelable(false);
+                progressDialog.show();
+            }
         }
 
         @Override
         protected void onPostExecute(String result) {
             if (result != null) {
                 Log.d("DownloadError", result);
-//                Toast.makeText(context, "Download error: " + result, Toast.LENGTH_LONG).show();
             } else {
-//                Toast.makeText(context, "File downloaded", Toast.LENGTH_SHORT).show();
+                if (fromMainActivity) {
+                    progressDialog.dismiss();
+                    Utils.updateAvailable(context, message);
+                }
             }
             MediaScannerConnection.scanFile(context,
                     new String[]{context.getFilesDir() + "/", fileN}, null,
+                    (newpath, newuri) -> {
+                        Log.i("ExternalStorage", "Scanned " + newpath + ":");
+                        Log.i("ExternalStorage", "-> uri=" + newuri);
+                    });
+            MediaScannerConnection.scanFile(context,
+                    new String[]{String.valueOf(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)), fileN}, null,
                     (newpath, newuri) -> {
                         Log.i("ExternalStorage", "Scanned " + newpath + ":");
                         Log.i("ExternalStorage", "-> uri=" + newuri);
@@ -109,8 +135,8 @@ public class DownloadScrapFile {
     }
 
     //hare you can start downloding video
-    public void newDownload(String url, String filename) {
-        final DownloadTask downloadTask = new DownloadTask(context, filename);
+    public void newDownload(String url, String filename, boolean fromMainActivity, String message) {
+        final DownloadTask downloadTask = new DownloadTask(context, filename, fromMainActivity, message);
         downloadTask.execute(url);
     }
 }

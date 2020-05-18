@@ -128,10 +128,14 @@ public class OnlineLectureVideos extends BaseThemedActivity implements OnlineLec
                         hideBottomSheetDialog();
                         direct_link = response.getString("direct_url");
                         Log.d("link", direct_link);
-                        Intent intent = new Intent(OnlineLectureVideos.this, VideoPlayer.class);
-                        intent.putExtra(VIDEOURL, direct_link);
-                        startActivity(intent);
-
+                        if (!direct_link.isEmpty()) {
+                            Intent intent = new Intent(OnlineLectureVideos.this, VideoPlayer.class);
+                            intent.putExtra(VIDEOURL, direct_link);
+                            startActivity(intent);
+                        } else {
+                            Snackbar snackbar = Snackbar.make(mainLayout, "Something went wrong, Please try again!", Snackbar.LENGTH_SHORT);
+                            snackbar.show();
+                        }
                     } catch (JSONException e) {
                         Log.d("error", Objects.requireNonNull(e.toString()));
                     }
