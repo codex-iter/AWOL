@@ -72,5 +72,6 @@
     <string name="home">Home</string>
     <string name="no_lectures_found">NO LECTURES FOUND!!</string>
     <string name="app_is_under_maintenance">APP IS UNDER MAINTENANCE. \n WE WILL BE BACK SOON!</string>
+    <string name="cgpa">CGPA</string>
 </resources>
 

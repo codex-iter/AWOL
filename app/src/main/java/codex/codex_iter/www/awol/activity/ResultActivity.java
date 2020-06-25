@@ -128,6 +128,7 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
                     ld[i].setTotalearnedcredit(jObj.getString("totalearnedcredit"));
                 }
                 ld[i].setSgpaR(jObj != null ? jObj.getString("sgpaR") : null);
+                ld[i].setCgpaR(jObj!= null ? jObj.getString("cgpaR") : null);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -147,6 +148,7 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
         }
     }
 
+    @SuppressLint("CommitPrefEdits")
     public void saveAttendance(ArrayList resultDataArrayList) {
         Constants.offlineDataEditor = Constants.offlineDataPreference.edit();
         Gson gson = new Gson();

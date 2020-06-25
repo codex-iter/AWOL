@@ -8,6 +8,7 @@ public class ResultData {
     private String holdprocessing;
     private String examperiodfrom;
     private String sgpaR;
+    private String cgpaR;
     public static ResultData[] ld;
     public int getStynumber() {
         return stynumber;
@@ -65,4 +66,11 @@ public class ResultData {
         this.sgpaR = sgpaR;
     }
 
+    public String getCgpaR() {
+        return cgpaR;
+    }
+
+    public void setCgpaR(String cgpaR) {
+        this.cgpaR = cgpaR;
+    }
 }

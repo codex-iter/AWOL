@@ -47,6 +47,7 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.ResultHold
         holder.semTextView.setText(String.valueOf(resultData.get(position).getStynumber()));
         holder.creditsTextView.setText(resultData.get(position).getTotalearnedcredit());
         holder.sgpaTextView.setText(resultData.get(position).getSgpaR());
+        holder.cgpaTextView.setText(resultData.get(position).getCgpaR());
 
         double currSGPA = Double.parseDouble(resultData.get(position).getSgpaR());
         if (currSGPA >= 8.5 && currSGPA <= 10.0) {
@@ -72,6 +73,7 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.ResultHold
         if (!dark) {
             holder.semTextView.setTextColor(Color.parseColor("#141831"));
             holder.sgpaTextView.setTextColor(Color.parseColor("#141831"));
+            holder.cgpaTextView.setTextColor(Color.parseColor("#141831"));
             holder.creditsTextView.setTextColor(Color.parseColor("#141831"));
         }
     }
@@ -82,7 +84,7 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.ResultHold
     }
 
     public static class ResultHolder extends RecyclerView.ViewHolder {
-        TextView semTextView, sgpaTextView, creditsTextView;
+        TextView semTextView, sgpaTextView, creditsTextView, cgpaTextView;
         LinearLayout recyclerResultParent;
         ImageView imageViewResultEmotion;
         CardView cardView;
@@ -94,6 +96,7 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.ResultHold
             semTextView = itemView.findViewById(R.id.textViewSem);
             creditsTextView = itemView.findViewById(R.id.textViewCredits);
             sgpaTextView = itemView.findViewById(R.id.textViewSGPA);
+            cgpaTextView = itemView.findViewById(R.id.textViewCGPA);
             imageViewResultEmotion = itemView.findViewById(R.id.imageViewResultEmotion);
         }
     }
