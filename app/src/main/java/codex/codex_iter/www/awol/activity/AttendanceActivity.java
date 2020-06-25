@@ -155,6 +155,7 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
     private String showResult, showlectures;
     private BottomSheetDialog dialog;
     private int read_database;
+    private Menu custom_menu;
 
     int[][] state = new int[][]{
             new int[]{android.R.attr.state_checked}, // checked
@@ -317,6 +318,9 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                     sharedPreferences.edit().putString(SHOWRESULT, showResult).apply();
                     sharedPreferences.edit().putString(SHOWLECTUURES, showlectures).apply();
 
+                    if (showlectures.equals("0"))
+                        navigationView.getMenu().findItem(R.id.lecture).setVisible(false);
+
                     if (sharedPreferences.getInt(READ_DATABASE, 0) < read_database) {
                         sharedPreferences.edit().putInt(READ_DATABASE, read_database).apply();
                         showBottomSheetDialog();
@@ -329,11 +333,8 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
         studentnamePrefernces = this.getSharedPreferences(STUDENT_NAME, MODE_PRIVATE);
         String studentName = studentnamePrefernces.getString(STUDENT_NAME, "");
 
-        Menu menu = navigationView.getMenu();
         if (no_attendance) {
-            MenuItem menuItem = menu.findItem(R.id.pab);
-            menuItem.setEnabled(false);
-
+            navigationView.getMenu().findItem(R.id.pab).setVisible(false);
             recyclerView.setVisibility(View.GONE);
             noAttendanceLayout.setVisibility(View.VISIBLE);
             if (dark) {
@@ -655,7 +656,7 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                 startActivity(sendIntent);
                 break;
             case R.id.lecture: {
-                if (!sharedPreferences.getString(SHOWLECTUURES, "").equals("0")) {
+                if (!sharedPreferences.getString(SHOWLECTUURES, "0").equals("0")) {
                     Intent intent = new Intent(AttendanceActivity.this, OnlineLectureSubjects.class);
                     switch (sharedPreferences.getString(STUDENTSEMESTER, "1")) {
                         case "1":
@@ -686,10 +687,6 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                     intent.putExtra(STUDENTSEMESTER, student_semester);
                     intent.putExtra(READ_DATABASE2, read_database);
                     startActivity(intent);
-                } else {
-                    Menu menu = navigationView.getMenu();
-                    MenuItem menuItem = menu.findItem(R.id.lecture);
-                    menuItem.setVisible(false);
                 }
                 break;
             }
