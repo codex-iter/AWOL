@@ -6,8 +6,6 @@ New update contains video lectures of your subjects and themes
 
 ![](https://img.shields.io/badge/Built%20with-Android-blue.svg?longCache=true&style=for-the-badge&logo=android&colorB=00ddff)
 
-[![](https://img.shields.io/badge/google-play-blue.svg?longCache=true&style=for-the-badge&logo=android&colorB=00ddff)](https://play.google.com/store/apps/details?id=codex.codex_iter.www.awol)
-
 ## Login
 <img src="./screenshots/loginnew.jpg" width=30%>
 
