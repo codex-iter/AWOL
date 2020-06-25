@@ -48,7 +48,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.ServerError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.crashlytics.android.Crashlytics;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -221,7 +220,7 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
         ImageView share = view_cus.findViewById(R.id.share);
         preferences = getSharedPreferences("CLOSE", MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
-
+        dialog = new BottomSheetDialog(this);
         Constants.offlineDataPreference = this.getSharedPreferences("OFFLINEDATA", Context.MODE_PRIVATE);
         Bundle bundle = getIntent().getExtras();
 
@@ -625,7 +624,6 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
     public void showBottomSheetDialog() {
         //    private BottomSheetBehavior bottomSheetBehavior;
         @SuppressLint("InflateParams") View view = getLayoutInflater().inflate(R.layout.bottomprogressbar, null);
-        dialog = new BottomSheetDialog(this);
         dialog.setContentView(view);
         dialog.setCancelable(false);
         dialog.show();

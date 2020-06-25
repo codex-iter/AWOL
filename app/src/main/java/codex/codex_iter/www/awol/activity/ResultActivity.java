@@ -67,12 +67,13 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
     private int sem;
     private String totalCredit, sgpa, status, api;
     private BottomSheetDialog dialog;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detailresults);
 
-        Constants.offlineDataPreference = this.getSharedPreferences("OFFLINEDATA",Context.MODE_PRIVATE);
+        Constants.offlineDataPreference = this.getSharedPreferences("OFFLINEDATA", Context.MODE_PRIVATE);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle("Results");
@@ -80,6 +81,7 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
         Objects.requireNonNull(getSupportActionBar()).setElevation(0);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowHomeEnabled(true);
 
+        dialog = new BottomSheetDialog(this);
         userm = getSharedPreferences("user",
                 Context.MODE_PRIVATE);
 
@@ -128,7 +130,7 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
                     ld[i].setTotalearnedcredit(jObj.getString("totalearnedcredit"));
                 }
                 ld[i].setSgpaR(jObj != null ? jObj.getString("sgpaR") : null);
-                ld[i].setCgpaR(jObj!= null ? jObj.getString("cgpaR") : null);
+                ld[i].setCgpaR(jObj != null ? jObj.getString("cgpaR") : null);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -270,7 +272,6 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
         //    private BottomSheetBehavior bottomSheetBehavior;
 
         @SuppressLint("InflateParams") View view = getLayoutInflater().inflate(R.layout.bottomprogressbar, null);
-        dialog = new BottomSheetDialog(this);
         dialog.setContentView(view);
         dialog.setCancelable(false);
         dialog.show();
@@ -278,7 +279,8 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
 
 
     public void hideBottomSheetDialog() {
-        dialog.dismiss();
+        if (this.dialog != null && this.dialog.isShowing())
+            dialog.dismiss();
     }
 
     @Override
