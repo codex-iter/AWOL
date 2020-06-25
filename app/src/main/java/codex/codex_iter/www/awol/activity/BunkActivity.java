@@ -2,9 +2,12 @@ package codex.codex_iter.www.awol.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,9 +23,11 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Locale;
@@ -58,36 +63,35 @@ public class BunkActivity extends BaseThemedActivity {
             String selectedItemText = ((TextView) v).getText().toString();
             sub.setText(selectedItemText);
             total = Double.parseDouble(ld[arg2].getClasses());
-                absent = Double.parseDouble(ld[arg2].getAbsent());
-                percent = Double.parseDouble(ld[arg2].getPercent());
-                present = total - absent;
-                if (75 < percent) {
-                    int i;
-                    for (i = 0; i != -99; i++) {
-                        double p = (present / (total + i)) * 100;
-                        if (p < 75) break;
-                    }
-                    if (i > 1) {
-                        result.setText("Bunk " + (i - 1) + " classes for 75% ");
-                    } else {
-                        result.setText(" ");
-                    }
-                } else if (75 > percent) {
-                    int i;
-                    for (i = 0; i != -99; i++) {
-                        double p = ((present + i) / (total + i) * 100);
-                        if (p > 75) break;
-                    }
-                    if (i > 1) {
-                        result.setText("Attend " + (i - 1) + " classes for 75%");
-                    } else {
-                        result.setText(" ");
-                    }
+            absent = Double.parseDouble(ld[arg2].getAbsent());
+            percent = Double.parseDouble(ld[arg2].getPercent());
+            present = total - absent;
+            if (75 < percent) {
+                int i;
+                for (i = 0; i != -99; i++) {
+                    double p = (present / (total + i)) * 100;
+                    if (p < 75) break;
                 }
-                left.setText("");
+                if (i > 1) {
+                    result.setText("Bunk " + (i - 1) + " classes for 75% ");
+                } else {
+                    result.setText(" ");
+                }
+            } else if (75 > percent) {
+                int i;
+                for (i = 0; i != -99; i++) {
+                    double p = ((present + i) / (total + i) * 100);
+                    if (p > 75) break;
+                }
+                if (i > 1) {
+                    result.setText("Attend " + (i - 1) + " classes for 75%");
+                } else {
+                    result.setText(" ");
+                }
+            }
+            left.setText("");
 
         }
-
 
 
     }
@@ -139,7 +143,7 @@ public class BunkActivity extends BaseThemedActivity {
                     listItem.setBackgroundColor(Color.parseColor("#141414"));
                     listItem.setTextColor(Color.WHITE);
                 }
-                int padding = Math.round(getResources().getDisplayMetrics().density*16);
+                int padding = Math.round(getResources().getDisplayMetrics().density * 16);
                 listItem.setPadding(padding, padding, padding, padding);
 
 
@@ -149,6 +153,7 @@ public class BunkActivity extends BaseThemedActivity {
     }
 
     PopupWindow popupWindowDogs;
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,25 +166,32 @@ public class BunkActivity extends BaseThemedActivity {
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         Objects.requireNonNull(getSupportActionBar()).setElevation(0);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowHomeEnabled(true);
-        if(!dark){
+        if (!dark) {
             toolbar.setTitleTextColor(getResources().getColor(R.color.black));
             Objects.requireNonNull(toolbar.getNavigationIcon()).setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP);
         }
-
-
         this.ld = AttendanceData.attendanceData;
-        String[] subn = new String[ld.length];
-        for (int i = 0; i < ld.length; i++)
-            subn[i] = ld[i].getSub();
+        if (ld != null) {
+            String[] subn = new String[ld.length];
+            for (int i = 0; i < ld.length; i++)
+                subn[i] = ld[i].getSub();
 
-
-        popupWindowDogs = popupWindowDogs(subn);
-
+            popupWindowDogs = popupWindowDogs(subn);
+        } else {
+            SharedPreferences userm = getSharedPreferences("user",
+                    Context.MODE_PRIVATE);
+            String u = userm.getString("user", "");
+            String p = userm.getString("pass", "");
+            Crashlytics.log(Log.ERROR, "error1_u", u);
+            Crashlytics.log(Log.ERROR, "error2_p", p);
+            Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, AttendanceActivity.class));
+        }
         View view1 = findViewById(R.id.view1);
         View view2 = findViewById(R.id.view2);
 
 
-        if (dark){
+        if (dark) {
             view1.setBackgroundColor(Color.parseColor("#A9A9A9"));
             view2.setBackgroundColor(Color.parseColor("#A9A9A9"));
         }

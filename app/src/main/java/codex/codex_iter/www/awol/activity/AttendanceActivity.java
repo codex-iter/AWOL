@@ -48,6 +48,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.ServerError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.crashlytics.android.Crashlytics;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -433,9 +434,9 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
         StorageReference storageReference_video = FirebaseStorage.getInstance().getReference().child("video.txt");
         DownloadScrapFile downloadScrapFile = new DownloadScrapFile(AttendanceActivity.this);
         storageReference_data.getDownloadUrl().addOnSuccessListener(uri -> {
-            downloadScrapFile.newDownload(uri.toString(), "data", false,"");
+            downloadScrapFile.newDownload(uri.toString(), "data", false, "");
             storageReference_video.getDownloadUrl().addOnSuccessListener(uri1 -> {
-                downloadScrapFile.newDownload(uri1.toString(), "video", false,"");
+                downloadScrapFile.newDownload(uri1.toString(), "video", false, "");
                 hideBottomSheetDialog();
             }).addOnFailureListener(e -> {
                 hideBottomSheetDialog();
