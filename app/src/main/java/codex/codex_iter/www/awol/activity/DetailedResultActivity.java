@@ -33,7 +33,7 @@ import static codex.codex_iter.www.awol.utilities.Constants.RESULTS;
 
 public class DetailedResultActivity extends BaseThemedActivity {
 
-    private String mearnedCredits, msgpa, mstatus, msem;
+    private String msem;
     SharedPreferences userm;
     private String result;
     private int l;
@@ -55,14 +55,13 @@ public class DetailedResultActivity extends BaseThemedActivity {
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowHomeEnabled(true);
 
         if (bundle != null) {
-            mearnedCredits = bundle.getString("TotalCredit");
-            msgpa = bundle.getString("SGPA");
-            mstatus = bundle.getString("Status");
+            String mearnedCredits = bundle.getString("TotalCredit");
+            String msgpa = bundle.getString("SGPA");
+            String mstatus = bundle.getString("Status");
             result = bundle.getString(RESULTS);
-        }
-        if (bundle != null) {
             msem = bundle.getString("Semester");
         }
+
         if (dark) {
             toolbar.setTitleTextColor(getResources().getColor(R.color.white));
             recyclerView.setBackgroundColor(Color.parseColor("#141414"));
@@ -133,14 +132,14 @@ public class DetailedResultActivity extends BaseThemedActivity {
         Constants.offlineDataEditor = Constants.offlineDataPreference.edit();
         Gson gson = new Gson();
         String json = gson.toJson(attendanceDataArrayList);
-        Constants.offlineDataEditor.putString("StudentDetailResult" + msem, json);
+        Constants.offlineDataEditor.putString("StudentDetailResult" + sem, json);
         Constants.offlineDataEditor.apply();
     }
 
     public void getSavedAttendance(String sem) {
 //        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("DetailResult", MODE_PRIVATE);
         Gson gson = new Gson();
-        String json = Constants.offlineDataPreference.getString("StudentDetailResult" + msem, null);
+        String json = Constants.offlineDataPreference.getString("StudentDetailResult" + sem, null);
         Type type = new TypeToken<ArrayList<DetailResultData>>() {
         }.getType();
         detailResultDataArrayList = gson.fromJson(json, type);
