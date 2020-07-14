@@ -81,7 +81,6 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
         Objects.requireNonNull(getSupportActionBar()).setElevation(0);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowHomeEnabled(true);
 
-        dialog = new BottomSheetDialog(this);
         userm = getSharedPreferences("user",
                 Context.MODE_PRIVATE);
 
@@ -270,17 +269,20 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
 
     public void showBottomSheetDialog() {
         //    private BottomSheetBehavior bottomSheetBehavior;
-
         @SuppressLint("InflateParams") View view = getLayoutInflater().inflate(R.layout.bottomprogressbar, null);
-        dialog.setContentView(view);
-        dialog.setCancelable(false);
+        if (dialog == null) {
+            dialog = new BottomSheetDialog(this);
+            dialog.setContentView(view);
+            dialog.setCancelable(false);
+        }
         dialog.show();
+
     }
 
-
     public void hideBottomSheetDialog() {
-        if (this.dialog != null && this.dialog.isShowing())
+        if (dialog != null && dialog.isShowing()) {
             dialog.dismiss();
+        }
     }
 
     @Override

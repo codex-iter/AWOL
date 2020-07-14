@@ -155,14 +155,19 @@ public class OnlineLectureSubjects extends BaseThemedActivity implements OnlineL
     public void showBottomSheetDialog() {
         //    private BottomSheetBehavior bottomSheetBehavior;
         @SuppressLint("InflateParams") View view = getLayoutInflater().inflate(R.layout.bottomprogressbar, null);
-        dialog = new BottomSheetDialog(this);
-        dialog.setContentView(view);
-        dialog.setCancelable(false);
+        if (dialog == null) {
+            dialog = new BottomSheetDialog(this);
+            dialog.setContentView(view);
+            dialog.setCancelable(false);
+        }
         dialog.show();
+
     }
 
     public void hideBottomSheetDialog() {
-        dialog.dismiss();
+        if (dialog != null && dialog.isShowing()) {
+            dialog.dismiss();
+        }
     }
 
     @Override

@@ -86,6 +86,7 @@ import codex.codex_iter.www.awol.utilities.Constants;
 import codex.codex_iter.www.awol.utilities.DownloadScrapFile;
 import codex.codex_iter.www.awol.utilities.FirebaseConfig;
 import codex.codex_iter.www.awol.utilities.ScreenshotUtils;
+import io.fabric.sdk.android.services.concurrency.AsyncTask;
 
 import static codex.codex_iter.www.awol.utilities.Constants.API;
 import static codex.codex_iter.www.awol.utilities.Constants.LOGIN;
@@ -221,7 +222,6 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
         ImageView share = view_cus.findViewById(R.id.share);
         preferences = getSharedPreferences("CLOSE", MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
-        dialog = new BottomSheetDialog(this);
         Constants.offlineDataPreference = this.getSharedPreferences("OFFLINEDATA", Context.MODE_PRIVATE);
         Bundle bundle = getIntent().getExtras();
 
@@ -625,13 +625,18 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
     public void showBottomSheetDialog() {
         //    private BottomSheetBehavior bottomSheetBehavior;
         @SuppressLint("InflateParams") View view = getLayoutInflater().inflate(R.layout.bottomprogressbar, null);
-        dialog.setContentView(view);
-        dialog.setCancelable(false);
+        if (dialog == null) {
+            dialog = new BottomSheetDialog(this);
+            dialog.setContentView(view);
+            dialog.setCancelable(false);
+        }
         dialog.show();
     }
 
     public void hideBottomSheetDialog() {
-        dialog.dismiss();
+        if (dialog != null && dialog.isShowing()) {
+            dialog.dismiss();
+        }
     }
 
     @Override
