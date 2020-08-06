@@ -60,6 +60,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import codex.codex_iter.www.awol.activity.AttendanceActivity;
 import codex.codex_iter.www.awol.activity.BaseThemedActivity;
+import codex.codex_iter.www.awol.activity.UnderMaintenance;
 import codex.codex_iter.www.awol.utilities.Constants;
 import codex.codex_iter.www.awol.utilities.DownloadScrapFile;
 
@@ -109,6 +110,7 @@ public class MainActivity extends BaseThemedActivity {
     private int updated_version;
     private int current_version;
     private static final int EXTERNAL_STORAGE_PERMISSION_CODE = 1002;
+    private boolean isQueried = false;
 
     @SuppressLint({"ClickableViewAccessibility", "SetTextI18n"})
     @Override
@@ -130,6 +132,53 @@ public class MainActivity extends BaseThemedActivity {
         preferences = this.getSharedPreferences(STUDENT_NAME, MODE_PRIVATE);
 
         apiUrl = getSharedPreferences(API, MODE_PRIVATE);
+
+
+        try {
+            PackageInfo pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
+            current_version = pInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        CollectionReference apiCollection = FirebaseFirestore.getInstance().collection(DETAILS);
+        apiCollection.addSnapshotListener((queryDocumentSnapshots, e) -> {
+            if (queryDocumentSnapshots != null) {
+                for (DocumentChange documentChange : queryDocumentSnapshots.getDocumentChanges()) {
+                    api = documentChange.getDocument().getString(API);
+                    updated_version = Integer.parseInt(Objects.requireNonNull(documentChange.getDocument().getString("update_available")));
+                    int check = Integer.parseInt(Objects.requireNonNull(documentChange.getDocument().getString("under_maintenance")));
+                    isQueried = true;
+                    new_message = documentChange.getDocument().getString("what's_new");
+                    edit = apiUrl.edit();
+                    edit.putString(API, api);
+                    edit.putInt("CHECK", check);
+                    edit.apply();
+
+                    if (check == 1) {
+                        Intent intent = new Intent(MainActivity.this, UnderMaintenance.class);
+                        startActivity(intent);
+                        finish();
+                    }
+
+                    if (updated_version > current_version && current_version > 0) {
+                        askPermission();
+                        StorageReference storageReference_data = FirebaseStorage.getInstance().getReference().child("apk_version/").child("awol.apk");
+                        storageReference_data.getDownloadUrl().addOnSuccessListener(uri -> {
+                            DownloadScrapFile downloadScrapFile = new DownloadScrapFile(MainActivity.this);
+                            downloadScrapFile.newDownload(uri.toString(), "awol", true, new_message);
+                        }).addOnFailureListener(e1 -> Log.e("error_version", e1.toString()));
+                    } else {
+                        autofill();
+                    }
+                }
+            }
+        });
+        if (apiUrl.getInt("CHECK", 0) == 1 && !isQueried) {
+            Intent intent = new Intent(MainActivity.this, UnderMaintenance.class);
+            startActivity(intent);
+            finish();
+        }
 
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetView);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
@@ -188,38 +237,6 @@ public class MainActivity extends BaseThemedActivity {
                 edit = logout.edit();
                 edit.putBoolean("logout", false);
                 edit.apply();
-            }
-        });
-
-        try {
-            PackageInfo pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
-            current_version = pInfo.versionCode;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        CollectionReference apiCollection = FirebaseFirestore.getInstance().collection(DETAILS);
-        apiCollection.addSnapshotListener((queryDocumentSnapshots, e) -> {
-            if (queryDocumentSnapshots != null) {
-                for (DocumentChange documentChange : queryDocumentSnapshots.getDocumentChanges()) {
-                    api = documentChange.getDocument().getString(API);
-                    updated_version = Integer.parseInt(Objects.requireNonNull(documentChange.getDocument().getString("update_available")));
-                    new_message = documentChange.getDocument().getString("what's_new");
-                    edit = apiUrl.edit();
-                    edit.putString(API, api);
-                    edit.apply();
-
-                    if (updated_version > current_version && current_version > 0) {
-                        askPermission();
-                        StorageReference storageReference_data = FirebaseStorage.getInstance().getReference().child("apk_version/").child("awol.apk");
-                        storageReference_data.getDownloadUrl().addOnSuccessListener(uri -> {
-                            DownloadScrapFile downloadScrapFile = new DownloadScrapFile(MainActivity.this);
-                            downloadScrapFile.newDownload(uri.toString(), "awol", true, new_message);
-                        }).addOnFailureListener(e1 -> Log.e("error_version", e1.toString()));
-                    } else {
-                        autofill();
-                    }
-                }
             }
         });
     }
@@ -504,7 +521,8 @@ public class MainActivity extends BaseThemedActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == EXTERNAL_STORAGE_PERMISSION_CODE) {
 

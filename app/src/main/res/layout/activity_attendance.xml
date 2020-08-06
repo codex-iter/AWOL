@@ -182,7 +182,23 @@
             app:headerLayout="@layout/header"
             app:itemIconTint="?android:textColorPrimary"
             app:itemTextColor="?android:textColorPrimary"
-            app:menu="@menu/navigation_menu" />
+            app:menu="@menu/navigation_menu">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/version"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textColor="@android:color/black"/>
+            </LinearLayout>
+        </com.google.android.material.navigation.NavigationView>
     </androidx.drawerlayout.widget.DrawerLayout>
 
     <!--    <include layout="@layout/bottomprogressbar" />-->

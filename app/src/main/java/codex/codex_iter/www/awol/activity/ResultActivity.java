@@ -127,9 +127,17 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
                     ld[i].setStynumber(Integer.parseInt(jObj.getString("stynumber")));
                     ld[i].setFail(jObj.getString("fail"));
                     ld[i].setTotalearnedcredit(jObj.getString("totalearnedcredit"));
+                    if (jObj.has("cgpaR")) {
+                        ld[i].setCgpaR(jObj.getString("cgpaR"));
+                    } else {
+                        ld[i].setCgpaR("Not Available");
+                    }
+                    if (jObj.has("sgpaR")) {
+                        ld[i].setSgpaR(jObj.getString("sgpaR"));
+                    } else {
+                        ld[i].setCgpaR("Not Available");
+                    }
                 }
-                ld[i].setSgpaR(jObj != null ? jObj.getString("sgpaR") : null);
-                ld[i].setCgpaR(jObj != null ? jObj.getString("cgpaR") : null);
             }
         } catch (Exception e) {
             e.printStackTrace();

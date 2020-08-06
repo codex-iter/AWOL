@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -86,7 +88,6 @@ import codex.codex_iter.www.awol.utilities.Constants;
 import codex.codex_iter.www.awol.utilities.DownloadScrapFile;
 import codex.codex_iter.www.awol.utilities.FirebaseConfig;
 import codex.codex_iter.www.awol.utilities.ScreenshotUtils;
-import io.fabric.sdk.android.services.concurrency.AsyncTask;
 
 import static codex.codex_iter.www.awol.utilities.Constants.API;
 import static codex.codex_iter.www.awol.utilities.Constants.LOGIN;
@@ -156,7 +157,7 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
     private String showResult, showlectures;
     private BottomSheetDialog dialog;
     private int read_database;
-    private Menu custom_menu;
+    private String current_versionName;
 
     int[][] state = new int[][]{
             new int[]{android.R.attr.state_checked}, // checked
@@ -179,6 +180,9 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
             Color.rgb(255, 46, 84),
             (Color.GRAY)
     };
+
+    public AttendanceActivity() {
+    }
 
     public static String convertToTitleCaseIteratingChars(String text) {
         if (text == null || text.isEmpty()) {
@@ -224,6 +228,15 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
         SharedPreferences.Editor editor = preferences.edit();
         Constants.offlineDataPreference = this.getSharedPreferences("OFFLINEDATA", Context.MODE_PRIVATE);
         Bundle bundle = getIntent().getExtras();
+
+        try {
+            PackageInfo pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
+            current_versionName = pInfo.versionName;
+            MaterialTextView version = findViewById(R.id.version);
+            version.setText("v" + current_versionName);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
 
         SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         if (pref.getBoolean("is_First_Run2", true)) {

@@ -35,9 +35,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         collectionReference.addSnapshotListener((queryDocumentSnapshots, e) -> {
             if (queryDocumentSnapshots != null) {
                 for (DocumentChange documentChange : queryDocumentSnapshots.getDocumentChanges()) {
-                    check = Integer.parseInt(Objects.requireNonNull(documentChange.getDocument().getString("under_maintenance")));
                     clear_data = Integer.parseInt(Objects.requireNonNull(documentChange.getDocument().getString("clear_data")));
-                    pref.edit().putInt("CHECK", check).apply();
 
                     if (clear_data > pref.getInt("clear_data", 0)) {
                         Toast.makeText(this, "Data Successfully cleared.", Toast.LENGTH_SHORT).show();
@@ -47,13 +45,13 @@ public class SplashScreenActivity extends AppCompatActivity {
                 }
             }
         });
-        if (pref.getInt("CHECK", 0) == 1) {
-            Intent intent = new Intent(SplashScreenActivity.this, UnderMaintenance.class);
-            startActivity(intent);
-        } else {
+//        if (pref.getInt("CHECK", 0) == 1) {
+//            Intent intent = new Intent(SplashScreenActivity.this, UnderMaintenance.class);
+//            startActivity(intent);
+//        } else {
             Intent intent = new Intent(SplashScreenActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
         }
-    }
+//    }
 }

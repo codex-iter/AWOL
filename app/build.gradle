@@ -20,8 +20,8 @@ android {
         minSdkVersion 21
         targetSdkVersion 30
         multiDexEnabled true
-        versionCode 10
-        versionName "1.0.8"
+        versionCode 11
+        versionName "1.0.9"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         manifestPlaceholders = [
@@ -70,17 +70,17 @@ dependencies {
 
     //Lottie Animation
     implementation 'com.airbnb.android:lottie:3.4.0'
-    implementation 'com.google.android.play:core:1.7.3'
+    implementation 'com.google.android.play:core:1.8.0'
 
     //FireStore
-    implementation 'com.google.firebase:firebase-firestore:21.4.3'
+    implementation 'com.google.firebase:firebase-firestore:21.5.0'
 
     //Database
     implementation 'com.google.firebase:firebase-database:19.3.1'
     implementation 'com.google.firebase:firebase-storage:19.1.1'
 
     //firebase messaging
-    implementation 'com.google.firebase:firebase-messaging:20.2.1'
+    implementation 'com.google.firebase:firebase-messaging:20.2.4'
 
     //Multi-dex
     implementation 'androidx.multidex:multidex:2.0.1'
@@ -95,8 +95,8 @@ dependencies {
     implementation 'com.google.android.exoplayer:exoplayer:2.11.1'
 
     //Firebase Remote Config
-    implementation 'com.google.firebase:firebase-config:19.1.4'
-    implementation 'com.google.firebase:firebase-analytics:17.4.3'
+    implementation 'com.google.firebase:firebase-config:19.2.0'
+    implementation 'com.google.firebase:firebase-analytics:17.4.4'
 
     //picasso
     implementation 'com.squareup.picasso:picasso:2.71828'
