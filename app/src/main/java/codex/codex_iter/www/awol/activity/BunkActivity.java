@@ -27,8 +27,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 
-import com.crashlytics.android.Crashlytics;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 import java.util.Locale;
 import java.util.Objects;
@@ -182,8 +182,8 @@ public class BunkActivity extends BaseThemedActivity {
                     Context.MODE_PRIVATE);
             String u = userm.getString("user", "");
             String p = userm.getString("pass", "");
-            Crashlytics.log(Log.ERROR, "error1_u", u);
-            Crashlytics.log(Log.ERROR, "error2_p", p);
+            FirebaseCrashlytics.getInstance().log(u);
+            FirebaseCrashlytics.getInstance().log(p);
             Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(this, AttendanceActivity.class));
         }

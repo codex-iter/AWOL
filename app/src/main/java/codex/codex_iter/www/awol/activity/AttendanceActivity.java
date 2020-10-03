@@ -54,6 +54,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textview.MaterialTextView;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -440,6 +441,7 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
 
             checkResult.setOnClickListener(view -> fetchResult());
         }
+
     }
 
     public void downloadfile() {
