@@ -16,6 +16,7 @@ import android.text.style.ForegroundColorSpan;
 import android.view.View;
 
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragment;
 import androidx.preference.SwitchPreference;
@@ -43,25 +44,27 @@ public class SettingsFragment extends PreferenceFragment {
     private boolean dark = false;
     private FirebaseAnalytics firebaseAnalytics;
     CoordinatorLayout coordinatorLayout;
+
     @Override
     public void onCreate(final Bundle savedInstanceState) {
-
-
         SharedPreferences preferences = getActivity().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preference);
         final SwitchPreference notifications = (SwitchPreference) findPreference("pref_notification");
-//       if (!dark) {
+        ListPreference pref_minimum_attendance = (ListPreference) findPreference("pref_minimum_attendance");
 
-//        }
         SharedPreferences preferences1 = getContext().getSharedPreferences("Dark", MODE_PRIVATE);
         boolean white = preferences1.getBoolean("dark", false);
         if (white) {
             Spannable title = new SpannableString(notifications.getTitle().toString());
             title.setSpan(new ForegroundColorSpan(Color.BLACK), 0, title.length(), 0);
             notifications.setTitle(title);
+
+            Spannable title_attendance = new SpannableString(pref_minimum_attendance.getTitle().toString());
+            title_attendance.setSpan(new ForegroundColorSpan(Color.BLACK), 0, title_attendance.length(), 0);
+            pref_minimum_attendance.setTitle(title_attendance);
         }
+
         final SharedPreferences stop = getContext().getSharedPreferences("STOP", 0);
         final SharedPreferences.Editor editor1 = stop.edit();
 
@@ -70,7 +73,7 @@ public class SettingsFragment extends PreferenceFragment {
 
         final SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Notification_date", 0);
         final SharedPreferences.Editor editor = sharedPreferences.edit();
-        coordinatorLayout=(CoordinatorLayout) getActivity().findViewById(R.id.coordinator);
+        coordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.coordinator);
         String packageName = getContext().getPackageName();
         PowerManager pm = (PowerManager) getContext().getSystemService(POWER_SERVICE);
         if (!pm.isIgnoringBatteryOptimizations(packageName)) {
@@ -96,7 +99,7 @@ public class SettingsFragment extends PreferenceFragment {
                         editor1.putBoolean("STOP_NOTIFICATION", false);
                         editor1.apply();
                         if (!flag) {
-                            Snackbar.make(coordinatorLayout,"Notifications Enabled",Snackbar.LENGTH_SHORT).show();
+                            Snackbar.make(coordinatorLayout, "Notifications Enabled", Snackbar.LENGTH_SHORT).show();
                             Calendar calendar = Calendar.getInstance();
                             Date alram_time = new Date();
                             calendar.set(Calendar.HOUR_OF_DAY, 7);
@@ -167,7 +170,7 @@ public class SettingsFragment extends PreferenceFragment {
                                 }
                             }
                         } else {
-                            Snackbar.make(coordinatorLayout,"Notifications Enabled",Snackbar.LENGTH_LONG).show();
+                            Snackbar.make(coordinatorLayout, "Notifications Enabled", Snackbar.LENGTH_LONG).show();
                             /*Alram time*/
                             Calendar calendar = Calendar.getInstance();
                             calendar.set(Calendar.HOUR_OF_DAY, 7);
@@ -242,7 +245,7 @@ public class SettingsFragment extends PreferenceFragment {
                             }
                         }
                     } else {
-                        Snackbar.make(coordinatorLayout,"Notifications Disabled",Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(coordinatorLayout, "Notifications Disabled", Snackbar.LENGTH_LONG).show();
                         flag = false;
                         editor1.putBoolean("STOP_NOTIFICATION", true);
                         editor1.apply();
@@ -274,10 +277,10 @@ public class SettingsFragment extends PreferenceFragment {
         dark = true;
         editor.apply();
     }
+
     private void openPowerSettings(Context context) {
         Intent intent = new Intent();
         intent.setAction(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
         context.startActivity(intent);
     }
-
 }

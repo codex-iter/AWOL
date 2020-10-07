@@ -23,11 +23,13 @@ import codex.codex_iter.www.awol.model.AttendanceData;
 public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.myViewHolder> {
 
     private Context ctx;
-    private List<AttendanceData> datalist;
+    private List<AttendanceData> dataList;
+    private int pre_minimum_attendance;
 
-    public AttendanceAdapter(Context context, List<AttendanceData> datalist) {
+    public AttendanceAdapter(Context context, List<AttendanceData> dataList, int pref_minimum_attendance) {
         this.ctx = context;
-        this.datalist = datalist;
+        this.dataList = dataList;
+        this.pre_minimum_attendance = pref_minimum_attendance;
     }
 
     @NonNull
@@ -44,25 +46,35 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.my
         SharedPreferences theme = ctx.getSharedPreferences("theme", 0);
         boolean dark = theme.getBoolean("dark_theme", false);
 
-        holder.sub.setText(datalist.get(position).getSub());
-        String p = datalist.get(position).getPercent();
+        holder.sub.setText(dataList.get(position).getSub());
+        String p = dataList.get(position).getPercent();
 
         double percent = 0;
         if (p != null) {
             percent = Double.parseDouble(p);
         }
 
-        if (percent > (float) 80) {
+        if (percent >= pre_minimum_attendance + 10) {
             holder.ta.setBackgroundColor(Color.parseColor("#0BBE62"));
-        } else if (percent >= (float) 60 && percent <= 80) {
+        } else if (percent >= pre_minimum_attendance) {
             holder.ta.setBackgroundColor(Color.parseColor("#FFFF66"));
         } else {
             holder.ta.setBackgroundColor(Color.parseColor("#F5FC0101"));
         }
-        holder.ta.setText(datalist.get(position).getPercent() + "%");
-        String s = datalist.get(position).getOld();
+        holder.ta.setText(dataList.get(position).getPercent() + "%");
+        String s = dataList.get(position).getOld();
         if (!s.equals("")) {
-            double n = Double.parseDouble(datalist.get(position).getPercent());
+            double n = Double.parseDouble(dataList.get(position).getPercent());
+            double o = Double.parseDouble(s);
+            if (n >= o) {
+                holder.up.setBackgroundResource(R.drawable.up);
+            } else {
+                holder.up.setBackgroundResource(R.drawable.down);
+            }
+        }
+
+        if (!s.equals("")) {
+            double n = Double.parseDouble(dataList.get(position).getPercent());
             double o = Double.parseDouble(s);
             //    Toast.makeText(context, "New Attendance : " + n, Toast.LENGTH_SHORT).show();
             if (n >= o) {
@@ -72,23 +84,12 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.my
             }
         }
 
-        if (!s.equals("")) {
-            double n = Double.parseDouble(datalist.get(position).getPercent());
-            double o = Double.parseDouble(s);
-            //    Toast.makeText(context, "New Attendance : " + n, Toast.LENGTH_SHORT).show();
-            if (n >= o) {
-                holder.up.setBackgroundResource(R.drawable.up);
-            } else {
-                holder.up.setBackgroundResource(R.drawable.down);
-            }
-        }
-
-        holder.lu.setText(datalist.get(position).getUpd());
-        holder.th.setText(datalist.get(position).getTheory() + datalist.get(position).getThat());
-        holder.prac.setText(datalist.get(position).getLab() + datalist.get(position).getLabt());
-        holder.ab.setText(datalist.get(position).getAbsent());
-        holder.tc.setText(datalist.get(position).getClasses());
-        holder.bunk_text.setText(datalist.get(position).getBunk_text_str());
+        holder.lu.setText(dataList.get(position).getUpd());
+        holder.th.setText(dataList.get(position).getTheory() + dataList.get(position).getThat());
+        holder.prac.setText(dataList.get(position).getLab() + dataList.get(position).getLabt());
+        holder.ab.setText(dataList.get(position).getAbsent());
+        holder.tc.setText(dataList.get(position).getClasses());
+        holder.bunk_text.setText(dataList.get(position).getBunk_text_str());
 
         if (!dark) {
             holder.cardView.setCardBackgroundColor(Color.parseColor("#FFFFFF"));
@@ -111,10 +112,10 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.my
 
     @Override
     public int getItemCount() {
-        return datalist.size();
+        return dataList.size();
     }
 
-    public class myViewHolder extends RecyclerView.ViewHolder {
+    public static class myViewHolder extends RecyclerView.ViewHolder {
         TextView sub, lu, th, prac, ab, tc, theory, updated, pract, classes, absents, bunk_text;
         Button ta;
         ImageView up;

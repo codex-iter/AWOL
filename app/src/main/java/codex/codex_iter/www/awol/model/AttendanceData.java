@@ -1,15 +1,16 @@
 package codex.codex_iter.www.awol.model;
+
 import java.util.Locale;
 import java.util.Scanner;
 
 public class AttendanceData {
-
     private String sub,code,upd,theory,lab,percent,that="",labt="",old="",bunk_text_str="Don't Bunk Anymore";
     private double thT;
     private double thp;
     private double lat;
     private double lap;
     public static AttendanceData[] attendanceData;
+
     public String getClasses() {
         return Integer.toString((int)(thT+lat));
     }
@@ -126,27 +127,26 @@ public class AttendanceData {
     }
 
     public void setPercent(String percent) {
-        this.percent = String.format(Locale.US, "%.1f",new Scanner(percent).nextDouble());
+        this.percent = String.format(Locale.US, "%.1f", new Scanner(percent).nextDouble());
     }
-    public void setBunk()
-    {
-        double percent_class=Double.parseDouble(getPercent());
-        double total_class = Double.parseDouble(getClasses());
-        double absent = Double.parseDouble(getAbsent());
-        double present = total_class - absent;
+
+    public void setBunk(int pref_min_attendance) {
+        double percent_class = Double.parseDouble(getPercent()); // 70.83
+        double total_class = Double.parseDouble(getClasses()); // 21
+        double absent = Double.parseDouble(getAbsent()); // 3
+        double present = total_class - absent; // 18
         int i;
-        if(percent_class>=75) {
-            //to be continued...
+        if (percent_class >= pref_min_attendance) {
             for (i = 0; i != -99; i++) {
                 double p = (present / (total_class + i)) * 100;
-                if (p < 75) break;
+                if (p < pref_min_attendance) break;
             }
             i--;
             if (i > 0) {
                 if (i != 1) {
-                    this.bunk_text_str = "BUNK " + i + " classes for 75%";
+                    this.bunk_text_str = "Bunk " + i + " classes for " + pref_min_attendance + "%";
                 } else {
-                    this.bunk_text_str = "BUNK " + i + " class for 75%";
+                    this.bunk_text_str = "Bunk " + i + " class for " + pref_min_attendance + "%";
                 }
             }
         }
@@ -154,14 +154,14 @@ public class AttendanceData {
         {
             for (i = 0; i != -99; i++) {
                 double p = ((present + i) / (total_class + i) * 100);
-                if (p > 75) break;
+                if (p > pref_min_attendance) break;
             }
             i--;
             if (i > 0) {
                 if (i != 1) {
-                    this.bunk_text_str = "Attend " + i + " classes for 75%";
+                    this.bunk_text_str = "Attend " + i + " classes for " + pref_min_attendance + "%";
                 } else {
-                    this.bunk_text_str = "Attend " + i + " class for 75%";
+                    this.bunk_text_str = "Attend " + i + " class for " + pref_min_attendance + "%";
                 }
             }
         }

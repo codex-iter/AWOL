@@ -20,7 +20,6 @@ import android.text.Html;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -40,6 +39,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.FileProvider;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -54,7 +54,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textview.MaterialTextView;
-import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -149,7 +148,7 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
     @SuppressWarnings("FieldCanBeLocal")
     private String code, student_semester;
     @SuppressWarnings("FieldCanBeLocal")
-    private SharedPreferences sub, userm, studentnamePrefernces, preferences, sharedPreferences;
+    private SharedPreferences sub, userm, studentnamePrefernces, preferences, sharedPreferences, prefs;
     private SharedPreferences.Editor edit;
     @SuppressWarnings("FieldCanBeLocal")
     private AttendanceAdapter adapter;
@@ -158,7 +157,6 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
     private String showResult, showlectures;
     private BottomSheetDialog dialog;
     private int read_database;
-    private String current_versionName;
 
     int[][] state = new int[][]{
             new int[]{android.R.attr.state_checked}, // checked
@@ -232,7 +230,7 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
 
         try {
             PackageInfo pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
-            current_versionName = pInfo.versionName;
+            String current_versionName = pInfo.versionName;
             MaterialTextView version = findViewById(R.id.version);
             version.setText("v" + current_versionName);
         } catch (PackageManager.NameNotFoundException e) {
@@ -240,6 +238,8 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
         }
 
         SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
         if (pref.getBoolean("is_First_Run2", true)) {
             pref.edit().putBoolean("is_First_Run2", false).apply();
             who_layout.setVisibility(View.GONE);
@@ -359,7 +359,46 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                 tv.setTextColor(Color.parseColor("#141414"));
             }
         }
+        processAttendance();
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
+        View headerView = navigationView.getHeaderView(0);
+        if (!Constants.Offlin_mode) {
+            editor.putInt("AveragePresent", (int) avgat);
+            editor.putString("AverageAbsent", String.valueOf(avgab));
+            if (bundle != null) {
+                String regis = bundle.getString(REGISTRATION_NUMBER);
+                editor.putString("RegistrationNumber", regis);
+            }
+            editor.apply();
+        }
+        TextView name = headerView.findViewById(R.id.name);
+        TextView reg = headerView.findViewById(R.id.reg);
+        name.setText(studentName);
+        String[] split = Objects.requireNonNull(studentName).split("\\s+");
+        if (!split[0].isEmpty()) {
+            title.setText("Hi, " + convertToTitleCaseIteratingChars(split[0]) + "!");
+        } else {
+            title.setText("Home");
+        }
+        reg.setText(preferences.getString("RegistrationNumber", null));
+        TextView avat = headerView.findViewById(R.id.avat);
+        avat.setText(preferences.getInt("AveragePresent", 0) + "%");
+        TextView avab = headerView.findViewById(R.id.avab);
+        avab.setText(preferences.getString("AverageAbsent", null));
+
+        checkResult.setOnClickListener(view -> fetchResult());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        processAttendance();
+    }
+
+    void processAttendance() {
+        attendanceDataArrayList.clear();
         if (result != null) {
             r = result.split("kkk");
             result = r[0];
@@ -387,10 +426,9 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                 attendanceData[i].setLab(jObj.getString("Patt"));
                 attendanceData[i].setUpd(ck);
                 attendanceData[i].setPercent(jObj.getString("TotalAttandence"));
-                attendanceData[i].setBunk();
+                attendanceData[i].setBunk(Integer.parseInt(Objects.requireNonNull(prefs.getString("pref_minimum_attendance", "75"))));
                 avgat += Double.parseDouble(jObj.getString("TotalAttandence").trim());
                 avgab += Integer.parseInt(attendanceData[i].getAbsent());
-
                 student_semester = jObj.getString(STUDENTSEMESTER);
                 sharedPreferences.edit().putString(STUDENTSEMESTER, student_semester).apply();
             }
@@ -406,42 +444,12 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                 getSavedAttendance();
             }
             saveAttendance(attendanceDataArrayList);
-            adapter = new AttendanceAdapter(this, attendanceDataArrayList);
+            adapter = new AttendanceAdapter(this, attendanceDataArrayList, Integer.parseInt(Objects.requireNonNull(prefs.getString("pref_minimum_attendance", "75"))));
             recyclerView.setHasFixedSize(true);
             recyclerView.setAdapter(adapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-            Toolbar toolbar = findViewById(R.id.toolbar);
-            setSupportActionBar(toolbar);
-
-            View headerView = navigationView.getHeaderView(0);
-            if (!Constants.Offlin_mode) {
-                editor.putInt("AveragePresent", (int) avgat);
-                editor.putString("AverageAbsent", String.valueOf(avgab));
-                if (bundle != null) {
-                    String regis = bundle.getString(REGISTRATION_NUMBER);
-                    editor.putString("RegistrationNumber", regis);
-                }
-                editor.apply();
-            }
-            TextView name = headerView.findViewById(R.id.name);
-            TextView reg = headerView.findViewById(R.id.reg);
-            name.setText(studentName);
-            String[] split = studentName.split("\\s+");
-            if (!split[0].isEmpty()) {
-                title.setText("Hi, " + convertToTitleCaseIteratingChars(split[0]) + "!");
-            } else {
-                title.setText("Home");
-            }
-            reg.setText(preferences.getString("RegistrationNumber", null));
-            TextView avat = headerView.findViewById(R.id.avat);
-            avat.setText(preferences.getInt("AveragePresent", 0) + "%");
-            TextView avab = headerView.findViewById(R.id.avab);
-            avab.setText(preferences.getString("AverageAbsent", null));
-
-            checkResult.setOnClickListener(view -> fetchResult());
         }
-
     }
 
     public void downloadfile() {
@@ -498,12 +506,6 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
         getData(api, u, p);
         showBottomSheetDialog();
     }
-//
-//    public static int convertDpToPixel(float dp) {
-//        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
-//        float px = dp * (metrics.densityDpi / 160f);
-//        return Math.round(px);
-//    }
 
     private void getData(final String... param) {
         SharedPreferences sharedPreferences = getApplication().getSharedPreferences("Result", MODE_PRIVATE);
@@ -574,10 +576,10 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
 
     private String Updated(JSONObject jObj, SharedPreferences sub, String code, int i) throws JSONException {
         if (sub.contains(code)) {
-            JSONObject old = new JSONObject(sub.getString(code, ""));
+            JSONObject old = new JSONObject(Objects.requireNonNull(sub.getString(code, "")));
             SharedPreferences status_lg = this.getSharedPreferences("status", 0);
             String status = status_lg.getString("status", "");
-            if (status.equals("0")) {
+            if (Objects.requireNonNull(status).equals("0")) {
                 old.put("Latt", "");
                 old.put("Patt", "");
                 old.put("TotalAttandence", "");
@@ -676,9 +678,9 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                 startActivity(sendIntent);
                 break;
             case R.id.lecture: {
-                if (!sharedPreferences.getString(SHOWLECTUURES, "0").equals("0")) {
+                if (!Objects.equals(sharedPreferences.getString(SHOWLECTUURES, "0"), "0")) {
                     Intent intent = new Intent(AttendanceActivity.this, OnlineLectureSubjects.class);
-                    switch (sharedPreferences.getString(STUDENTSEMESTER, "1")) {
+                    switch (Objects.requireNonNull(sharedPreferences.getString(STUDENTSEMESTER, "1"))) {
                         case "1":
                             student_semester = "1st";
                             break;
