@@ -42,14 +42,6 @@ public class AboutActivity extends BaseThemedActivity {
         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://instagram.com/codexiter?igshid=w8g2cfygo8sy")));
     }
 
-    public void openGmail(View view) {
-        Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                "mailto", "codexiter@gmail.com", null));
-        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Feedback for AWOL");
-        emailIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(Intent.createChooser(emailIntent, null));
-    }
-
     public void openGithub(View view) {
         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/codex-iter/AWOL")));
     }

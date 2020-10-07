@@ -377,6 +377,11 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
             }
             editor.apply();
         }
+        headerView.findViewById(R.id.changeTheme).setOnClickListener(view -> {
+            drawerLayout.closeDrawer(GravityCompat.START);
+            ThemeFragment fragment = ThemeFragment.newInstance();
+            fragment.show(getSupportFragmentManager(), "theme_fragment");
+        });
         TextView name = headerView.findViewById(R.id.name);
         TextView reg = headerView.findViewById(R.id.reg);
         name.setText(studentName);
@@ -787,11 +792,12 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                 Intent intent2 = new Intent(Intent.ACTION_VIEW, uri);
                 startActivity(intent2);
                 break;
-            case R.id.change_theme:
-                drawerLayout.closeDrawer(GravityCompat.START);
-                ThemeFragment fragment = ThemeFragment.newInstance();
-                fragment.show(getSupportFragmentManager(), "theme_fragment");
-                break;
+            case R.id.contactus:
+                Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                        "mailto", "codexiter@gmail.com", null));
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Feedback for AWOL");
+                emailIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(Intent.createChooser(emailIntent, null));
         }
         return true;
     }
