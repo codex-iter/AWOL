@@ -75,6 +75,11 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.ResultHold
             holder.sgpaTextView.setTextColor(Color.parseColor("#141831"));
             holder.cgpaTextView.setTextColor(Color.parseColor("#141831"));
             holder.creditsTextView.setTextColor(Color.parseColor("#141831"));
+        } else {
+            holder.semTextView.setTextColor(Color.parseColor("#FFFFFF"));
+            holder.sgpaTextView.setTextColor(Color.parseColor("#FFFFFF"));
+            holder.cgpaTextView.setTextColor(Color.parseColor("#FFFFFF"));
+            holder.creditsTextView.setTextColor(Color.parseColor("#FFFFFF"));
         }
     }
 

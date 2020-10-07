@@ -129,7 +129,7 @@
                         android:text="@string/_22_12_2017"
                         android:textColor="@color/colorAccent"
                         android:textSize="14sp"
-                        android:textStyle="bold" />
+                        android:typeface="normal" />
 
                 </LinearLayout>
 
@@ -160,7 +160,7 @@
                         android:text="@string/not_applicable"
                         android:textColor="@color/colorAccent"
                         android:textSize="14sp"
-                        android:textStyle="bold" />
+                        android:typeface="normal" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -191,7 +191,7 @@
                         android:text="@string/not_applicable"
                         android:textColor="@color/colorAccent"
                         android:textSize="14sp"
-                        android:textStyle="bold" />
+                        android:typeface="normal" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -221,7 +221,7 @@
                         android:text="@string/not_applicable"
                         android:textColor="@color/colorAccent"
                         android:textSize="14sp"
-                        android:textStyle="bold" />
+                        android:typeface="normal" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -251,7 +251,7 @@
                         android:text="@string/not_applicable"
                         android:textColor="@color/colorAccent"
                         android:textSize="14sp"
-                        android:textStyle="bold" />
+                        android:typeface="normal" />
                 </LinearLayout>
 
                 <TextView
@@ -261,10 +261,9 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8sp"
                     android:gravity="start"
-                    android:textAllCaps="true"
                     android:textColor="@color/colorAccent"
                     android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:typeface="normal" />
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

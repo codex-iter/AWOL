@@ -75,7 +75,7 @@
                     android:text="@string/textview"
                     android:textColor="@color/colorAccent"
                     android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:typeface="normal" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -100,7 +100,7 @@
                     android:text="@string/textview"
                     android:textColor="@color/colorAccent"
                     android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:typeface="normal" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -126,7 +126,7 @@
                     android:text="@string/textview"
                     android:textColor="@color/colorAccent"
                     android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:typeface="normal" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -149,10 +149,11 @@
                     android:paddingStart="15dp"
                     android:paddingEnd="15dp"
                     android:scrollbars="vertical"
-                    android:text="@string/textview"
+                    android:text="TextView"
                     android:textColor="@color/colorAccent"
                     android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:maxLines="2"
+                    android:typeface="normal" />
             </GridLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>

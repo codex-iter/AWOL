@@ -57,9 +57,9 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.my
         if (percent >= pre_minimum_attendance + 10) {
             holder.ta.setBackgroundColor(Color.parseColor("#0BBE62"));
         } else if (percent >= pre_minimum_attendance) {
-            holder.ta.setBackgroundColor(Color.parseColor("#FFFF66"));
+            holder.ta.setBackgroundColor(Color.parseColor("#FFD600"));
         } else {
-            holder.ta.setBackgroundColor(Color.parseColor("#F5FC0101"));
+            holder.ta.setBackgroundColor(Color.parseColor("#FF5252"));
         }
         holder.ta.setText(dataList.get(position).getPercent() + "%");
         String s = dataList.get(position).getOld();
@@ -93,7 +93,7 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.my
 
         if (!dark) {
             holder.cardView.setCardBackgroundColor(Color.parseColor("#FFFFFF"));
-            holder.ta.setTextColor(Color.parseColor("#141831"));
+            holder.ta.setTextColor(Color.parseColor("#FFFFFF"));
             holder.lu.setTextColor(Color.parseColor("#141831"));
             holder.th.setTextColor(Color.parseColor("#141831"));
             holder.prac.setTextColor(Color.parseColor("#141831"));
@@ -106,6 +106,20 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.my
             holder.theory.setTextColor(Color.parseColor("#141831"));
             holder.classes.setTextColor(Color.parseColor("#141831"));
             holder.bunk_text.setTextColor(Color.parseColor("#141831"));
+        } else {
+            holder.ta.setTextColor(Color.parseColor("#141831"));
+            holder.lu.setTextColor(Color.parseColor("#FFFFFF"));
+            holder.th.setTextColor(Color.parseColor("#FFFFFF"));
+            holder.prac.setTextColor(Color.parseColor("#FFFFFF"));
+            holder.ab.setTextColor(Color.parseColor("#FFFFFF"));
+            holder.tc.setTextColor(Color.parseColor("#FFFFFF"));
+            // mViewHolder.total.setTextColor(Color.parseColor("#141831"));
+            holder.updated.setTextColor(Color.parseColor("#FFFFFF"));
+            holder.absents.setTextColor(Color.parseColor("#FFFFFF"));
+            holder.pract.setTextColor(Color.parseColor("#FFFFFF"));
+            holder.theory.setTextColor(Color.parseColor("#FFFFFF"));
+            holder.classes.setTextColor(Color.parseColor("#FFFFFF"));
+            holder.bunk_text.setTextColor(Color.parseColor("#FFFFFF"));
         }
 
     }

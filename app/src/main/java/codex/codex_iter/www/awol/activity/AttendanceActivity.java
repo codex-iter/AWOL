@@ -233,6 +233,9 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
             String current_versionName = pInfo.versionName;
             MaterialTextView version = findViewById(R.id.version);
             version.setText("v" + current_versionName);
+            if (dark) {
+                version.setTextColor(getResources().getColor(R.color.white));
+            }
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
@@ -321,6 +324,7 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                 }
             }
         });
+        navigationView.getMenu().findItem(R.id.pab).setVisible(false);
         sharedPreferences = getSharedPreferences(API, MODE_PRIVATE);
         CollectionReference apiCollection = FirebaseFirestore.getInstance().collection(RESULTSTATUS);
         apiCollection.addSnapshotListener((queryDocumentSnapshots, e) -> {

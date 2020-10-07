@@ -54,7 +54,9 @@ public class AboutActivity extends BaseThemedActivity {
         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/codex-iter/AWOL")));
     }
 
-
+    public void openYoutube(View view) {
+        startActivity(new Intent(Intent.ACTION_VIEW,Uri.parse("https://www.youtube.com/channel/UCu1S3gm2ODknxDlkpPX2RrA")));
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();

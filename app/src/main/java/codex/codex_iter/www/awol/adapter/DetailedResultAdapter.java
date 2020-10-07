@@ -49,6 +49,11 @@ public class DetailedResultAdapter extends RecyclerView.Adapter<DetailedResultAd
             holder.textViewGrade.setTextColor(Color.parseColor("#141831"));
             holder.textViewIndvCredits.setTextColor(Color.parseColor("#141831"));
             holder.textViewSubName.setTextColor(Color.parseColor("#141831"));
+        } else {
+            holder.textViewSubCode.setTextColor(Color.parseColor("#FFFFFF"));
+            holder.textViewGrade.setTextColor(Color.parseColor("#FFFFFF"));
+            holder.textViewIndvCredits.setTextColor(Color.parseColor("#FFFFFF"));
+            holder.textViewSubName.setTextColor(Color.parseColor("#FFFFFF"));
         }
     }
 

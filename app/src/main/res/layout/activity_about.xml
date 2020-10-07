@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="?windowColor"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="?windowColor">
 
-    <LinearLayout
-        xmlns:tools="http://schemas.android.com/tools"
+    <LinearLayout xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/ll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -32,11 +31,11 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <ImageView
-            android:src="@drawable/app_logo"
             android:layout_width="234dp"
             android:layout_height="224dp"
             android:layout_marginTop="10dp"
-            android:contentDescription="@string/todo" />
+            android:contentDescription="@string/todo"
+            android:src="@drawable/app_logo" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -49,44 +48,61 @@
             tools:targetApi="o">
 
             <ImageView
-                android:onClick="openFacebook"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="4dp"
                 android:layout_weight="1"
                 android:contentDescription="@string/todo"
+                android:onClick="openFacebook"
                 android:src="@drawable/fb"
                 tools:targetApi="o" />
 
             <ImageView
-                android:onClick="openInstagram"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="4dp"
                 android:layout_weight="1"
                 android:contentDescription="@string/todo"
+                android:onClick="openInstagram"
                 android:src="@drawable/insta"
                 tools:targetApi="o" />
 
             <ImageView
-                android:onClick="openGmail"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="4dp"
                 android:layout_weight="1"
                 android:contentDescription="@string/todo"
+                android:onClick="openGmail"
                 android:src="@drawable/gmail"
                 tools:targetApi="o" />
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="4dp"
+                android:layout_weight="1"
+                android:contentDescription="@string/todo"
+                android:onClick="openYoutube"
+                android:src="@drawable/ic_youtube"
+                tools:targetApi="o" />
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="7dp"
+            android:layout_marginTop="15dp"
             android:gravity="center_horizontal"
             android:text="@string/disclaimer"
             android:textColor="?aboutTextColor"
             android:textSize="14sp" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -97,75 +113,74 @@
             android:textColor="?aboutTextColor"
             android:textSize="14sp"
             tools:targetApi="o" />
-
-
-        <TextView
-            android:onClick="openGithub"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="25dp"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/edit"
-            android:fontFamily="sans-serif-condensed"
-            android:gravity="center"
-            android:text="@string/made_with_as_a_project_for_codex"
-            android:textColor="@color/colorPrimary"
-            android:textSize="16sp"
-            tools:targetApi="o" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10sp"
-            android:gravity="center"
-            android:paddingHorizontal="15dp"
-            android:text="@string/developers"
-            android:visibility="gone"
-            android:textAllCaps="true"
-            android:textColor="?aboutTextColor"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            tools:targetApi="o" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:visibility="gone"
-            android:text="@string/mohit_agarwal"
-            android:textAllCaps="true"
-            android:textColor="?aboutTextColor"
-            android:textSize="14sp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/pawan_gorai"
-            android:textAllCaps="true"
-            android:visibility="gone"
-            android:textColor="?aboutTextColor"
-            android:textSize="14sp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:visibility="gone"
-            android:text="@string/avinav"
-            android:textAllCaps="true"
-            android:textColor="?aboutTextColor"
-            android:textSize="14sp"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:visibility="gone"
-            android:text="@string/nehal_kumar_singh"
-            android:textAllCaps="true"
-            android:textColor="?aboutTextColor"
-            android:textSize="14sp" />
-
     </LinearLayout>
-</ScrollView>
+
+    <!--        <TextView-->
+    <!--            android:onClick="openGithub"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_marginHorizontal="25dp"-->
+    <!--            android:layout_marginTop="15dp"-->
+    <!--            android:background="@drawable/edit"-->
+    <!--            android:fontFamily="sans-serif-condensed"-->
+    <!--            android:gravity="center"-->
+    <!--            android:text="@string/made_with_as_a_project_for_codex"-->
+    <!--            android:textColor="@color/colorPrimary"-->
+    <!--            android:textSize="16sp"-->
+    <!--            tools:targetApi="o" />-->
+
+    <TextView
+        tools:targetApi="o"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10sp"
+        android:gravity="center"
+        android:paddingHorizontal="15dp"
+        android:text="@string/developers"
+        android:textAllCaps="true"
+        android:textColor="?aboutTextColor"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/mohit_agarwal"
+        android:textAllCaps="true"
+        android:textColor="?aboutTextColor"
+        android:textSize="14sp"
+        android:visibility="gone" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/pawan_gorai"
+        android:textAllCaps="true"
+        android:textColor="?aboutTextColor"
+        android:textSize="14sp"
+        android:visibility="gone" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/avinav"
+        android:textAllCaps="true"
+        android:textColor="?aboutTextColor"
+        android:textSize="14sp"
+        android:visibility="gone" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/nehal_kumar_singh"
+        android:textAllCaps="true"
+        android:textColor="?aboutTextColor"
+        android:textSize="14sp"
+        android:visibility="gone" />
+
+</LinearLayout></ScrollView>

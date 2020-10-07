@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/codex"
-        android:textColor="@color/colorAccent"
+        android:textColor="@color/white"
         android:gravity="center_horizontal"
         android:paddingStart="8dp"
         android:paddingEnd="0dp"
