@@ -30,7 +30,7 @@
                 android:padding="3dp"
                 android:text="@string/subject_name"
                 android:textColor="@color/colorPrimary"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
             <LinearLayout
@@ -73,7 +73,7 @@
                         android:padding="2.5dp"
                         android:text="@string/sub_code"
                         android:textColor="@color/colorPrimary"
-                        android:textSize="18sp"
+                        android:textSize="15sp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -87,7 +87,7 @@
                         android:paddingEnd="15sp"
                         android:text="@string/textview"
                         android:textColor="@color/colorAccent"
-                        android:textSize="16sp"
+                        android:textSize="15sp"
                         android:typeface="normal" />
 
                     <TextView
@@ -98,7 +98,7 @@
                         android:padding="2.5dp"
                         android:text="@string/grade"
                         android:textColor="@color/colorPrimary"
-                        android:textSize="18sp"
+                        android:textSize="15sp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -112,7 +112,7 @@
                         android:paddingEnd="15sp"
                         android:text="@string/textview"
                         android:textColor="@color/colorAccent"
-                        android:textSize="16sp"
+                        android:textSize="15sp"
                         android:typeface="normal" />
 
                     <TextView
@@ -123,7 +123,7 @@
                         android:padding="2.5dp"
                         android:text="@string/credits_earned"
                         android:textColor="@color/colorPrimary"
-                        android:textSize="18sp"
+                        android:textSize="15sp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -138,7 +138,7 @@
                         android:scrollbars="vertical"
                         android:text="@string/textview"
                         android:textColor="@color/colorAccent"
-                        android:textSize="16sp"
+                        android:textSize="15sp"
                         android:typeface="normal" />
 
                 </GridLayout>

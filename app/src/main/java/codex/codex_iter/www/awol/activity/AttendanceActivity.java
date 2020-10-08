@@ -48,6 +48,7 @@ import com.android.volley.NetworkError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.ServerError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -69,6 +70,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.lang.reflect.Type;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -157,6 +159,8 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
     private String showResult, showlectures;
     private BottomSheetDialog dialog;
     private int read_database;
+    private static String[] suffix = new String[]{"", "k", "m", "b", "t"};
+    private String AUTH_KEY;
 
     int[][] state = new int[][]{
             new int[]{android.R.attr.state_checked}, // checked
@@ -204,200 +208,6 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
         }
 
         return converted.toString();
-    }
-
-    @SuppressLint("SetTextI18n")
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_attendance);
-
-        ButterKnife.bind(this);
-
-        setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setTitle("");
-        Objects.requireNonNull(this.getSupportActionBar()).setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getSupportActionBar().setDisplayShowCustomEnabled(true);
-        Objects.requireNonNull(getSupportActionBar()).setCustomView(R.layout.activity_action_bar);
-        View view_cus = getSupportActionBar().getCustomView();
-        MaterialTextView title = view_cus.findViewById(R.id.title);
-        ImageView icon = view_cus.findViewById(R.id.image);
-        ImageView share = view_cus.findViewById(R.id.share);
-        preferences = getSharedPreferences("CLOSE", MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        Constants.offlineDataPreference = this.getSharedPreferences("OFFLINEDATA", Context.MODE_PRIVATE);
-        Bundle bundle = getIntent().getExtras();
-
-        try {
-            PackageInfo pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
-            String current_versionName = pInfo.versionName;
-            MaterialTextView version = findViewById(R.id.version);
-            version.setText("v" + current_versionName);
-            if (dark) {
-                version.setTextColor(getResources().getColor(R.color.white));
-            }
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
-        prefs = PreferenceManager.getDefaultSharedPreferences(this);
-
-        if (pref.getBoolean("is_First_Run2", true)) {
-            pref.edit().putBoolean("is_First_Run2", false).apply();
-            who_layout.setVisibility(View.GONE);
-        }
-        if (bundle != null) {
-            boolean logincheck = bundle.getBoolean(LOGIN);
-            api = bundle.getString(API);
-            no_attendance = bundle.getBoolean(NOATTENDANCE);
-            result = bundle.getString(RESULTS);
-        }
-
-        FirebaseConfig firebaseConfig = new FirebaseConfig();
-        String json = firebaseConfig.fetch_latest_news(this);
-        try {
-            JSONObject jsonObject = new JSONObject(json);
-            if (jsonObject.getInt("version") >= 1) {
-                if (who_layout.getVisibility() == View.GONE && preferences.getInt("version", 0) < jsonObject.getInt("version")) {
-                    who_layout.setVisibility(View.VISIBLE);
-                }
-                preferences.edit().putInt("version", jsonObject.getInt("version")).apply();
-                who_button.setOnClickListener(view -> {
-                    Uri uri;
-                    try {
-                        uri = Uri.parse(jsonObject.getString("link"));
-                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                        startActivity(intent);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                });
-                heading.setText(jsonObject.getString("news_title"));
-                heading_desp.setText(jsonObject.getString("news_text"));
-                Picasso.get()
-                        .load(jsonObject.getString("image_url"))
-                        .placeholder(R.drawable.ic_image)
-                        .into(logo);
-                if (preferences.getBoolean("close", false)) {
-                    who_layout.setVisibility(View.GONE);
-                }
-                removetile.setOnClickListener(view -> {
-                    editor.putBoolean("close", true);
-                    who_layout.setVisibility(View.GONE);
-                    editor.apply();
-                });
-            } else {
-                who_layout.setVisibility(View.GONE);
-            }
-        } catch (JSONException e) {
-            Log.d("error_cardtile", e.toString());
-        }
-
-        icon.setOnClickListener(view -> drawerLayout.openDrawer(GravityCompat.START));
-        navigationView.setNavigationItemSelectedListener(this);
-
-
-        if (dark) {
-            cardView.setBackgroundColor(Color.parseColor("#141414"));
-            heading.setTextColor(Color.parseColor("#FFFFFFFF"));
-            heading_desp.setTextColor(Color.parseColor("#FFCCCCCC"));
-            heading_desp.setTextColor(Color.parseColor("#FFCCCCCC"));
-            recyclerView.setBackgroundColor(Color.parseColor("#141414"));
-            title.setTextColor(Color.parseColor("#ffffff"));
-        }
-
-        share.setOnClickListener(view -> {
-            if (no_attendance) {
-                Snackbar snackbar = Snackbar.make(mainLayout, "Attendance is currently unavailable", Snackbar.LENGTH_SHORT);
-                snackbar.show();
-            } else {
-                Bitmap bitmap = ScreenshotUtils.getScreenShot(recyclerView);
-                if (bitmap != null) {
-                    File save = ScreenshotUtils.getMainDirectoryName(this);
-                    File file = ScreenshotUtils.store(bitmap, "screenshot.jpg", save);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        shareScreenshot(file);
-                    } else {
-                        shareScreenshot_low(file);
-                    }
-                }
-            }
-        });
-        navigationView.getMenu().findItem(R.id.pab).setVisible(false);
-        sharedPreferences = getSharedPreferences(API, MODE_PRIVATE);
-        CollectionReference apiCollection = FirebaseFirestore.getInstance().collection(RESULTSTATUS);
-        apiCollection.addSnapshotListener((queryDocumentSnapshots, e) -> {
-            if (queryDocumentSnapshots != null) {
-                for (DocumentChange documentChange : queryDocumentSnapshots.getDocumentChanges()) {
-                    showResult = documentChange.getDocument().getString(SHOWRESULT);
-                    showlectures = documentChange.getDocument().getString(SHOWLECTUURES);
-                    read_database = Integer.parseInt(Objects.requireNonNull(documentChange.getDocument().getString("fetch_file")));
-                    sharedPreferences.edit().putString(SHOWRESULT, showResult).apply();
-                    sharedPreferences.edit().putString(SHOWLECTUURES, showlectures).apply();
-
-                    if (showlectures.equals("0"))
-                        navigationView.getMenu().findItem(R.id.lecture).setVisible(false);
-
-                    if (sharedPreferences.getInt(READ_DATABASE, 0) < read_database) {
-                        sharedPreferences.edit().putInt(READ_DATABASE, read_database).apply();
-                        showBottomSheetDialog();
-                        downloadfile();
-                    }
-                }
-            }
-        });
-
-        studentnamePrefernces = this.getSharedPreferences(STUDENT_NAME, MODE_PRIVATE);
-        String studentName = studentnamePrefernces.getString(STUDENT_NAME, "");
-
-        if (no_attendance) {
-            navigationView.getMenu().findItem(R.id.pab).setVisible(false);
-            recyclerView.setVisibility(View.GONE);
-            noAttendanceLayout.setVisibility(View.VISIBLE);
-            if (dark) {
-                tv.setTextColor(Color.parseColor("#FFFFFF"));
-                mainLayout.setBackgroundColor(Color.parseColor("#141414"));
-            } else {
-                checkResult.setTextColor(Color.parseColor("#141414"));
-                tv.setTextColor(Color.parseColor("#141414"));
-            }
-        }
-        processAttendance();
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        View headerView = navigationView.getHeaderView(0);
-        if (!Constants.Offlin_mode) {
-            editor.putInt("AveragePresent", (int) avgat);
-            editor.putString("AverageAbsent", String.valueOf(avgab));
-            if (bundle != null) {
-                String regis = bundle.getString(REGISTRATION_NUMBER);
-                editor.putString("RegistrationNumber", regis);
-            }
-            editor.apply();
-        }
-        headerView.findViewById(R.id.changeTheme).setOnClickListener(view -> {
-            drawerLayout.closeDrawer(GravityCompat.START);
-            ThemeFragment fragment = ThemeFragment.newInstance();
-            fragment.show(getSupportFragmentManager(), "theme_fragment");
-        });
-        TextView name = headerView.findViewById(R.id.name);
-        TextView reg = headerView.findViewById(R.id.reg);
-        name.setText(studentName);
-        String[] split = Objects.requireNonNull(studentName).split("\\s+");
-        if (!split[0].isEmpty()) {
-            title.setText("Hi, " + convertToTitleCaseIteratingChars(split[0]) + "!");
-        } else {
-            title.setText("Home");
-        }
-        reg.setText(preferences.getString("RegistrationNumber", null));
-        TextView avat = headerView.findViewById(R.id.avat);
-        avat.setText(preferences.getInt("AveragePresent", 0) + "%");
-        TextView avab = headerView.findViewById(R.id.avab);
-        avab.setText(preferences.getString("AverageAbsent", null));
-
-        checkResult.setOnClickListener(view -> fetchResult());
     }
 
     @Override
@@ -619,6 +429,264 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
         }
     }
 
+    private String APP_ID;
+
+    private static String numberFormat(double number) {
+        String r = new DecimalFormat("##0E0").format(number);
+        r = r.replaceAll("E[0-9]", suffix[Character.getNumericValue(r.charAt(r.length() - 1)) / 3]);
+        int MAX_LENGTH = 4;
+        while (r.length() > MAX_LENGTH || r.matches("[0-9]+\\.[a-z]")) {
+            r = r.substring(0, r.length() - 2) + r.substring(r.length() - 1);
+        }
+        return r;
+    }
+
+    @SuppressLint("SetTextI18n")
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_attendance);
+
+        ButterKnife.bind(this);
+
+        setSupportActionBar(toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setTitle("");
+        Objects.requireNonNull(this.getSupportActionBar()).setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getSupportActionBar().setDisplayShowCustomEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setCustomView(R.layout.activity_action_bar);
+        View view_cus = getSupportActionBar().getCustomView();
+        MaterialTextView title = view_cus.findViewById(R.id.title);
+        ImageView icon = view_cus.findViewById(R.id.image);
+        ImageView share = view_cus.findViewById(R.id.share);
+        preferences = getSharedPreferences("CLOSE", MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        Constants.offlineDataPreference = this.getSharedPreferences("OFFLINEDATA", Context.MODE_PRIVATE);
+        Bundle bundle = getIntent().getExtras();
+
+        try {
+            PackageInfo pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
+            String current_versionName = pInfo.versionName;
+            MaterialTextView version = findViewById(R.id.version);
+            version.setText("v" + current_versionName);
+            if (dark) {
+                version.setTextColor(getResources().getColor(R.color.white));
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+        if (pref.getBoolean("is_First_Run2", true)) {
+            pref.edit().putBoolean("is_First_Run2", false).apply();
+            who_layout.setVisibility(View.GONE);
+        }
+        if (bundle != null) {
+            boolean logincheck = bundle.getBoolean(LOGIN);
+            api = bundle.getString(API);
+            no_attendance = bundle.getBoolean(NOATTENDANCE);
+            result = bundle.getString(RESULTS);
+        }
+
+        sharedPreferences = getSharedPreferences(API, MODE_PRIVATE);
+        CollectionReference apiCollection = FirebaseFirestore.getInstance().collection(RESULTSTATUS);
+        apiCollection.addSnapshotListener((queryDocumentSnapshots, e) -> {
+            if (queryDocumentSnapshots != null) {
+                for (DocumentChange documentChange : queryDocumentSnapshots.getDocumentChanges()) {
+                    showResult = documentChange.getDocument().getString(SHOWRESULT);
+                    showlectures = documentChange.getDocument().getString(SHOWLECTUURES);
+                    read_database = Integer.parseInt(Objects.requireNonNull(documentChange.getDocument().getString("fetch_file")));
+                    sharedPreferences.edit().putString(SHOWRESULT, showResult).apply();
+                    sharedPreferences.edit().putString(SHOWLECTUURES, showlectures).apply();
+                    AUTH_KEY = documentChange.getDocument().getString("auth_key");
+                    APP_ID = documentChange.getDocument().getString("app_id");
+
+                    if (showlectures.equals("0"))
+                        navigationView.getMenu().findItem(R.id.lecture).setVisible(false);
+
+                    if (sharedPreferences.getInt(READ_DATABASE, 0) < read_database) {
+                        sharedPreferences.edit().putInt(READ_DATABASE, read_database).apply();
+                        showBottomSheetDialog();
+                        downloadfile();
+                    }
+                    downloadStats(AUTH_KEY, APP_ID);
+                }
+            }
+        });
+
+        FirebaseConfig firebaseConfig = new FirebaseConfig();
+        String json = firebaseConfig.fetch_latest_news(this);
+        try {
+            JSONObject jsonObject = new JSONObject(json);
+            if (jsonObject.getInt("version") >= 1) {
+                if (who_layout.getVisibility() == View.GONE && preferences.getInt("version", 0) < jsonObject.getInt("version")) {
+                    who_layout.setVisibility(View.VISIBLE);
+                }
+                preferences.edit().putInt("version", jsonObject.getInt("version")).apply();
+                who_button.setOnClickListener(view -> {
+                    Uri uri;
+                    try {
+                        uri = Uri.parse(jsonObject.getString("link"));
+                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                        startActivity(intent);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                });
+                heading.setText(jsonObject.getString("news_title"));
+                heading_desp.setText(jsonObject.getString("news_text"));
+                Picasso.get()
+                        .load(jsonObject.getString("image_url"))
+                        .placeholder(R.drawable.ic_image)
+                        .into(logo);
+                if (preferences.getBoolean("close", false)) {
+                    who_layout.setVisibility(View.GONE);
+                }
+                removetile.setOnClickListener(view -> {
+                    editor.putBoolean("close", true);
+                    who_layout.setVisibility(View.GONE);
+                    editor.apply();
+                });
+            } else {
+                who_layout.setVisibility(View.GONE);
+            }
+        } catch (JSONException e) {
+            Log.d("error_cardtile", e.toString());
+        }
+
+        icon.setOnClickListener(view -> drawerLayout.openDrawer(GravityCompat.START));
+        navigationView.setNavigationItemSelectedListener(this);
+
+
+        if (dark) {
+            cardView.setBackgroundColor(Color.parseColor("#141414"));
+            heading.setTextColor(Color.parseColor("#FFFFFFFF"));
+            heading_desp.setTextColor(Color.parseColor("#FFCCCCCC"));
+            heading_desp.setTextColor(Color.parseColor("#FFCCCCCC"));
+            recyclerView.setBackgroundColor(Color.parseColor("#141414"));
+            title.setTextColor(Color.parseColor("#ffffff"));
+        }
+
+        share.setOnClickListener(view -> {
+            if (no_attendance) {
+                Snackbar snackbar = Snackbar.make(mainLayout, "Attendance is currently unavailable", Snackbar.LENGTH_SHORT);
+                snackbar.show();
+            } else {
+                Bitmap bitmap = ScreenshotUtils.getScreenShot(recyclerView);
+                if (bitmap != null) {
+                    File save = ScreenshotUtils.getMainDirectoryName(this);
+                    File file = ScreenshotUtils.store(bitmap, "screenshot.jpg", save);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        shareScreenshot(file);
+                    } else {
+                        shareScreenshot_low(file);
+                    }
+                }
+            }
+        });
+        navigationView.getMenu().findItem(R.id.pab).setVisible(false);
+
+        studentnamePrefernces = this.getSharedPreferences(STUDENT_NAME, MODE_PRIVATE);
+        String studentName = studentnamePrefernces.getString(STUDENT_NAME, "");
+
+        if (no_attendance) {
+            navigationView.getMenu().findItem(R.id.pab).setVisible(false);
+            recyclerView.setVisibility(View.GONE);
+            noAttendanceLayout.setVisibility(View.VISIBLE);
+            if (dark) {
+                tv.setTextColor(Color.parseColor("#FFFFFF"));
+                mainLayout.setBackgroundColor(Color.parseColor("#141414"));
+            } else {
+                checkResult.setTextColor(Color.parseColor("#141414"));
+                tv.setTextColor(Color.parseColor("#141414"));
+            }
+        }
+        processAttendance();
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        View headerView = navigationView.getHeaderView(0);
+        if (!Constants.Offlin_mode) {
+            editor.putInt("AveragePresent", (int) avgat);
+            editor.putString("AverageAbsent", String.valueOf(avgab));
+            if (bundle != null) {
+                String regis = bundle.getString(REGISTRATION_NUMBER);
+                editor.putString("RegistrationNumber", regis);
+            }
+            editor.apply();
+        }
+        headerView.findViewById(R.id.changeTheme).setOnClickListener(view -> {
+            drawerLayout.closeDrawer(GravityCompat.START);
+            ThemeFragment fragment = ThemeFragment.newInstance();
+            fragment.show(getSupportFragmentManager(), "theme_fragment");
+        });
+        TextView name = headerView.findViewById(R.id.name);
+        TextView reg = headerView.findViewById(R.id.reg);
+        name.setText(studentName);
+        String[] split = Objects.requireNonNull(studentName).split("\\s+");
+        if (!split[0].isEmpty()) {
+            title.setText("Hi, " + convertToTitleCaseIteratingChars(split[0]) + "!");
+        } else {
+            title.setText("Home");
+        }
+        reg.setText(preferences.getString("RegistrationNumber", null));
+        TextView avat = headerView.findViewById(R.id.avat);
+        avat.setText(preferences.getInt("AveragePresent", 0) + "%");
+        TextView avab = headerView.findViewById(R.id.avab);
+        avab.setText(preferences.getString("AverageAbsent", null));
+
+        checkResult.setOnClickListener(view -> fetchResult());
+    }
+
+    public void downloadStats(String auth_key, String app_id) {
+        MaterialTextView download_stats = findViewById(R.id.download_stats);
+        LinearLayout download_stats_layout = findViewById(R.id.download_stats_layout);
+
+        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, "https://onesignal.com/api/v1/apps/" + app_id, null,
+                response -> {
+                    Log.d("response", response.toString());
+                    try {
+                        download_stats_layout.setVisibility(View.VISIBLE);
+                        if (dark) {
+                            download_stats.setTextColor(getResources().getColor(R.color.white));
+                            ImageView imageView = findViewById(R.id.download_icon);
+                            imageView.setImageResource(R.drawable.eye_light);
+                        }
+                        String s = numberFormat((double) response.getInt("players"));
+                        Log.d("size", String.valueOf(s.length()));
+                        String word;
+
+                        double d = Double.parseDouble(s.split("(?<=[\\d\\.])(?=[a-z])")[0]);
+                        if (s.split("(?<=[\\d\\.])(?=[a-z])")[1].equals("k")) {
+                            word = "Thousand";
+                        } else if (s.split("")[1].equals("m")) {
+                            word = "Million";
+                        } else {
+                            word = "Hundred";
+                        }
+                        download_stats.setText(getResources().getString(R.string.download_stats, d, word));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        download_stats_layout.setVisibility(View.GONE);
+                    }
+                },
+                error -> {
+                    Log.d("error", Objects.requireNonNull(error.toString()));
+                    download_stats_layout.setVisibility(View.GONE);
+                }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json; charset=UTF-8");
+                headers.put("Authorization", "Basic " + auth_key);
+                return headers;
+            }
+        };
+        queue.add(jsonObjectRequest);
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void shareScreenshot(File file) {
         try {
@@ -776,7 +844,7 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                 break;
             }
             case R.id.result:
-                if (sharedPreferences.getString(SHOWRESULT, "").equals("0")) {
+                if (Objects.equals(sharedPreferences.getString(SHOWRESULT, ""), "0")) {
                     Snackbar snackbar = Snackbar.make(mainLayout, "We will be back within 3-4 days", Snackbar.LENGTH_LONG);
                     snackbar.show();
                 } else {

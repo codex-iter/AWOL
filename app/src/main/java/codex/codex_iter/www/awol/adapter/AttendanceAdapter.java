@@ -93,7 +93,7 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.my
 
         if (!dark) {
             holder.cardView.setCardBackgroundColor(Color.parseColor("#FFFFFF"));
-            holder.ta.setTextColor(Color.parseColor("#FFFFFF"));
+            holder.ta.setTextColor(Color.parseColor("#141831"));
             holder.lu.setTextColor(Color.parseColor("#141831"));
             holder.th.setTextColor(Color.parseColor("#141831"));
             holder.prac.setTextColor(Color.parseColor("#141831"));

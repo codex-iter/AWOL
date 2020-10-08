@@ -60,7 +60,7 @@
                     android:padding="2.5dp"
                     android:text="@string/semester"
                     android:textColor="@color/colorPrimary"
-                    android:textSize="18sp"
+                    android:textSize="15sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -74,7 +74,7 @@
                     android:paddingEnd="15dp"
                     android:text="@string/textview"
                     android:textColor="@color/colorAccent"
-                    android:textSize="16sp"
+                    android:textSize="15sp"
                     android:typeface="normal" />
 
                 <TextView
@@ -85,7 +85,7 @@
                     android:padding="2.5dp"
                     android:text="@string/credits_earned"
                     android:textColor="@color/colorPrimary"
-                    android:textSize="18sp"
+                    android:textSize="15sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -99,7 +99,7 @@
                     android:paddingEnd="15dp"
                     android:text="@string/textview"
                     android:textColor="@color/colorAccent"
-                    android:textSize="16sp"
+                    android:textSize="15sp"
                     android:typeface="normal" />
 
                 <TextView
@@ -110,7 +110,7 @@
                     android:padding="2.5dp"
                     android:text="@string/sgpa"
                     android:textColor="@color/colorPrimary"
-                    android:textSize="18sp"
+                    android:textSize="15sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -125,7 +125,7 @@
                     android:scrollbars="vertical"
                     android:text="@string/textview"
                     android:textColor="@color/colorAccent"
-                    android:textSize="16sp"
+                    android:textSize="15sp"
                     android:typeface="normal" />
 
                 <TextView
@@ -136,7 +136,7 @@
                     android:padding="2.5dp"
                     android:text="@string/cgpa"
                     android:textColor="@color/colorPrimary"
-                    android:textSize="18sp"
+                    android:textSize="15sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -151,7 +151,7 @@
                     android:scrollbars="vertical"
                     android:text="TextView"
                     android:textColor="@color/colorAccent"
-                    android:textSize="16sp"
+                    android:textSize="15sp"
                     android:maxLines="2"
                     android:typeface="normal" />
             </GridLayout>

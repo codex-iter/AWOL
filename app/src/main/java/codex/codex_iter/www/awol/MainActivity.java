@@ -40,12 +40,9 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.android.material.textview.MaterialTextView;
-import com.google.android.play.core.appupdate.AppUpdateManager;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import com.onesignal.OneSignal;
 
 import org.json.JSONArray;
@@ -101,16 +98,14 @@ public class MainActivity extends BaseThemedActivity {
     private SharedPreferences.Editor edit;
     private boolean track;
     private String studentName, student_branch, api, new_message;
-    private static final String TAG = "MainActivity";
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
-    private AppUpdateManager appUpdateManager;
-    private static final int MY_REQUEST_CODE = 1011;
     private BottomSheetBehavior bottomSheetBehavior;
     private int updated_version;
     private int current_version;
     private static final int EXTERNAL_STORAGE_PERMISSION_CODE = 1002;
     private boolean isQueried = false;
+    private String updatedAppDownloadURL;
 
     @SuppressLint({"ClickableViewAccessibility", "SetTextI18n"})
     @Override
@@ -140,40 +135,7 @@ public class MainActivity extends BaseThemedActivity {
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
-
-        CollectionReference apiCollection = FirebaseFirestore.getInstance().collection(DETAILS);
-        apiCollection.addSnapshotListener((queryDocumentSnapshots, e) -> {
-            if (queryDocumentSnapshots != null) {
-                for (DocumentChange documentChange : queryDocumentSnapshots.getDocumentChanges()) {
-                    api = documentChange.getDocument().getString(API);
-                    updated_version = Integer.parseInt(Objects.requireNonNull(documentChange.getDocument().getString("update_available")));
-                    int check = Integer.parseInt(Objects.requireNonNull(documentChange.getDocument().getString("under_maintenance")));
-                    isQueried = true;
-                    new_message = documentChange.getDocument().getString("what's_new");
-                    edit = apiUrl.edit();
-                    edit.putString(API, api);
-                    edit.putInt("CHECK", check);
-                    edit.apply();
-
-                    if (check == 1) {
-                        Intent intent = new Intent(MainActivity.this, UnderMaintenance.class);
-                        startActivity(intent);
-                        finish();
-                    }
-
-                    if (updated_version > current_version && current_version > 0) {
-                        askPermission();
-                        StorageReference storageReference_data = FirebaseStorage.getInstance().getReference().child("apk_version/").child("awol.apk");
-                        storageReference_data.getDownloadUrl().addOnSuccessListener(uri -> {
-                            DownloadScrapFile downloadScrapFile = new DownloadScrapFile(MainActivity.this);
-                            downloadScrapFile.newDownload(uri.toString(), "awol", true, new_message);
-                        }).addOnFailureListener(e1 -> Log.e("error_version", e1.toString()));
-                    } else {
-                        autofill();
-                    }
-                }
-            }
-        });
+        fetchDetails();
         if (apiUrl.getInt("CHECK", 0) == 1 && !isQueried) {
             Intent intent = new Intent(MainActivity.this, UnderMaintenance.class);
             startActivity(intent);
@@ -223,7 +185,7 @@ public class MainActivity extends BaseThemedActivity {
                 pass.setEnabled(false);
                 user.setFocusable(false);
                 pass.setFocusable(false);
-                passLayout.setPasswordVisibilityToggleEnabled(false);
+                passLayout.setEndIconMode(TextInputLayout.END_ICON_NONE);
                 if (!preferences.contains(STUDENT_NAME) || !preferences.contains(STUDENTBRANCH)) {
                     getName(api, u, p);
                 } else {
@@ -241,9 +203,42 @@ public class MainActivity extends BaseThemedActivity {
         });
     }
 
+    public void fetchDetails() {
+        CollectionReference apiCollection = FirebaseFirestore.getInstance().collection(DETAILS);
+        apiCollection.addSnapshotListener((queryDocumentSnapshots, e) -> {
+            if (queryDocumentSnapshots != null) {
+                for (DocumentChange documentChange : queryDocumentSnapshots.getDocumentChanges()) {
+                    api = documentChange.getDocument().getString(API);
+                    updated_version = Integer.parseInt(Objects.requireNonNull(documentChange.getDocument().getString("update_available")));
+                    int check = Integer.parseInt(Objects.requireNonNull(documentChange.getDocument().getString("under_maintenance")));
+                    isQueried = true;
+                    new_message = documentChange.getDocument().getString("what's_new");
+                    updatedAppDownloadURL = documentChange.getDocument().getString("download_url");
+                    edit = apiUrl.edit();
+                    edit.putString(API, api);
+                    edit.putInt("CHECK", check);
+                    edit.apply();
+
+                    if (check == 1) {
+                        Intent intent = new Intent(MainActivity.this, UnderMaintenance.class);
+                        startActivity(intent);
+                        finish();
+                    }
+
+                    if (updated_version > current_version && current_version > 0) {
+                        askPermission();
+                    } else {
+                        autoFill();
+                    }
+                }
+            }
+        });
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
+        fetchDetails();
     }
 
     public static int convertDpToPixel(float dp) {
@@ -252,7 +247,7 @@ public class MainActivity extends BaseThemedActivity {
         return Math.round(px);
     }
 
-    public void autofill() {
+    public void autoFill() {
         if (userm.contains("user") && userm.contains("pass") && logout.contains("logout") && !logout.getBoolean("logout", false)) {
             user.setFocusable(false);
             pass.setFocusable(false);
@@ -276,7 +271,7 @@ public class MainActivity extends BaseThemedActivity {
                         login.setVisibility(View.VISIBLE);
                         user.setEnabled(true);
                         pass.setEnabled(true);
-                        passLayout.setPasswordVisibilityToggleEnabled(true);
+                        passLayout.setEndIconMode(TextInputLayout.END_ICON_PASSWORD_TOGGLE);
                         Snackbar snackbar = Snackbar.make(mainLayout, "Wrong credentials", Snackbar.LENGTH_SHORT);
                         snackbar.show();
                     } else if (response.equals("390")) {
@@ -305,7 +300,7 @@ public class MainActivity extends BaseThemedActivity {
                     progressBar.setVisibility(View.INVISIBLE);
                     welcomeMessage.setVisibility(View.GONE);
                     login.setVisibility(View.VISIBLE);
-                    passLayout.setPasswordVisibilityToggleEnabled(true);
+                    passLayout.setEndIconMode(TextInputLayout.END_ICON_PASSWORD_TOGGLE);
                     if (error instanceof AuthFailureError) {
                         Snackbar snackbar = Snackbar.make(mainLayout, "Wrong Credentials!", Snackbar.LENGTH_SHORT);
                         snackbar.show();
@@ -348,7 +343,7 @@ public class MainActivity extends BaseThemedActivity {
                             pass.setEnabled(false);
                             user.setFocusable(true);
                             pass.setFocusable(true);
-                            passLayout.setPasswordVisibilityToggleEnabled(false);
+                            passLayout.setEndIconMode(TextInputLayout.END_ICON_NONE);
                             track = true;
                             login.performClick();
                         } else {
@@ -407,7 +402,7 @@ public class MainActivity extends BaseThemedActivity {
                     progressBar.setVisibility(View.INVISIBLE);
                     welcomeMessage.setVisibility(View.GONE);
                     login.setVisibility(View.VISIBLE);
-                    passLayout.setPasswordVisibilityToggleEnabled(true);
+                    passLayout.setEndIconMode(TextInputLayout.END_ICON_PASSWORD_TOGGLE);
                     if (error instanceof AuthFailureError) {
                         Snackbar snackbar = Snackbar.make(mainLayout, "Wrong Credentials!", Snackbar.LENGTH_SHORT);
                         snackbar.show();
@@ -450,7 +445,7 @@ public class MainActivity extends BaseThemedActivity {
                             pass.setEnabled(false);
                             user.setFocusable(true);
                             pass.setFocusable(true);
-                            passLayout.setPasswordVisibilityToggleEnabled(false);
+                            passLayout.setEndIconMode(TextInputLayout.END_ICON_NONE);
                             track = true;
                             login.performClick();
                         } else {
@@ -482,6 +477,19 @@ public class MainActivity extends BaseThemedActivity {
             }
         };
         queue.add(postRequest);
+    }
+
+    public void downloadUpdatedApp(String new_message, String updatedAppDownloadURL) {
+        if (hasPermission()) {
+            try {
+                DownloadScrapFile downloadScrapFile = new DownloadScrapFile(MainActivity.this);
+                downloadScrapFile.newDownload(updatedAppDownloadURL, "awol", true, new_message);
+            } catch (Exception e) {
+                autoFill();
+            }
+        } else {
+            askPermission();
+        }
     }
 
     @Override
@@ -527,7 +535,7 @@ public class MainActivity extends BaseThemedActivity {
         if (requestCode == EXTERNAL_STORAGE_PERMISSION_CODE) {
 
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                Log.d("permission", "1");
+                downloadUpdatedApp(this.new_message, this.updatedAppDownloadURL);
             } else {
                 if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) || !ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
                     new android.app.AlertDialog.Builder(this)
@@ -566,3 +574,4 @@ public class MainActivity extends BaseThemedActivity {
         }
     }
 }
+

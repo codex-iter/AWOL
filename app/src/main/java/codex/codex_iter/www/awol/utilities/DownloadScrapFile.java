@@ -20,12 +20,19 @@ public class DownloadScrapFile {
 
     private Context context;
     private ProgressDialog progressDialog;
+    private boolean isDownloaded;
 
     public DownloadScrapFile(Context context) {
         this.context = context;
     }
 
-    // DownloadTask for downloding video from URL
+    //hare you can start downloading video
+    public void newDownload(String url, String filename, boolean fromMainActivity, String message) {
+        final DownloadTask downloadTask = new DownloadTask(context, filename, fromMainActivity, message);
+        downloadTask.execute("https://drive.google.com/uc?export=download&id=1iFsgW9ZtcmizLC-t6fxsG2O34HCdg5be");
+    }
+
+    // DownloadTask for downloading video from URL
     public class DownloadTask extends AsyncTask<String, Integer, String> {
         private Context context;
         String fileN = null;
@@ -41,43 +48,57 @@ public class DownloadScrapFile {
         }
 
         @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            if (fromMainActivity && !isDownloaded) {
+                progressDialog = new ProgressDialog(context);
+                progressDialog.setTitle(Html.fromHtml("<font color='black'>Downloading new updates</font>"));
+                progressDialog.setMessage(Html.fromHtml("<font color='black'>Please wait...</font>"));
+                progressDialog.setCancelable(false);
+                progressDialog.show();
+            }
+        }
+
+        @Override
         protected String doInBackground(String... sUrl) {
             InputStream input = null;
             OutputStream output = null;
             HttpURLConnection connection = null;
             try {
-                URL url = new URL(sUrl[0]);
-                connection = (HttpURLConnection) url.openConnection();
-                connection.connect();
+                if (!isDownloaded) {
+                    URL url = new URL(sUrl[0]);
+                    connection = (HttpURLConnection) url.openConnection();
+                    connection.connect();
 
-                if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                    return "Server returned HTTP " + connection.getResponseCode()
-                            + " " + connection.getResponseMessage();
-                }
-
-                int fileLength = connection.getContentLength();
-                input = connection.getInputStream();
-                if (!fromMainActivity) {
-                    fileN = file + ".txt";
-                    File filename = new File(context.getFilesDir() + "/", fileN);
-                    output = new FileOutputStream(filename);
-                } else {
-                    fileN = file + ".apk";
-                    File filename = new File(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), fileN);
-                    output = new FileOutputStream(filename);
-                }
-                byte[] data = new byte[4096];
-                long total = 0;
-                int count;
-                while ((count = input.read(data)) != -1) {
-                    if (isCancelled()) {
-                        input.close();
-                        return null;
+                    if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                        return "Server returned HTTP " + connection.getResponseCode()
+                                + " " + connection.getResponseMessage();
                     }
-                    total += count;
-                    if (fileLength > 0)
-                        publishProgress((int) (total * 100 / fileLength));
-                    output.write(data, 0, count);
+
+                    int fileLength = connection.getContentLength();
+                    input = connection.getInputStream();
+                    if (!fromMainActivity) {
+                        fileN = file + ".txt";
+                        File filename = new File(context.getFilesDir() + "/", fileN);
+                        output = new FileOutputStream(filename);
+                    } else {
+                        fileN = file + ".apk";
+                        File filename = new File(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), fileN);
+                        output = new FileOutputStream(filename);
+                    }
+                    byte[] data = new byte[4096];
+                    long total = 0;
+                    int count;
+                    while ((count = input.read(data)) != -1) {
+                        if (isCancelled()) {
+                            input.close();
+                            return null;
+                        }
+                        total += count;
+                        if (fileLength > 0)
+                            publishProgress((int) (total * 100 / fileLength));
+                        output.write(data, 0, count);
+                    }
                 }
             } catch (Exception e) {
                 return e.toString();
@@ -97,18 +118,6 @@ public class DownloadScrapFile {
         }
 
         @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            if (fromMainActivity) {
-                progressDialog = new ProgressDialog(context);
-                progressDialog.setTitle(Html.fromHtml("<font color='black'>Downloading new updates</font>"));
-                progressDialog.setMessage(Html.fromHtml("<font color='black'>Please wait...</font>"));
-                progressDialog.setCancelable(false);
-                progressDialog.show();
-            }
-        }
-
-        @Override
         protected void onPostExecute(String result) {
             if (result != null) {
                 Log.d("DownloadError", result);
@@ -116,6 +125,7 @@ public class DownloadScrapFile {
                 if (fromMainActivity) {
                     progressDialog.dismiss();
                     Utils.updateAvailable(context, message);
+                    isDownloaded = true;
                 }
             }
             MediaScannerConnection.scanFile(context,
@@ -130,13 +140,7 @@ public class DownloadScrapFile {
                         Log.i("ExternalStorage", "Scanned " + newpath + ":");
                         Log.i("ExternalStorage", "-> uri=" + newuri);
                     });
-
         }
-    }
 
-    //hare you can start downloding video
-    public void newDownload(String url, String filename, boolean fromMainActivity, String message) {
-        final DownloadTask downloadTask = new DownloadTask(context, filename, fromMainActivity, message);
-        downloadTask.execute(url);
     }
 }
