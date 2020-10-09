@@ -104,5 +104,11 @@ dependencies {
     //ButterKnife
     implementation 'com.jakewharton:butterknife:10.2.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.0'
+
+    // Firebase Auth
+    implementation 'com.google.firebase:firebase-auth:19.4.0'
+
+    //Admob
+    implementation 'com.google.android.gms:play-services-ads:19.4.0'
 }
 apply plugin: 'com.google.gms.google-services'

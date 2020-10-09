@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -11,7 +12,7 @@
         android:clickable="false"
         android:fitsSystemWindows="true">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/main_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -83,7 +84,8 @@
                 android:background="@color/greenShade"
                 android:orientation="horizontal"
                 android:padding="2dp"
-                android:visibility="gone">
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@+id/appBarLayout2">
 
                 <ImageView
                     android:id="@+id/download_icon"
@@ -102,7 +104,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_margin="2dp"
-                    android:text="2.1 Thousand Iterians are using AWOL App"
+                    android:text="@string/_2_1_thousand_iterians_are_using_awol_app"
                     android:textColor="@color/blackShade"
                     android:textSize="13sp" />
             </LinearLayout>
@@ -111,7 +113,7 @@
                 android:id="@+id/who_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp">
+                app:layout_constraintTop_toBottomOf="@+id/download_stats_layout">
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/whoCard"
@@ -192,18 +194,28 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rl"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="0dp"
                 android:clipToPadding="false"
                 android:divider="@null"
                 android:textColor="#000"
                 android:textSize="25sp"
                 android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/adView"
+                app:layout_constraintTop_toBottomOf="@+id/who_layout"
+                app:layout_constraintVertical_bias="0"
+                tools:listitem="@layout/item_attendance" />
+
+            <com.google.android.gms.ads.AdView
+                android:id="@+id/adView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                app:adSize="BANNER"
+                app:adUnitId="ca-app-pub-3940256099942544/6300978111"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/appBarLayout2" />
-
-        </LinearLayout>
+                app:layout_constraintStart_toStartOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.navigation.NavigationView
             android:id="@+id/nav_view"
@@ -228,10 +240,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:textColor="@android:color/black"/>
+                    android:textColor="@android:color/black" />
             </LinearLayout>
         </com.google.android.material.navigation.NavigationView>
     </androidx.drawerlayout.widget.DrawerLayout>
 
-    <!--    <include layout="@layout/bottomprogressbar" />-->
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

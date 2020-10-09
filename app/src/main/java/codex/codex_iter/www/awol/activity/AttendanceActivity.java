@@ -51,6 +51,12 @@ import com.android.volley.ServerError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.RequestConfiguration;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -73,6 +79,7 @@ import java.lang.reflect.Type;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -108,7 +115,7 @@ import static codex.codex_iter.www.awol.utilities.Constants.offlineDataPreferenc
 public class AttendanceActivity extends BaseThemedActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     @BindView(R.id.main_layout)
-    LinearLayout mainLayout;
+    ConstraintLayout mainLayout;
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
     @BindView(R.id.check_result)
@@ -462,6 +469,41 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
         SharedPreferences.Editor editor = preferences.edit();
         Constants.offlineDataPreference = this.getSharedPreferences("OFFLINEDATA", Context.MODE_PRIVATE);
         Bundle bundle = getIntent().getExtras();
+
+        // Mobile Ads
+        MobileAds.initialize(this);
+        AdView adView = findViewById(R.id.adView);
+        adView.loadAd(new AdRequest.Builder()
+                .build());
+        new RequestConfiguration.Builder().setTestDeviceIds(Collections.singletonList("623B1B7759D51209294A77125459D9B7"));
+        adView.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                super.onAdLoaded();
+                Log.d("Banner", "Loaded");
+            }
+
+            @Override
+            public void onAdFailedToLoad(LoadAdError loadAdError) {
+                super.onAdFailedToLoad(loadAdError);
+                Log.d("adsError", loadAdError.toString());
+                adView.setVisibility(View.GONE);
+                adView.loadAd(new AdRequest.Builder()
+                        .build());
+            }
+
+            @Override
+            public void onAdClicked() {
+                super.onAdClicked();
+                Log.d("Banner", "Clicked");
+            }
+
+            @Override
+            public void onAdOpened() {
+                super.onAdOpened();
+                Log.d("Banner", "Opened");
+            }
+        });
 
         try {
             PackageInfo pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);

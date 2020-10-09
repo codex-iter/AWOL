@@ -40,6 +40,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.android.material.textview.MaterialTextView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -106,6 +107,7 @@ public class MainActivity extends BaseThemedActivity {
     private static final int EXTERNAL_STORAGE_PERMISSION_CODE = 1002;
     private boolean isQueried = false;
     private String updatedAppDownloadURL;
+    private FirebaseAuth mAuth;
 
     @SuppressLint({"ClickableViewAccessibility", "SetTextI18n"})
     @Override
@@ -128,7 +130,7 @@ public class MainActivity extends BaseThemedActivity {
 
         apiUrl = getSharedPreferences(API, MODE_PRIVATE);
 
-
+        mAuth = FirebaseAuth.getInstance();
         try {
             PackageInfo pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
             current_version = pInfo.versionCode;
@@ -281,7 +283,17 @@ public class MainActivity extends BaseThemedActivity {
                         intent.putExtra(NOATTENDANCE, true);
                         intent.putExtra(LOGIN, true);
                         intent.putExtra(API, api);
-                        startActivity(intent);
+                        mAuth.signInAnonymously()
+                                .addOnCompleteListener(task -> {
+                                    if (task.isSuccessful()) {
+                                        Log.d("SignIn", "Successfully");
+                                        startActivity(intent);
+                                    } else {
+                                        Log.d("SignIn", Objects.requireNonNull(task.getException()).toString());
+                                        Snackbar snackbar = Snackbar.make(mainLayout, "Oops, something went wrong! Please try after sometime", Snackbar.LENGTH_SHORT);
+                                        snackbar.show();
+                                    }
+                                });
                     } else {
                         //User exists and attendance too.
                         Intent intent = new Intent(MainActivity.this, AttendanceActivity.class);
@@ -293,7 +305,17 @@ public class MainActivity extends BaseThemedActivity {
                         intent.putExtra(API, api);
                         edit.putString(param[1], response);
                         edit.apply();
-                        startActivity(intent);
+                        mAuth.signInAnonymously()
+                                .addOnCompleteListener(task -> {
+                                    if (task.isSuccessful()) {
+                                        Log.d("SignIn", "Successfully");
+                                        startActivity(intent);
+                                    } else {
+                                        Log.d("SignIn", Objects.requireNonNull(task.getException()).toString());
+                                        Snackbar snackbar = Snackbar.make(mainLayout, "Oops, something went wrong! Please try after sometime", Snackbar.LENGTH_SHORT);
+                                        snackbar.show();
+                                    }
+                                });
                     }
                 },
                 error -> {
