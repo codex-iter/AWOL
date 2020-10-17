@@ -11,10 +11,12 @@ import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,6 +25,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.ActivityCompat;
@@ -36,6 +40,11 @@ import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.downloader.Error;
+import com.downloader.OnDownloadListener;
+import com.downloader.PRDownloader;
+import com.downloader.PRDownloaderConfig;
+import com.downloader.Status;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
@@ -45,11 +54,14 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.onesignal.OneSignal;
+import com.treebo.internetavailabilitychecker.InternetAvailabilityChecker;
+import com.treebo.internetavailabilitychecker.InternetConnectivityListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -57,22 +69,22 @@ import java.util.Objects;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import codex.codex_iter.www.awol.activity.AttendanceActivity;
-import codex.codex_iter.www.awol.activity.BaseThemedActivity;
 import codex.codex_iter.www.awol.activity.UnderMaintenance;
+import codex.codex_iter.www.awol.exceptions.InvalidResponseFetchNameException;
 import codex.codex_iter.www.awol.utilities.Constants;
-import codex.codex_iter.www.awol.utilities.DownloadScrapFile;
+import codex.codex_iter.www.awol.utilities.Utils;
 
 import static codex.codex_iter.www.awol.utilities.Constants.API;
 import static codex.codex_iter.www.awol.utilities.Constants.DETAILS;
 import static codex.codex_iter.www.awol.utilities.Constants.LOGIN;
-import static codex.codex_iter.www.awol.utilities.Constants.NOATTENDANCE;
+import static codex.codex_iter.www.awol.utilities.Constants.NO_ATTENDANCE;
 import static codex.codex_iter.www.awol.utilities.Constants.REGISTRATION_NUMBER;
 import static codex.codex_iter.www.awol.utilities.Constants.RESULTS;
-import static codex.codex_iter.www.awol.utilities.Constants.STUDENTBRANCH;
+import static codex.codex_iter.www.awol.utilities.Constants.STUDENT_BRANCH;
 import static codex.codex_iter.www.awol.utilities.Constants.STUDENT_NAME;
 
 
-public class MainActivity extends BaseThemedActivity {
+public class MainActivity extends AppCompatActivity implements InternetConnectivityListener {
 
     @BindView(R.id.mainLayout)
     CoordinatorLayout mainLayout;
@@ -101,13 +113,17 @@ public class MainActivity extends BaseThemedActivity {
     private String studentName, student_branch, api, new_message;
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
-    private BottomSheetBehavior bottomSheetBehavior;
+    private BottomSheetBehavior<View> bottomSheetBehavior;
     private int updated_version;
     private int current_version;
     private static final int EXTERNAL_STORAGE_PERMISSION_CODE = 1002;
     private boolean isQueried = false;
-    private String updatedAppDownloadURL;
+    private String updatedAppID;
     private FirebaseAuth mAuth;
+    private Long fileSize;
+    private int downloadId;
+    private boolean isDownloading;
+    private File awolAppUpdateFile;
 
     @SuppressLint({"ClickableViewAccessibility", "SetTextI18n"})
     @Override
@@ -116,6 +132,15 @@ public class MainActivity extends BaseThemedActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        InternetAvailabilityChecker mInternetAvailabilityChecker;
+        try {
+            mInternetAvailabilityChecker = InternetAvailabilityChecker.getInstance();
+            mInternetAvailabilityChecker.addInternetConnectivityListener(MainActivity.this);
+        } catch (IllegalStateException e) {
+            InternetAvailabilityChecker.init(this);
+            mInternetAvailabilityChecker = InternetAvailabilityChecker.getInstance();
+            mInternetAvailabilityChecker.addInternetConnectivityListener(MainActivity.this);
+        }
         Constants.offlineDataPreference = this.getSharedPreferences("OFFLINEDATA", Context.MODE_PRIVATE);
         OneSignal.startInit(this)
                 .inFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification)
@@ -131,13 +156,14 @@ public class MainActivity extends BaseThemedActivity {
         apiUrl = getSharedPreferences(API, MODE_PRIVATE);
 
         mAuth = FirebaseAuth.getInstance();
+        awolAppUpdateFile = new File(Objects.requireNonNull(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)).toString() + File.separator + "awol.apk");
         try {
             PackageInfo pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
             current_version = pInfo.versionCode;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
-        fetchDetails();
+
         if (apiUrl.getInt("CHECK", 0) == 1 && !isQueried) {
             Intent intent = new Intent(MainActivity.this, UnderMaintenance.class);
             startActivity(intent);
@@ -150,17 +176,6 @@ public class MainActivity extends BaseThemedActivity {
         Handler handler = new Handler();
         handler.postDelayed(() -> bottomSheetBehavior.setPeekHeight(convertDpToPixel(600)), 400);
 
-        bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View view, int i) {
-
-            }
-
-            @Override
-            public void onSlide(@NonNull View view, float v) {
-
-            }
-        });
         Bundle extras = getIntent().getExtras();
         String status = "";
         if (extras != null) {
@@ -188,7 +203,7 @@ public class MainActivity extends BaseThemedActivity {
                 user.setFocusable(false);
                 pass.setFocusable(false);
                 passLayout.setEndIconMode(TextInputLayout.END_ICON_NONE);
-                if (!preferences.contains(STUDENT_NAME) || !preferences.contains(STUDENTBRANCH)) {
+                if (!preferences.contains(STUDENT_NAME) || !preferences.contains(STUDENT_BRANCH)) {
                     getName(api, u, p);
                 } else {
                     getData(api, u, p);
@@ -213,9 +228,10 @@ public class MainActivity extends BaseThemedActivity {
                     api = documentChange.getDocument().getString(API);
                     updated_version = Integer.parseInt(Objects.requireNonNull(documentChange.getDocument().getString("update_available")));
                     int check = Integer.parseInt(Objects.requireNonNull(documentChange.getDocument().getString("under_maintenance")));
+                    fileSize = Long.parseLong(Objects.requireNonNull(documentChange.getDocument().getString("update_file_size")));
                     isQueried = true;
                     new_message = documentChange.getDocument().getString("what's_new");
-                    updatedAppDownloadURL = documentChange.getDocument().getString("download_url");
+                    updatedAppID = documentChange.getDocument().getString("download_id");
                     edit = apiUrl.edit();
                     edit.putString(API, api);
                     edit.putInt("CHECK", check);
@@ -225,13 +241,26 @@ public class MainActivity extends BaseThemedActivity {
                         Intent intent = new Intent(MainActivity.this, UnderMaintenance.class);
                         startActivity(intent);
                         finish();
+                        return;
                     }
 
-                    if (updated_version > current_version && current_version > 0) {
-                        askPermission();
+                    if (updated_version > current_version && current_version > 0 && Utils.isNetworkAvailable(MainActivity.this)) {
+                        downloadUpdatedApp(updatedAppID, this.new_message);
                     } else {
                         autoFill();
+                        try {
+                            if (awolAppUpdateFile.exists() && Utils.isNetworkAvailable(MainActivity.this)) {
+                                if (awolAppUpdateFile.delete()) {
+                                    Log.d("fileDeleted", "True");
+                                } else {
+                                    Log.d("fileDeleted", "False");
+                                }
+                            }
+                        } catch (Exception e1) {
+                            Log.d("fileDeleted", "False");
+                        }
                     }
+
                 }
             }
         });
@@ -280,20 +309,24 @@ public class MainActivity extends BaseThemedActivity {
                         //Attendance not present
                         Intent intent = new Intent(MainActivity.this, AttendanceActivity.class);
                         intent.putExtra(REGISTRATION_NUMBER, user.getText().toString());
-                        intent.putExtra(NOATTENDANCE, true);
+                        intent.putExtra(NO_ATTENDANCE, true);
                         intent.putExtra(LOGIN, true);
                         intent.putExtra(API, api);
-                        mAuth.signInAnonymously()
-                                .addOnCompleteListener(task -> {
-                                    if (task.isSuccessful()) {
-                                        Log.d("SignIn", "Successfully");
-                                        startActivity(intent);
-                                    } else {
-                                        Log.d("SignIn", Objects.requireNonNull(task.getException()).toString());
-                                        Snackbar snackbar = Snackbar.make(mainLayout, "Oops, something went wrong! Please try after sometime", Snackbar.LENGTH_SHORT);
-                                        snackbar.show();
-                                    }
-                                });
+                        if (mAuth.getCurrentUser() != null) {
+                            startActivity(intent);
+                        } else {
+                            mAuth.signInAnonymously()
+                                    .addOnCompleteListener(task -> {
+                                        if (task.isSuccessful()) {
+                                            Log.d("SignIn", "Successfully");
+                                            startActivity(intent);
+                                        } else {
+                                            Log.d("SignIn", Objects.requireNonNull(task.getException()).toString());
+                                            Snackbar snackbar = Snackbar.make(mainLayout, "Oops, something went wrong! Please try after sometime", Snackbar.LENGTH_SHORT);
+                                            snackbar.show();
+                                        }
+                                    });
+                        }
                     } else {
                         //User exists and attendance too.
                         Intent intent = new Intent(MainActivity.this, AttendanceActivity.class);
@@ -305,17 +338,21 @@ public class MainActivity extends BaseThemedActivity {
                         intent.putExtra(API, api);
                         edit.putString(param[1], response);
                         edit.apply();
-                        mAuth.signInAnonymously()
-                                .addOnCompleteListener(task -> {
-                                    if (task.isSuccessful()) {
-                                        Log.d("SignIn", "Successfully");
-                                        startActivity(intent);
-                                    } else {
-                                        Log.d("SignIn", Objects.requireNonNull(task.getException()).toString());
-                                        Snackbar snackbar = Snackbar.make(mainLayout, "Oops, something went wrong! Please try after sometime", Snackbar.LENGTH_SHORT);
-                                        snackbar.show();
-                                    }
-                                });
+                        if (mAuth.getCurrentUser() != null) {
+                            startActivity(intent);
+                        } else {
+                            mAuth.signInAnonymously()
+                                    .addOnCompleteListener(task -> {
+                                        if (task.isSuccessful()) {
+                                            Log.d("SignIn", "Successfully");
+                                            startActivity(intent);
+                                        } else {
+                                            Log.d("SignIn", Objects.requireNonNull(task.getException()).toString());
+                                            Snackbar snackbar = Snackbar.make(mainLayout, "Oops, something went wrong! Please try after sometime", Snackbar.LENGTH_SHORT);
+                                            snackbar.show();
+                                        }
+                                    });
+                        }
                     }
                 },
                 error -> {
@@ -324,6 +361,12 @@ public class MainActivity extends BaseThemedActivity {
                     login.setVisibility(View.VISIBLE);
                     passLayout.setEndIconMode(TextInputLayout.END_ICON_PASSWORD_TOGGLE);
                     if (error instanceof AuthFailureError) {
+                        user.setEnabled(true);
+                        pass.setEnabled(true);
+                        user.setFocusableInTouchMode(true);
+                        user.setFocusable(true);
+                        pass.setFocusableInTouchMode(true);
+                        pass.setFocusable(true);
                         Snackbar snackbar = Snackbar.make(mainLayout, "Wrong Credentials!", Snackbar.LENGTH_SHORT);
                         snackbar.show();
                     } else if (error instanceof ServerError) {
@@ -337,7 +380,7 @@ public class MainActivity extends BaseThemedActivity {
                             Snackbar snackbar = Snackbar.make(mainLayout, "Cannot connect to ITER servers right now.Try again", Snackbar.LENGTH_SHORT);
                             snackbar.show();
                         } else {
-                            Constants.Offlin_mode = true;
+                            Constants.Offline_mode = true;
                             Intent intent = new Intent(MainActivity.this, AttendanceActivity.class);
                             startActivity(intent);
                         }
@@ -352,7 +395,7 @@ public class MainActivity extends BaseThemedActivity {
                             Snackbar snackbar = Snackbar.make(mainLayout, "Cannot establish connection", Snackbar.LENGTH_SHORT);
                             snackbar.show();
                         } else {
-                            Constants.Offlin_mode = true;
+                            Constants.Offline_mode = true;
                             Intent intent = new Intent(MainActivity.this, AttendanceActivity.class);
                             startActivity(intent);
                         }
@@ -380,7 +423,7 @@ public class MainActivity extends BaseThemedActivity {
                                 snackbar.show();
                                 track = false;
                             } else {
-                                Constants.Offlin_mode = true;
+                                Constants.Offline_mode = true;
                                 Intent intent = new Intent(MainActivity.this, AttendanceActivity.class);
                                 startActivity(intent);
                             }
@@ -408,16 +451,30 @@ public class MainActivity extends BaseThemedActivity {
                         Log.d("response", jobj.toString());
                         JSONArray jarr = jobj.getJSONArray("detail");
                         JSONObject jobj1 = jarr.getJSONObject(0);
+                        if (!jobj1.has("name") || !jobj1.has(STUDENT_BRANCH)) {
+                            throw new InvalidResponseFetchNameException();
+                        }
                         studentName = jobj1.getString("name");
-                        student_branch = jobj1.getString(STUDENTBRANCH);
+                        student_branch = jobj1.getString(STUDENT_BRANCH);
                         editor = preferences.edit();
                         Log.d("branch_portal", student_branch);
                         editor.putString(STUDENT_NAME, studentName);
-                        editor.putString(STUDENTBRANCH, student_branch);
+                        editor.putString(STUDENT_BRANCH, student_branch);
                         editor.apply();
                         MainActivity.this.getData(api, param[1], param[2]);
-                    } catch (JSONException e) {
-                        Toast.makeText(MainActivity.this.getApplicationContext(), "Cannot fetch name!!", Toast.LENGTH_SHORT).show();
+                    } catch (JSONException | InvalidResponseFetchNameException e) {
+                        progressBar.setVisibility(View.INVISIBLE);
+                        welcomeMessage.setVisibility(View.GONE);
+                        login.setVisibility(View.VISIBLE);
+                        passLayout.setEndIconMode(TextInputLayout.END_ICON_PASSWORD_TOGGLE);
+                        user.setEnabled(true);
+                        pass.setEnabled(true);
+                        user.setFocusableInTouchMode(true);
+                        user.setFocusable(true);
+                        pass.setFocusableInTouchMode(true);
+                        pass.setFocusable(true);
+                        Snackbar snackbar = Snackbar.make(mainLayout, "Invalid API Response", Snackbar.LENGTH_SHORT);
+                        snackbar.show();
                     }
                 },
                 error -> {
@@ -426,6 +483,12 @@ public class MainActivity extends BaseThemedActivity {
                     login.setVisibility(View.VISIBLE);
                     passLayout.setEndIconMode(TextInputLayout.END_ICON_PASSWORD_TOGGLE);
                     if (error instanceof AuthFailureError) {
+                        user.setEnabled(true);
+                        pass.setEnabled(true);
+                        user.setFocusableInTouchMode(true);
+                        user.setFocusable(true);
+                        pass.setFocusableInTouchMode(true);
+                        pass.setFocusable(true);
                         Snackbar snackbar = Snackbar.make(mainLayout, "Wrong Credentials!", Snackbar.LENGTH_SHORT);
                         snackbar.show();
                     } else if (error instanceof ServerError) {
@@ -439,7 +502,7 @@ public class MainActivity extends BaseThemedActivity {
                             Snackbar snackbar = Snackbar.make(mainLayout, "Cannot connect to ITER servers right now. Try again with correct credentials.", Snackbar.LENGTH_SHORT);
                             snackbar.show();
                         } else {
-                            Constants.Offlin_mode = true;
+                            Constants.Offline_mode = true;
                             Intent intent = new Intent(MainActivity.this, AttendanceActivity.class);
                             startActivity(intent);
                         }
@@ -454,7 +517,7 @@ public class MainActivity extends BaseThemedActivity {
                             Snackbar snackbar = Snackbar.make(mainLayout, "Cannot establish connection", Snackbar.LENGTH_SHORT);
                             snackbar.show();
                         } else {
-                            Constants.Offlin_mode = true;
+                            Constants.Offline_mode = true;
                             Intent intent = new Intent(MainActivity.this, AttendanceActivity.class);
                             startActivity(intent);
                         }
@@ -482,7 +545,7 @@ public class MainActivity extends BaseThemedActivity {
                                 snackbar.show();
                                 track = false;
                             } else {
-                                Constants.Offlin_mode = true;
+                                Constants.Offline_mode = true;
                                 Intent intent = new Intent(MainActivity.this, AttendanceActivity.class);
                                 startActivity(intent);
                             }
@@ -501,12 +564,15 @@ public class MainActivity extends BaseThemedActivity {
         queue.add(postRequest);
     }
 
-    public void downloadUpdatedApp(String new_message, String updatedAppDownloadURL) {
+    public void downloadUpdatedApp(String updatedAppID, String new_message) {
         if (hasPermission()) {
             try {
-                DownloadScrapFile downloadScrapFile = new DownloadScrapFile(MainActivity.this);
-                downloadScrapFile.newDownload(updatedAppDownloadURL, "awol", true, new_message);
+                if (!awolAppUpdateFile.exists())
+                    FileDownloader(updatedAppID, new_message);
+                else
+                    Utils.updateAvailable(MainActivity.this, new_message);
             } catch (Exception e) {
+                Log.e("downloadError", e.toString());
                 autoFill();
             }
         } else {
@@ -538,7 +604,8 @@ public class MainActivity extends BaseThemedActivity {
                         }).create().show();
             } else {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, EXTERNAL_STORAGE_PERMISSION_CODE);
+                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.READ_EXTERNAL_STORAGE}, EXTERNAL_STORAGE_PERMISSION_CODE);
                 }
             }
 
@@ -546,8 +613,8 @@ public class MainActivity extends BaseThemedActivity {
     }
 
     private boolean hasPermission() {
-        return ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+        return (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
     }
 
     @Override
@@ -557,7 +624,7 @@ public class MainActivity extends BaseThemedActivity {
         if (requestCode == EXTERNAL_STORAGE_PERMISSION_CODE) {
 
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                downloadUpdatedApp(this.new_message, this.updatedAppDownloadURL);
+                downloadUpdatedApp(updatedAppID, this.new_message);
             } else {
                 if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) || !ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
                     new android.app.AlertDialog.Builder(this)
@@ -592,6 +659,89 @@ public class MainActivity extends BaseThemedActivity {
                                 finish();
                             }).create().show();
                 }
+            }
+        }
+    }
+
+    public void FileDownloader(String fileID, String new_message) {
+        if (Status.RUNNING == PRDownloader.getStatus(downloadId)) {
+            return;
+        }
+
+        View mDialogView = LayoutInflater.from(MainActivity.this).inflate(R.layout.download_updates_layout, null);
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(MainActivity.this)
+                .setView(mDialogView);
+        AlertDialog mAlertDialog;
+        mAlertDialog = mBuilder.show();
+        mAlertDialog.setCancelable(false);
+
+        ProgressBar progressBar = mDialogView.findViewById(R.id.progress_bar);
+        MaterialTextView update = mDialogView.findViewById(R.id.progress_update);
+        MaterialTextView update_out_of_100 = mDialogView.findViewById(R.id.progress_update_100);
+
+        File awolAppUpdateFilePath = new File(Objects.requireNonNull(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)).toString());
+        PRDownloader.initialize(MainActivity.this);
+        PRDownloaderConfig config = PRDownloaderConfig.newBuilder()
+                .setDatabaseEnabled(true)
+                .build();
+        PRDownloader.initialize(MainActivity.this, config);
+
+        if (Status.PAUSED == PRDownloader.getStatus(downloadId)) {
+            PRDownloader.resume(downloadId);
+            return;
+        }
+
+        downloadId = PRDownloader.download("https://drive.google.com/uc?export=download&id=" + fileID, String.valueOf(awolAppUpdateFilePath), "awol.apk")
+                .build()
+                .setOnStartOrResumeListener(() -> {
+                    isDownloading = true;
+                    progressBar.setIndeterminate(false);
+                    Toast.makeText(MainActivity.this, "Download Started", Toast.LENGTH_SHORT).show();
+                })
+                .setOnPauseListener(() -> Toast.makeText(MainActivity.this, "Download Paused", Toast.LENGTH_SHORT).show())
+                .setOnCancelListener(() -> Toast.makeText(MainActivity.this, "Download Cancelled", Toast.LENGTH_SHORT).show())
+                .setOnProgressListener(progress -> {
+                    long progressPercent = progress.currentBytes * 100 / fileSize;
+                    update.setText((int) progressPercent + "%");
+                    update_out_of_100.setText((int) progressPercent + "/100");
+                    progressBar.setProgress((int) progressPercent);
+                    progressBar.setIndeterminate(false);
+                })
+                .start(new OnDownloadListener() {
+                    @Override
+                    public void onDownloadComplete() {
+                        mAlertDialog.dismiss();
+                        isDownloading = false;
+                        Toast.makeText(MainActivity.this, "Downloaded Successfully", Toast.LENGTH_SHORT).show();
+                        Utils.updateAvailable(MainActivity.this, new_message);
+                    }
+
+                    @Override
+                    public void onError(Error error) {
+                        Log.d("PRDownload Error", String.valueOf(error.getResponseCode()));
+                        if (isDownloading && (Status.QUEUED == PRDownloader.getStatus(downloadId) ||
+                                Status.FAILED == PRDownloader.getStatus(downloadId) ||
+                                Status.CANCELLED == PRDownloader.getStatus(downloadId)) && !Utils.isNetworkAvailable(MainActivity.this)) {
+                            Toast.makeText(MainActivity.this, "Download Paused", Toast.LENGTH_SHORT).show();
+                            mAlertDialog.dismiss();
+                            PRDownloader.pause(downloadId);
+                            return;
+                        }
+                        mAlertDialog.dismiss();
+                        downloadId = 0;
+                        progressBar.setProgress(0);
+                        Toast.makeText(MainActivity.this, "Downloaded Failed", Toast.LENGTH_SHORT).show();
+                        progressBar.setIndeterminate(false);
+                        autoFill();
+                    }
+                });
+    }
+
+    @Override
+    public void onInternetConnectivityChanged(boolean isConnected) {
+        if (isConnected) {
+            if (isDownloading) {
+                FileDownloader(updatedAppID, new_message);
             }
         }
     }

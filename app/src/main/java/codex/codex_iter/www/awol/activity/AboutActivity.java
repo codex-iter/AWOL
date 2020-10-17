@@ -42,10 +42,6 @@ public class AboutActivity extends BaseThemedActivity {
         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://instagram.com/codexiter?igshid=w8g2cfygo8sy")));
     }
 
-    public void openGithub(View view) {
-        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/codex-iter/AWOL")));
-    }
-
     public void openYoutube(View view) {
         startActivity(new Intent(Intent.ACTION_VIEW,Uri.parse("https://www.youtube.com/channel/UCu1S3gm2ODknxDlkpPX2RrA")));
     }

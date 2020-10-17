@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!--    <domain-config cleartextTrafficPermitted="true">-->
+    <!--        <domain includeSubdomains="true">awol.unaux.com</domain>-->
+    <!--    </domain-config>-->
+
+    <!--Set application-wide security config using base-config tag.-->
+    <base-config cleartextTrafficPermitted="true" />
+
+</network-security-config>

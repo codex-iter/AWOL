@@ -123,20 +123,6 @@
             tools:targetApi="o" />
     </LinearLayout>
 
-    <!--        <TextView-->
-    <!--            android:onClick="openGithub"-->
-    <!--            android:layout_width="match_parent"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:layout_marginHorizontal="25dp"-->
-    <!--            android:layout_marginTop="15dp"-->
-    <!--            android:background="@drawable/edit"-->
-    <!--            android:fontFamily="sans-serif-condensed"-->
-    <!--            android:gravity="center"-->
-    <!--            android:text="@string/made_with_as_a_project_for_codex"-->
-    <!--            android:textColor="@color/colorPrimary"-->
-    <!--            android:textSize="16sp"-->
-    <!--            tools:targetApi="o" />-->
-
     <TextView
         tools:targetApi="o"
         android:layout_width="match_parent"

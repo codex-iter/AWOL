@@ -23,7 +23,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
-        tools:targetApi="m">
+        tools:targetApi="n">
         <activity
             android:name="codex.codex_iter.www.awol.activity.SplashScreenActivity"
             android:theme="@style/SplashTheme">
@@ -89,7 +89,7 @@
             android:configChanges="keyboardHidden|orientation|screenSize" />
 
         <receiver
-            android:name="codex.codex_iter.www.awol.reciever.AlramReceiver"
+            android:name="codex.codex_iter.www.awol.reciever.AlarmReceiver"
             android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
@@ -114,9 +114,10 @@
         </provider>
 
         <!-- Sample AdMob App ID: ca-app-pub-3940256099942544~3347511713 -->
+
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713" />
+            android:value="ca-app-pub-5401501360955646~3612843770" />
     </application>
 
 </manifest>

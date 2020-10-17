@@ -7,12 +7,14 @@ buildscript {
     }
 }
 apply plugin: 'com.onesignal.androidsdk.onesignal-gradle-plugin'
+apply plugin: 'com.android.application'
+apply plugin: 'com.google.firebase.crashlytics'
 
 repositories {
     maven { url 'https://maven.google.com' }
+    mavenCentral()
 }
-apply plugin: 'com.android.application'
-apply plugin: 'com.google.firebase.crashlytics'
+
 android {
     compileSdkVersion 30
     defaultConfig {
@@ -50,15 +52,14 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.2.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.2'
     implementation 'com.github.judemanutd:autostarter:1.0.3'
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test:runner:1.3.0'
     implementation "androidx.preference:preference:1.1.1"
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-    implementation 'com.squareup.okhttp3:okhttp:4.7.2'
 
-    //Carshlytics
+    //Firebase Crashlytics
     implementation 'com.google.firebase:firebase-crashlytics:17.2.2'
 
     //Recycler View and CardView
@@ -73,11 +74,10 @@ dependencies {
     implementation 'com.google.android.play:core:1.8.2'
 
     //FireStore
-    implementation 'com.google.firebase:firebase-firestore:21.7.0'
+    implementation 'com.google.firebase:firebase-firestore:21.7.1'
 
     //Database
     implementation 'com.google.firebase:firebase-database:19.5.0'
-    implementation 'com.google.firebase:firebase-storage:19.2.0'
 
     //firebase messaging
     implementation 'com.google.firebase:firebase-messaging:20.3.0'
@@ -88,7 +88,7 @@ dependencies {
     // OneSignal SDK
     implementation 'com.onesignal:OneSignal:3.15.1'
 
-    //Gson
+    //GSon
     implementation 'com.google.code.gson:gson:2.8.6'
 
     //exo-player
@@ -96,7 +96,7 @@ dependencies {
 
     //Firebase Remote Config
     implementation 'com.google.firebase:firebase-config:19.2.0'
-    implementation 'com.google.firebase:firebase-analytics:17.5.0'
+    implementation 'com.google.firebase:firebase-analytics:17.6.0'
 
     //picasso
     implementation 'com.squareup.picasso:picasso:2.71828'
@@ -108,7 +108,13 @@ dependencies {
     // Firebase Auth
     implementation 'com.google.firebase:firebase-auth:19.4.0'
 
-    //Admob
+    //AdMob
     implementation 'com.google.android.gms:play-services-ads:19.4.0'
+
+    // PRDownloader
+    implementation 'com.mindorks.android:prdownloader:0.6.0'
+
+    //Check InternetConnectivity
+    implementation 'com.treebo:internetavailabilitychecker:1.0.4'
 }
 apply plugin: 'com.google.gms.google-services'

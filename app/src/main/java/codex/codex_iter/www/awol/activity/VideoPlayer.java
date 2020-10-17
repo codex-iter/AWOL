@@ -46,7 +46,7 @@ import com.google.android.exoplayer2.util.Util;
 import codex.codex_iter.www.awol.R;
 
 import static android.net.ConnectivityManager.CONNECTIVITY_ACTION;
-import static codex.codex_iter.www.awol.utilities.Constants.VIDEOURL;
+import static codex.codex_iter.www.awol.utilities.Constants.VIDEO_URL;
 
 
 public class VideoPlayer extends AppCompatActivity {
@@ -113,7 +113,7 @@ public class VideoPlayer extends AppCompatActivity {
     private void setInit() {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null)
-            videoUrl = bundle.getString(VIDEOURL);
+            videoUrl = bundle.getString(VIDEO_URL);
 
         if (videoUrl == null || videoUrl.isEmpty()) {
             Toast.makeText(this, "Video Url is empty", Toast.LENGTH_SHORT).show();

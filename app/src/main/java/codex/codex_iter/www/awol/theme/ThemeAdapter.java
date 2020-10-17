@@ -62,7 +62,7 @@ int selectedPosition;
         return themes.size();
     }
 
-    public class ThemeViewHolder extends RecyclerView.ViewHolder{
+    public static class ThemeViewHolder extends RecyclerView.ViewHolder{
         ThemeDrawable preview;
         ImageView selector;
 

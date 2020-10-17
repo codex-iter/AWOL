@@ -13,9 +13,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,46 +33,49 @@ import codex.codex_iter.www.awol.utilities.Constants;
 
 public class ThemeFragment extends BottomSheetDialogFragment {
 
-    private static final String POSITION="position";
-    private boolean isDark=false;
+    private static final String POSITION = "position";
+    private boolean isDark = false;
     private SharedPreferences preferences;
-    private static final String PREF_DARK_THEME="dark_theme";
-    private static final String THEME="theme_pref";
+    private static final String PREF_DARK_THEME = "dark_theme";
+    private static final String THEME = "theme_pref";
     private List<ThemeItem> items;
+
     public static ThemeFragment newInstance() {
         return new ThemeFragment();
     }
 
 
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.theme_select_layout,container,false);
+        View view = inflater.inflate(R.layout.theme_select_layout, container, false);
         items = Constants.getThemes();
         preferences = requireActivity().getSharedPreferences("theme", 0);
         isDark = preferences.getBoolean(PREF_DARK_THEME, false);
-        ((TextView) view.findViewById(R.id.title)).setTextColor(isDark? Color.WHITE:Color.BLACK);
+        ((TextView) view.findViewById(R.id.title)).setTextColor(isDark ? Color.WHITE : Color.BLACK);
         RecyclerView recyclerView = view.findViewById(R.id.theme_list);
         final int selectedPosition;
-        if(getActivity()!=null) selectedPosition = preferences.getInt(POSITION,0);
-        else selectedPosition=0;
-        final ThemeAdapter adapter = new ThemeAdapter(items,selectedPosition,isDark);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL,false));
+        if (getActivity() != null) selectedPosition = preferences.getInt(POSITION, 0);
+        else selectedPosition = 0;
+        final ThemeAdapter adapter = new ThemeAdapter(items, selectedPosition, isDark);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(adapter);
 
         Button apply = view.findViewById(R.id.apply_btn);
         apply.setOnClickListener(view1 -> {
-            SharedPreferences.Editor editor = preferences.edit();
-            ThemeItem item = items.get(adapter.getSelectedPosition());
+            try {
+                SharedPreferences.Editor editor = preferences.edit();
+                ThemeItem item = items.get(adapter.getSelectedPosition());
 
-            editor.putInt(POSITION, adapter.getSelectedPosition());
-            editor.putInt(THEME, item.getTheme());
-            editor.putBoolean(PREF_DARK_THEME, item.isDark());
-            editor.apply();
-            if (getActivity() != null)
-                getActivity().recreate();
-
+                editor.putInt(POSITION, adapter.getSelectedPosition());
+                editor.putInt(THEME, item.getTheme());
+                editor.putBoolean(PREF_DARK_THEME, item.isDark());
+                editor.apply();
+                if (getActivity() != null)
+                    getActivity().recreate();
+            } catch (Exception e) {
+                Toast.makeText(getContext(), "Something went wrong, please try again", Toast.LENGTH_SHORT).show();
+            }
 
         });
 
@@ -80,14 +85,14 @@ public class ThemeFragment extends BottomSheetDialogFragment {
     @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Dialog dialog =  super.onCreateDialog(savedInstanceState);
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
         dialog.setOnShowListener(dialog1 -> {
             final BottomSheetDialog d = (BottomSheetDialog) dialog1;
 
             FrameLayout bottomSheet = d.findViewById(R.id.design_bottom_sheet);
             Drawable drawable = null;
             if (bottomSheet != null) {
-                drawable = bottomSheet.getContext().getResources().getDrawable(R.drawable.theme_picker_bg);
+                drawable = ResourcesCompat.getDrawable(getResources(), R.drawable.theme_picker_bg, null);
             }
             int bgColor = 0;
             if (bottomSheet != null) {
@@ -107,12 +112,12 @@ public class ThemeFragment extends BottomSheetDialogFragment {
             if (bottomSheet != null) {
                 bottomSheet.setBackground(drawable);
             }
-            BottomSheetBehavior bottomSheetBehavior = null;
+            BottomSheetBehavior<View> bottomSheetBehavior = null;
             if (bottomSheet != null) {
                 bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
             }
             if (bottomSheetBehavior != null) {
-                bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+                bottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
                     @Override
                     public void onStateChanged(@NonNull View view, int i) {
                         if (i == 5) {
@@ -128,10 +133,5 @@ public class ThemeFragment extends BottomSheetDialogFragment {
             }
         });
         return dialog;
-    }
-
-    public interface Callback
-    {
-
     }
 }

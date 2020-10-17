@@ -30,7 +30,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import codex.codex_iter.www.awol.R;
-import codex.codex_iter.www.awol.reciever.AlramReceiver;
+import codex.codex_iter.www.awol.reciever.AlarmReceiver;
 
 import static android.content.Context.ALARM_SERVICE;
 import static android.content.Context.MODE_PRIVATE;
@@ -114,7 +114,7 @@ public class SettingsFragment extends PreferenceFragment {
                             String fired_date = sharedPreferences.getString("Date", "");
                             if (!fired_date.equals(null) && !fired_date.isEmpty()) {
                                 if (!fired_date.equals(present_d)) {
-                                    Intent intent = new Intent(getActivity(), AlramReceiver.class);
+                                    Intent intent = new Intent(getActivity(), AlarmReceiver.class);
                                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                         Intent intent1 = new Intent();
                                         String packageName = getActivity().getPackageName();
@@ -142,7 +142,7 @@ public class SettingsFragment extends PreferenceFragment {
 
                                 }
                             } else {
-                                Intent intent = new Intent(getActivity(), AlramReceiver.class);
+                                Intent intent = new Intent(getActivity(), AlarmReceiver.class);
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                     Intent intent1 = new Intent();
                                     String packageName = getActivity().getPackageName();
@@ -161,7 +161,7 @@ public class SettingsFragment extends PreferenceFragment {
                                         }
                                     }
                                 } else {
-                                    intent = new Intent(getActivity(), AlramReceiver.class);
+                                    intent = new Intent(getActivity(), AlarmReceiver.class);
                                     PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                                     AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
                                     if (alarmManager != null) {
@@ -186,7 +186,7 @@ public class SettingsFragment extends PreferenceFragment {
 
                             String fired_date = sharedPreferences.getString("Date", null);
                             if (fired_date == null) {
-                                Intent intent = new Intent(getActivity(), AlramReceiver.class);
+                                Intent intent = new Intent(getActivity(), AlarmReceiver.class);
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                     Intent intent1 = new Intent();
                                     String packageName = getActivity().getPackageName();
@@ -206,7 +206,7 @@ public class SettingsFragment extends PreferenceFragment {
                                     }
                                 } else {
                                     //AutoStartPermissionHelper.getInstance().getAutoStartPermission(getActivity();
-                                    intent = new Intent(getActivity(), AlramReceiver.class);
+                                    intent = new Intent(getActivity(), AlarmReceiver.class);
                                     PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                                     AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
                                     if (alarmManager != null) {
@@ -215,7 +215,7 @@ public class SettingsFragment extends PreferenceFragment {
                                 }
 
                             } else if (!fired_date.equals(present_d)) {
-                                Intent intent = new Intent(getActivity(), AlramReceiver.class);
+                                Intent intent = new Intent(getActivity(), AlarmReceiver.class);
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                     Intent intent1 = new Intent();
                                     String packageName = getActivity().getPackageName();
@@ -234,7 +234,7 @@ public class SettingsFragment extends PreferenceFragment {
                                         }
                                     }
                                 } else {
-                                    intent = new Intent(getActivity(), AlramReceiver.class);
+                                    intent = new Intent(getActivity(), AlarmReceiver.class);
                                     PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                                     AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
                                     if (alarmManager != null) {
@@ -250,7 +250,7 @@ public class SettingsFragment extends PreferenceFragment {
                         editor1.putBoolean("STOP_NOTIFICATION", true);
                         editor1.apply();
 
-                        Intent intent = new Intent(getActivity(), AlramReceiver.class);
+                        Intent intent = new Intent(getActivity(), AlarmReceiver.class);
 
                         PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 1, intent, 0);
 

@@ -43,7 +43,7 @@ import codex.codex_iter.www.awol.model.Lecture;
 
 import static codex.codex_iter.www.awol.utilities.Constants.API;
 import static codex.codex_iter.www.awol.utilities.Constants.STUDENT_NAME;
-import static codex.codex_iter.www.awol.utilities.Constants.VIDEOURL;
+import static codex.codex_iter.www.awol.utilities.Constants.VIDEO_URL;
 
 public class OnlineLectureVideos extends BaseThemedActivity implements OnlineLectureSubjectAdapter.OnItemClickListener {
 
@@ -130,7 +130,7 @@ public class OnlineLectureVideos extends BaseThemedActivity implements OnlineLec
                         Log.d("link", direct_link);
                         if (!direct_link.isEmpty()) {
                             Intent intent = new Intent(OnlineLectureVideos.this, VideoPlayer.class);
-                            intent.putExtra(VIDEOURL, direct_link);
+                            intent.putExtra(VIDEO_URL, direct_link);
                             startActivity(intent);
                         } else {
                             Snackbar snackbar = Snackbar.make(mainLayout, "Something went wrong, Please try again!", Snackbar.LENGTH_SHORT);

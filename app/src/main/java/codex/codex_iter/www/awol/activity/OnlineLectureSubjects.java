@@ -36,8 +36,8 @@ import codex.codex_iter.www.awol.adapter.OnlineLectureSubjectAdapter;
 import codex.codex_iter.www.awol.model.Lecture;
 import codex.codex_iter.www.awol.utilities.Utils;
 
-import static codex.codex_iter.www.awol.utilities.Constants.STUDENTBRANCH;
-import static codex.codex_iter.www.awol.utilities.Constants.STUDENTSEMESTER;
+import static codex.codex_iter.www.awol.utilities.Constants.STUDENT_BRANCH;
+import static codex.codex_iter.www.awol.utilities.Constants.STUDENT_SEMESTER;
 import static codex.codex_iter.www.awol.utilities.Constants.STUDENT_NAME;
 
 public class OnlineLectureSubjects extends BaseThemedActivity implements OnlineLectureSubjectAdapter.OnItemClickListener {
@@ -80,10 +80,10 @@ public class OnlineLectureSubjects extends BaseThemedActivity implements OnlineL
             toolbar.setTitleTextColor(getResources().getColor(R.color.black));
             Objects.requireNonNull(toolbar.getNavigationIcon()).setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP);
         }
-        branch = sharedPreferences.getString(STUDENTBRANCH, "");
+        branch = sharedPreferences.getString(STUDENT_BRANCH, "");
         if (bundle != null) {
-            String sem = bundle.getString(STUDENTSEMESTER);
-            sharedPreferences.edit().putString(STUDENTSEMESTER, sem).apply();
+            String sem = bundle.getString(STUDENT_SEMESTER);
+            sharedPreferences.edit().putString(STUDENT_SEMESTER, sem).apply();
         }
         getJSONdata("");
         OnlineLectureSubjectAdapter lecturesAdapter = new OnlineLectureSubjectAdapter(this, subjectName, false, this);
@@ -100,9 +100,9 @@ public class OnlineLectureSubjects extends BaseThemedActivity implements OnlineL
             if (jsonVideosLinks != null && jsonSubjectNames != null && !jsonSubjectNames.isEmpty() && !jsonVideosLinks.isEmpty()) {
                 JSONObject lectures = new JSONObject(jsonVideosLinks);
                 JSONObject subject = new JSONObject(jsonSubjectNames);
-                String[] semester = {"2nd", "3rd", "4th", "5th", "6th", "7th", "8th"};
+                String[] semester = {"1st","2nd", "3rd", "4th", "5th", "6th", "7th", "8th"};
                 for (String s : semester) {
-                    if (Objects.requireNonNull(sharedPreferences.getString(STUDENTSEMESTER, null)).trim().equals(s)) {
+                    if (Objects.requireNonNull(sharedPreferences.getString(STUDENT_SEMESTER, null)).trim().equals(s)) {
                         JSONObject subjects = lectures.getJSONObject(s);
                         JSONObject su = subject.getJSONObject(s);
                         Iterator<String> key_subject = su.keys();

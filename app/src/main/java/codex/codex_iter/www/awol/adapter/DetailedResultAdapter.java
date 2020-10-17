@@ -62,7 +62,7 @@ public class DetailedResultAdapter extends RecyclerView.Adapter<DetailedResultAd
         return detailResultData.size();
     }
 
-    public class DetailViewHolder extends RecyclerView.ViewHolder {
+    public static class DetailViewHolder extends RecyclerView.ViewHolder {
 
 //        CardView cardView;
         TextView textViewSubName, textViewSubCode, textViewGrade, textViewIndvCredits;

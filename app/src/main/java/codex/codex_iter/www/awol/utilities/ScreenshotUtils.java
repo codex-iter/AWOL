@@ -16,7 +16,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 
 public class ScreenshotUtils {
-
+    //TODO refactor ScreenShotUtils
     /*  Method which will return Bitmap after taking screenshot. We have to pass the view which we want to take screenshot.  */
     public static Bitmap getScreenShot(View view) {
         RecyclerView recyclerView = (RecyclerView) view;

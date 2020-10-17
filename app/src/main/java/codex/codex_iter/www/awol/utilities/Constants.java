@@ -35,34 +35,34 @@ public  class Constants {
     }
 
 
-    public static void setDarkStatusBar(Activity activity){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = activity.getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(Color.parseColor("#141414"));
-        }
-    }
+//    public static void setDarkStatusBar(Activity activity){
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            Window window = activity.getWindow();
+//            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+//            window.setStatusBarColor(Color.parseColor("#141414"));
+//        }
+//    }
 
     public static final String API = "apiUrl";
     public static final String DETAILS = "details";
-    public static final String RESULTSTATUS = "resultStatus";
-    public static final String SHOWRESULT = "showResult";
-    public static final String SHOWLECTUURES = "showlectures";
-    public static final String UNDERMAINTAINECE = "underMaintenance";
+    public static final String RESULT_STATUS = "resultStatus";
+    public static final String SHOW_RESULT = "showResult";
+    public static final String SHOW_LECTURES = "showLectures";
+    public static final String UNDER_MAINTENANCE = "underMaintenance";
     public static final String REGISTRATION_NUMBER = "registrationNumber";
     public static final String RESULTS = "result";
     public static final String STUDENT_NAME = "studentName";
     public static final String LOGIN = "loginCheck";
-    public static final String NOATTENDANCE = "noAttendance";
-    public static final String STUDENTSEMESTER = "stynumber";
-    public static final String STUDENTBRANCH = "branchdesc";
+    public static final String NO_ATTENDANCE = "noAttendance";
+    public static final String STUDENT_SEMESTER = "stynumber";
+    public static final String STUDENT_BRANCH = "branchdesc";
     public static final String REMOTE_CONFIG = "remote_config";
     public static final String READ_DATABASE = "read_database";
     public static final String READ_DATABASE2 = "read_database2";
     public static final String READ_DATABASE3 = "read_database3";
     public static final String CHECK_VISIBILITY = "check_visibility";
-    public static final String VIDEOURL = "url";
-    public static Boolean Offlin_mode = false;
+    public static final String VIDEO_URL = "url";
+    public static Boolean Offline_mode = false;
     public static SharedPreferences offlineDataPreference;
     public static SharedPreferences.Editor offlineDataEditor;
 }

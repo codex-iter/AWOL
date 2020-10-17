@@ -26,31 +26,16 @@ public class FirebaseConfig {
         String new_value = mFirebaseRemoteConfig.getString("news_link");
         mFirebaseRemoteConfig.fetchAndActivate()
                 .addOnCompleteListener((Activity) context, task -> {
-//                    if (task.isSuccessful()) {
-//                            Toast.makeText(context, "Fetched successfully", Toast.LENGTH_SHORT).show();
-//                    } else {
-//                        Toast.makeText(context, "UnFetched successfully", Toast.LENGTH_SHORT).show();
-//                    }
-                }).addOnFailureListener(e -> {
-            Log.d("error", e.toString());
-        });
+                }).addOnFailureListener(e -> Log.d("error", e.toString()));
         Log.d("json", new_value);
         return new_value;
     }
 
-    //
     public int under_maintenance(Context context) {
         String new_value = mFirebaseRemoteConfig.getString("under_maintenance");
         mFirebaseRemoteConfig.fetchAndActivate()
                 .addOnCompleteListener((Activity) context, task -> {
-//                    if (task.isSuccessful()) {
-//                            Toast.makeText(context, "Fetched successfully", Toast.LENGTH_SHORT).show();
-//                    } else {
-//                        Toast.makeText(context, "UnFetched successfully", Toast.LENGTH_SHORT).show();
-//                    }
-                }).addOnFailureListener(e -> {
-            Log.d("error", e.toString());
-        });
+                }).addOnFailureListener(e -> Log.d("error", e.toString()));
         return Integer.parseInt(new_value);
     }
 }

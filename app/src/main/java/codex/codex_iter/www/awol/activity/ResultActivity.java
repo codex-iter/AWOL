@@ -4,18 +4,18 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,6 +32,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
@@ -45,6 +46,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import codex.codex_iter.www.awol.R;
 import codex.codex_iter.www.awol.adapter.ResultAdapter;
+import codex.codex_iter.www.awol.exceptions.InvalidResponseException;
 import codex.codex_iter.www.awol.model.ResultData;
 import codex.codex_iter.www.awol.utilities.Constants;
 
@@ -59,6 +61,10 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
     LinearLayout main_layout;
     @BindView(R.id.recyclerViewDetailedResult)
     RecyclerView recyclerView;
+    @BindView(R.id.NA)
+    ConstraintLayout noAttendanceLayout;
+    @BindView(R.id.NA_content)
+    TextView tv;
     SharedPreferences userm;
     private String result;
     private int l;
@@ -102,54 +108,61 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
             result = r[0];
         }
         try {
-            JSONObject jObj1 = null;
+            JSONObject jObj1;
             if (result != null) {
                 jObj1 = new JSONObject(result);
                 Log.d("resultdetail", String.valueOf(jObj1));
+            } else {
+                throw new InvalidResponseException();
             }
-            JSONArray arr = null;
-            if (jObj1 != null) {
-                arr = jObj1.getJSONArray("data");
-            }
-            if (arr != null) {
-                l = arr.length();
-            }
+            JSONArray arr;
+            arr = jObj1.getJSONArray("data");
+            l = arr.length();
             ld = new ResultData[l];
             for (int i = 0; i < l; i++) {
-                JSONObject jObj = null;
-                if (arr != null) {
-                    jObj = arr.getJSONObject(i);
-                }
+                JSONObject jObj;
+                jObj = arr.getJSONObject(i);
                 ld[i] = new ResultData();
 
                 if (jObj != null) {
+                    if (!jObj.has("Semesterdesc") || !jObj.has("stynumber") || !jObj.has("fail") ||
+                            !jObj.has("totalearnedcredit") || !jObj.has("sgpaR")) {
+                        throw new InvalidResponseException();
+                    }
+
                     ld[i].setSemesterdesc(jObj.getString("Semesterdesc"));
                     ld[i].setStynumber(Integer.parseInt(jObj.getString("stynumber")));
                     ld[i].setFail(jObj.getString("fail"));
                     ld[i].setTotalearnedcredit(jObj.getString("totalearnedcredit"));
+                    ld[i].setSgpaR(jObj.getString("sgpaR"));
                     if (jObj.has("cgpaR")) {
                         ld[i].setCgpaR(jObj.getString("cgpaR"));
                     } else {
                         ld[i].setCgpaR("Not Available");
                     }
-                    if (jObj.has("sgpaR")) {
-                        ld[i].setSgpaR(jObj.getString("sgpaR"));
-                    } else {
-                        ld[i].setCgpaR("Not Available");
-                    }
+                } else {
+                    throw new InvalidResponseException();
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.d("Error : ", String.valueOf(e));
+        } catch (JSONException | InvalidResponseException e) {
+            Snackbar snackbar = Snackbar.make(main_layout, "Invalid API Response", Snackbar.LENGTH_SHORT);
+            snackbar.show();
+            if (!Constants.Offline_mode) {
+                noResult();
+            }
         } finally {
             ResultData.ld = ld;
-            if (!Constants.Offlin_mode) {
-                resultDataArrayList.addAll(Arrays.asList(ld).subList(0, l));
+            if (!Constants.Offline_mode) {
+                try {
+                    resultDataArrayList.addAll(Arrays.asList(ld).subList(0, l));
+                    saveResult(resultDataArrayList);
+                } catch (Exception e) {
+                    Log.d("error", "Result array might be null");
+                    noResult();
+                }
             } else {
-                getSavedAttendance();
+                getSavedResult();
             }
-            saveAttendance(resultDataArrayList);
             ResultAdapter resultAdapter = new ResultAdapter(this, resultDataArrayList, this);
             recyclerView.setHasFixedSize(true);
             recyclerView.setAdapter(resultAdapter);
@@ -158,23 +171,45 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
     }
 
     @SuppressLint("CommitPrefEdits")
-    public void saveAttendance(ArrayList resultDataArrayList) {
-        Constants.offlineDataEditor = Constants.offlineDataPreference.edit();
-        Gson gson = new Gson();
-        String json = gson.toJson(resultDataArrayList);
-        Constants.offlineDataEditor.putString("StudentResult", json);
-        Constants.offlineDataEditor.apply();
+    public void saveResult(ArrayList<ResultData> resultDataArrayList) {
+        try {
+            Constants.offlineDataEditor = Constants.offlineDataPreference.edit();
+            Gson gson = new Gson();
+            String json = gson.toJson(resultDataArrayList);
+            Constants.offlineDataEditor.putString("StudentResult", json);
+            Constants.offlineDataEditor.apply();
+        } catch (Exception e) {
+            Log.d("error", "Something went wrong");
+        }
     }
 
-    public void getSavedAttendance() {
-        Gson gson = new Gson();
-        String json = Constants.offlineDataPreference.getString("StudentResult", null);
-        Type type = new TypeToken<ArrayList<ResultData>>() {
-        }.getType();
-        resultDataArrayList = gson.fromJson(json, type);
+    public void getSavedResult() {
+        try {
+            Gson gson = new Gson();
+            String json = Constants.offlineDataPreference.getString("StudentResult", null);
+            Type type = new TypeToken<ArrayList<ResultData>>() {
+            }.getType();
+            resultDataArrayList = gson.fromJson(json, type);
 
-        if (resultDataArrayList == null) {
-            resultDataArrayList = new ArrayList<>();
+            if (resultDataArrayList == null) {
+                resultDataArrayList = new ArrayList<>();
+            }
+            if (resultDataArrayList.isEmpty()) {
+                noResult();
+            }
+        } catch (Exception e) {
+            noResult();
+        }
+    }
+
+    public void noResult() {
+        recyclerView.setVisibility(View.GONE);
+        noAttendanceLayout.setVisibility(View.VISIBLE);
+        if (dark) {
+            tv.setTextColor(Color.parseColor("#FFFFFF"));
+            main_layout.setBackgroundColor(Color.parseColor("#141414"));
+        } else {
+            tv.setTextColor(Color.parseColor("#141414"));
         }
     }
 
@@ -192,11 +227,11 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
         showBottomSheetDialog();
     }
 
-    public static int convertDpToPixel(float dp) {
-        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
-        float px = dp * (metrics.densityDpi / 160f);
-        return Math.round(px);
-    }
+//    public static int convertDpToPixel(float dp) {
+//        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
+//        float px = dp * (metrics.densityDpi / 160f);
+//        return Math.round(px);
+//    }
 
     private void getData(final String... param) {
         RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
@@ -261,7 +296,7 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
 
                 }
         ) {
-            //fix here
+
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();

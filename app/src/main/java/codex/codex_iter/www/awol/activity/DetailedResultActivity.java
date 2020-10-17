@@ -7,16 +7,22 @@ import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
@@ -24,8 +30,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import codex.codex_iter.www.awol.R;
 import codex.codex_iter.www.awol.adapter.DetailedResultAdapter;
+import codex.codex_iter.www.awol.exceptions.InvalidResponseException;
 import codex.codex_iter.www.awol.model.DetailResultData;
 import codex.codex_iter.www.awol.utilities.Constants;
 
@@ -33,6 +42,16 @@ import static codex.codex_iter.www.awol.utilities.Constants.RESULTS;
 
 public class DetailedResultActivity extends BaseThemedActivity {
 
+    @BindView(R.id.main_layout)
+    LinearLayout main_layout;
+    @BindView(R.id.recyclerViewDetailedResult)
+    RecyclerView recyclerView;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.NA)
+    ConstraintLayout noAttendanceLayout;
+    @BindView(R.id.NA_content)
+    TextView tv;
     private String msem;
     SharedPreferences userm;
     private String result;
@@ -44,9 +63,10 @@ public class DetailedResultActivity extends BaseThemedActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detailresults);
+
+        ButterKnife.bind(this);
+
         Bundle bundle = getIntent().getExtras();
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        RecyclerView recyclerView = findViewById(R.id.recyclerViewDetailedResult);
 
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle("Results");
@@ -55,9 +75,9 @@ public class DetailedResultActivity extends BaseThemedActivity {
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowHomeEnabled(true);
 
         if (bundle != null) {
-            String mearnedCredits = bundle.getString("TotalCredit");
-            String msgpa = bundle.getString("SGPA");
-            String mstatus = bundle.getString("Status");
+//            String mearnedCredits = bundle.getString("TotalCredit");
+//            String msgpa = bundle.getString("SGPA");
+//            String mstatus = bundle.getString("Status");
             result = bundle.getString(RESULTS);
             msem = bundle.getString("Semester");
         }
@@ -78,46 +98,56 @@ public class DetailedResultActivity extends BaseThemedActivity {
         }
 
         try {
-            JSONObject jObj1 = null;
+            JSONObject jObj1;
             if (result != null) {
                 jObj1 = new JSONObject(result);
                 Log.d("resultdetail", String.valueOf(jObj1));
+            } else {
+                throw new InvalidResponseException();
             }
-            JSONArray arr = null;
-            if (jObj1 != null) {
-                JSONObject jOj2;
-                jOj2 = jObj1.getJSONObject(msem);
-                arr = jOj2.getJSONArray("Semdata");
-                Log.d("resultdetail", String.valueOf(arr));
-            }
-            if (arr != null) {
-                l = arr.length();
-            }
+            JSONArray arr;
+            JSONObject jOj2;
+            jOj2 = jObj1.getJSONObject(msem);
+            arr = jOj2.getJSONArray("Semdata");
+            Log.d("resultdetail", String.valueOf(arr));
+            l = arr.length();
             detailResultData = new DetailResultData[l];
             for (int i = 0; i < l; i++) {
-                JSONObject jObj = null;
-                if (arr != null) {
-                    jObj = arr.getJSONObject(i);
-                }
+                JSONObject jObj;
+                jObj = arr.getJSONObject(i);
                 detailResultData[i] = new DetailResultData();
 
                 if (jObj != null) {
+                    if (!jObj.has("subjectdesc") || !jObj.has("grade") || !jObj.has("earnedcredit")
+                            || !jObj.has("subjectcode")) {
+                        throw new InvalidResponseException();
+                    }
                     detailResultData[i].setSubjectdesc(jObj.getString("subjectdesc"));
                     detailResultData[i].setGrade(jObj.getString("grade"));
                     detailResultData[i].setEarnedcredit(jObj.getString("earnedcredit"));
                     detailResultData[i].setSubjectcode(jObj.getString("subjectcode"));
+                } else {
+                    throw new InvalidResponseException();
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.d("Error : ", String.valueOf(e));
+        } catch (JSONException | InvalidResponseException e) {
+            Snackbar snackbar = Snackbar.make(main_layout, "Invalid API Response", Snackbar.LENGTH_SHORT);
+            snackbar.show();
+            if (!Constants.Offline_mode) {
+                noResult();
+            }
         } finally {
             DetailResultData.detailResultData = detailResultData;
-            if (!Constants.Offlin_mode) {
-                detailResultDataArrayList.addAll(Arrays.asList(detailResultData).subList(0, l));
-                saveAttendance(detailResultDataArrayList, msem);
+            if (!Constants.Offline_mode) {
+                try {
+                    detailResultDataArrayList.addAll(Arrays.asList(detailResultData).subList(0, l));
+                    saveDetailedResult(detailResultDataArrayList, msem);
+                } catch (Exception e) {
+                    Log.d("error", "null");
+                    noResult();
+                }
             } else {
-                getSavedAttendance(msem);
+                getSavedDetailedResult(msem);
             }
             DetailedResultAdapter resultAdapter = new DetailedResultAdapter(this, detailResultDataArrayList);
             recyclerView.setHasFixedSize(true);
@@ -126,26 +156,47 @@ public class DetailedResultActivity extends BaseThemedActivity {
         }
     }
 
-    public void saveAttendance(ArrayList attendanceDataArrayList, String sem) {
-//        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("DetailResult", MODE_PRIVATE);
-//        SharedPreferences.Editor editor = sharedPreferences.edit();
-        Constants.offlineDataEditor = Constants.offlineDataPreference.edit();
-        Gson gson = new Gson();
-        String json = gson.toJson(attendanceDataArrayList);
-        Constants.offlineDataEditor.putString("StudentDetailResult" + sem, json);
-        Constants.offlineDataEditor.apply();
+    public void noResult() {
+        recyclerView.setVisibility(View.GONE);
+        noAttendanceLayout.setVisibility(View.VISIBLE);
+        if (dark) {
+            tv.setTextColor(Color.parseColor("#FFFFFF"));
+            main_layout.setBackgroundColor(Color.parseColor("#141414"));
+        } else {
+            tv.setTextColor(Color.parseColor("#141414"));
+        }
     }
 
-    public void getSavedAttendance(String sem) {
-//        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("DetailResult", MODE_PRIVATE);
-        Gson gson = new Gson();
-        String json = Constants.offlineDataPreference.getString("StudentDetailResult" + sem, null);
-        Type type = new TypeToken<ArrayList<DetailResultData>>() {
-        }.getType();
-        detailResultDataArrayList = gson.fromJson(json, type);
+    public void saveDetailedResult(ArrayList<DetailResultData> attendanceDataArrayList, String sem) {
+        try {
+            Constants.offlineDataEditor = Constants.offlineDataPreference.edit();
+            Gson gson = new Gson();
+            String json = gson.toJson(attendanceDataArrayList);
+            Constants.offlineDataEditor.putString("StudentDetailResult" + sem, json);
+            Constants.offlineDataEditor.apply();
+        } catch (Exception e) {
+            Log.d("error", "Something went wrong");
+        }
+    }
 
-        if (detailResultDataArrayList == null) {
-            detailResultDataArrayList = new ArrayList<>();
+    public void getSavedDetailedResult(String sem) {
+//        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("DetailResult", MODE_PRIVATE);
+        try {
+            Gson gson = new Gson();
+            String json = Constants.offlineDataPreference.getString("StudentDetailResult" + sem, null);
+            Type type = new TypeToken<ArrayList<DetailResultData>>() {
+            }.getType();
+            detailResultDataArrayList = gson.fromJson(json, type);
+
+            if (detailResultDataArrayList == null) {
+                detailResultDataArrayList = new ArrayList<>();
+            }
+
+            if (detailResultDataArrayList.isEmpty()) {
+                noResult();
+            }
+        } catch (Exception e) {
+            noResult();
         }
     }
 

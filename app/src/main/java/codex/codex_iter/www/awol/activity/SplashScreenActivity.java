@@ -22,7 +22,7 @@ import static codex.codex_iter.www.awol.utilities.Constants.DETAILS;
 public class SplashScreenActivity extends AppCompatActivity {
 
     public SharedPreferences pref;
-    private int check, clear_data;
+    private int clear_data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,9 +49,9 @@ public class SplashScreenActivity extends AppCompatActivity {
 //            Intent intent = new Intent(SplashScreenActivity.this, UnderMaintenance.class);
 //            startActivity(intent);
 //        } else {
-            Intent intent = new Intent(SplashScreenActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish();
-        }
+        Intent intent = new Intent(SplashScreenActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
 //    }
 }

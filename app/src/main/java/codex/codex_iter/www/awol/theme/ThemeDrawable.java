@@ -16,7 +16,6 @@ import codex.codex_iter.www.awol.R;
 public class ThemeDrawable extends View {
     private int primaryColor;
     private int background;
-    private boolean isDark = false;
     private boolean isBackgroundDark;
     Path path1, path2;
     Paint fill;
@@ -70,7 +69,6 @@ public class ThemeDrawable extends View {
       //  Log.d("SETCOLOR", "setColor: "+(primaryColor));
         this.primaryColor = getResources().getColor(primaryColor);
         this.background = isDark?darkBackground:lightBackground;
-        this.isDark = isDark;
         this.isBackgroundDark = isBackgroundDark;
         invalidate();
     }
@@ -79,10 +77,10 @@ public class ThemeDrawable extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         Log.d("WIDTH", "onSizeChanged: "+w+"     "+h);
-        int threeFourthHeight = Math.round(h/2);
-        int threeFourthWidth = Math.round(w/2);
+        int threeFourthHeight = Math.round(h >> 1);
+        int threeFourthWidth = Math.round(w >> 1);
         Log.d("WIDTH", "onSizeChanged: "+threeFourthHeight+"     "+threeFourthWidth);
-        int halfStrokeWidth = Math.round(strokeWidth/2);
+        int halfStrokeWidth = Math.round(strokeWidth >> 1);
         border.left = halfStrokeWidth;
         border.top = halfStrokeWidth;
         border.right = w-halfStrokeWidth;

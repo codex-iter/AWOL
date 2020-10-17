@@ -26,7 +26,7 @@ import codex.codex_iter.www.awol.R;
 
 import static android.content.ContentValues.TAG;
 
-public class AlramReceiver extends BroadcastReceiver {
+public class AlarmReceiver extends BroadcastReceiver {
     @SuppressWarnings("FieldCanBeLocal")
     private NotificationCompat.Builder notificationBuilder;
     @SuppressWarnings("FieldCanBeLocal")

@@ -205,13 +205,15 @@
                 app:layout_constraintVertical_bias="0"
                 tools:listitem="@layout/item_attendance" />
 
+            <!-- Sample Unit ID: ca-app-pub-3940256099942544/6300978111 -->
+
             <com.google.android.gms.ads.AdView
                 android:id="@+id/adView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 app:adSize="BANNER"
-                app:adUnitId="ca-app-pub-3940256099942544/6300978111"
+                app:adUnitId="ca-app-pub-5401501360955646/8083098484"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
