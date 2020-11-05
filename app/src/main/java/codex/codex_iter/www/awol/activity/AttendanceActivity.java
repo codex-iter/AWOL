@@ -50,12 +50,6 @@ import com.android.volley.ServerError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.LoadAdError;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.RequestConfiguration;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -79,7 +73,6 @@ import java.lang.reflect.Type;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -142,8 +135,8 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
     ImageView logo;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindView(R.id.adView)
-    AdView adView;
+//    @BindView(R.id.adView)
+//    AdView adView;
 
     private String result;
     private AttendanceData[] attendanceData;
@@ -168,8 +161,9 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
     private int read_database;
     private static final String[] suffix = new String[]{"", "k", "m", "b", "t"};
     private String AUTH_KEY;
-    private AdRequest adRequest;
-    private boolean isLoaded;
+    //    private AdRequest adRequest;
+//    private boolean isLoaded;
+    private InternetAvailabilityChecker mInternetAvailabilityChecker;
 
     public AttendanceActivity() {
     }
@@ -487,7 +481,6 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
 
         setSupportActionBar(toolbar);
 
-        InternetAvailabilityChecker mInternetAvailabilityChecker;
         try {
             mInternetAvailabilityChecker = InternetAvailabilityChecker.getInstance();
             mInternetAvailabilityChecker.addInternetConnectivityListener(AttendanceActivity.this);
@@ -511,42 +504,42 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
         Bundle bundle = getIntent().getExtras();
 
         // Mobile Ads
-        MobileAds.initialize(this);
-        MobileAds.setRequestConfiguration(
-                new RequestConfiguration.Builder().setTestDeviceIds(Collections.singletonList("623B1B7759D51209294A77125459D9B7"))
-                        .build());
-
-        adRequest = new AdRequest.Builder().build();
-
-        adView.loadAd(adRequest);
-        adView.setAdListener(new AdListener() {
-            @Override
-            public void onAdLoaded() {
-                super.onAdLoaded();
-                Log.d("Banner", "Loaded");
-                isLoaded = true;
-            }
-
-            @Override
-            public void onAdFailedToLoad(LoadAdError loadAdError) {
-                super.onAdFailedToLoad(loadAdError);
-                Log.d("adsError", loadAdError.toString());
-                adView.setVisibility(View.GONE);
-                isLoaded = false;
-            }
-
-            @Override
-            public void onAdClicked() {
-                super.onAdClicked();
-                Log.d("Banner", "Clicked");
-            }
-
-            @Override
-            public void onAdOpened() {
-                super.onAdOpened();
-                Log.d("Banner", "Opened");
-            }
-        });
+//        MobileAds.initialize(this);
+//        MobileAds.setRequestConfiguration(
+//                new RequestConfiguration.Builder().setTestDeviceIds(Collections.singletonList("623B1B7759D51209294A77125459D9B7"))
+//                        .build());
+//
+//        adRequest = new AdRequest.Builder().build();
+//
+//        adView.loadAd(adRequest);
+//        adView.setAdListener(new AdListener() {
+//            @Override
+//            public void onAdLoaded() {
+//                super.onAdLoaded();
+//                Log.d("Banner", "Loaded");
+//                isLoaded = true;
+//            }
+//
+//            @Override
+//            public void onAdFailedToLoad(LoadAdError loadAdError) {
+//                super.onAdFailedToLoad(loadAdError);
+//                Log.d("adsError", loadAdError.toString());
+//                adView.setVisibility(View.GONE);
+//                isLoaded = false;
+//            }
+//
+//            @Override
+//            public void onAdClicked() {
+//                super.onAdClicked();
+//                Log.d("Banner", "Clicked");
+//            }
+//
+//            @Override
+//            public void onAdOpened() {
+//                super.onAdOpened();
+//                Log.d("Banner", "Opened");
+//            }
+//        });
 
         try {
             PackageInfo pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
@@ -966,19 +959,26 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
 
     @Override
     public void onInternetConnectivityChanged(boolean isConnected) {
-        if (isConnected) {
-            if (!isLoaded) {
-                try {
-                    if (adRequest == null) {
-                        adRequest = new AdRequest.Builder().build();
-                    }
-                    adView.loadAd(adRequest);
-                } catch (Exception e) {
-                    //Exception
-                    adView.setVisibility(View.GONE);
-                }
-            }
-        }
+//        if (isConnected) {
+//            if (!isLoaded) {
+//                try {
+//                    if (adRequest == null) {
+//                        adRequest = new AdRequest.Builder().build();
+//                    }
+//                    adView.loadAd(adRequest);
+//                } catch (Exception e) {
+//                    //Exception
+//                    adView.setVisibility(View.GONE);
+//                }
+//            }
+//        }
         //TODO refresh the activity when internet connection is available after disconnection
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mInternetAvailabilityChecker
+                .removeInternetConnectivityChangeListener(this);
     }
 }

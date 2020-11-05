@@ -124,6 +124,7 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
     private int downloadId;
     private boolean isDownloading;
     private File awolAppUpdateFile;
+    private InternetAvailabilityChecker mInternetAvailabilityChecker;
 
     @SuppressLint({"ClickableViewAccessibility", "SetTextI18n"})
     @Override
@@ -132,7 +133,6 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        InternetAvailabilityChecker mInternetAvailabilityChecker;
         try {
             mInternetAvailabilityChecker = InternetAvailabilityChecker.getInstance();
             mInternetAvailabilityChecker.addInternetConnectivityListener(MainActivity.this);
@@ -141,6 +141,9 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
             mInternetAvailabilityChecker = InternetAvailabilityChecker.getInstance();
             mInternetAvailabilityChecker.addInternetConnectivityListener(MainActivity.this);
         }
+
+        mAuth = FirebaseAuth.getInstance();
+
         Constants.offlineDataPreference = this.getSharedPreferences("OFFLINEDATA", Context.MODE_PRIVATE);
         OneSignal.startInit(this)
                 .inFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification)
@@ -155,7 +158,6 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
 
         apiUrl = getSharedPreferences(API, MODE_PRIVATE);
 
-        mAuth = FirebaseAuth.getInstance();
         awolAppUpdateFile = new File(Objects.requireNonNull(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)).toString() + File.separator + "awol.apk");
         try {
             PackageInfo pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
@@ -164,17 +166,11 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
             e.printStackTrace();
         }
 
-        if (apiUrl.getInt("CHECK", 0) == 1 && !isQueried) {
-            Intent intent = new Intent(MainActivity.this, UnderMaintenance.class);
-            startActivity(intent);
-            finish();
-        }
-
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetView);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
         Handler handler = new Handler();
-        handler.postDelayed(() -> bottomSheetBehavior.setPeekHeight(convertDpToPixel(600)), 400);
+        handler.postDelayed(() -> bottomSheetBehavior.setPeekHeight(convertDpToPixel(600)), 200);
 
         Bundle extras = getIntent().getExtras();
         String status = "";
@@ -243,7 +239,6 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                         finish();
                         return;
                     }
-
                     if (updated_version > current_version && current_version > 0 && Utils.isNetworkAvailable(MainActivity.this)) {
                         downloadUpdatedApp(updatedAppID, this.new_message);
                     } else {
@@ -269,7 +264,21 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
     @Override
     protected void onResume() {
         super.onResume();
-        fetchDetails();
+        if (mAuth.getCurrentUser() != null) {
+            fetchDetails();
+        } else {
+            mAuth.signInAnonymously()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            Log.d("SignIn", "Successfully");
+                            fetchDetails();
+                        } else {
+                            Log.d("SignIn", Objects.requireNonNull(task.getException()).toString());
+                            Snackbar snackbar = Snackbar.make(mainLayout, "Oops, something went wrong! Please try after sometime", Snackbar.LENGTH_SHORT);
+                            snackbar.show();
+                        }
+                    });
+        }
     }
 
     public static int convertDpToPixel(float dp) {
@@ -624,7 +633,7 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
         if (requestCode == EXTERNAL_STORAGE_PERMISSION_CODE) {
 
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                downloadUpdatedApp(updatedAppID, this.new_message);
+                //downloadUpdatedApp(updatedAppID, this.new_message);
             } else {
                 if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) || !ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
                     new android.app.AlertDialog.Builder(this)
@@ -744,6 +753,13 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                 FileDownloader(updatedAppID, new_message);
             }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mInternetAvailabilityChecker
+                .removeInternetConnectivityChangeListener(this);
     }
 }
 
