@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -99,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
     @BindView(R.id.passordLayout)
     TextInputLayout passLayout;
     @BindView(R.id.bottomSheet_view)
-    ConstraintLayout bottomSheetView;
+    ScrollView bottomSheetView;
     @BindView(R.id.hello)
     TextView welcomeMessage;
     @BindView(R.id.manual)
