@@ -140,8 +140,7 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
 
     private String result;
     private AttendanceData[] attendanceData;
-    private int l, avgab;
-    private double avgat;
+    private int l;
     @SuppressWarnings("FieldCanBeLocal")
     private String[] r;
     public ArrayList<AttendanceData> attendanceDataArrayList = new ArrayList<>();
@@ -164,6 +163,7 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
     //    private AdRequest adRequest;
 //    private boolean isLoaded;
     private InternetAvailabilityChecker mInternetAvailabilityChecker;
+    private View headerView;
 
     public AttendanceActivity() {
     }
@@ -199,6 +199,8 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
             noAttendance();
         } else {
             processAttendance();
+            // if user is not logout, show updated time of attendance
+            this.getSharedPreferences("status", 0).edit().putString("status","").apply();
         }
     }
 
@@ -208,8 +210,8 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
             r = result.split("kkk");
             result = r[0];
         }
-        avgab = 0;
-        avgat = 0;
+        int avgab = 0;
+        double avgat = 0;
         sub = getSharedPreferences("sub",
                 Context.MODE_PRIVATE);
 
@@ -243,13 +245,20 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                 attendanceData[i].setUpd(ck);
                 attendanceData[i].setPercent(jObj.getString("TotalAttandence"));
                 attendanceData[i].setBunk(Integer.parseInt(Objects.requireNonNull(prefs.getString("pref_minimum_attendance", "75"))));
-                avgat += Double.parseDouble(jObj.getString("TotalAttandence").trim());
+                avgat += jObj.getDouble("TotalAttandence");
                 avgab += Integer.parseInt(attendanceData[i].getAbsent());
                 student_semester = jObj.getString(STUDENT_SEMESTER);
                 sharedPreferences.edit().putString(STUDENT_SEMESTER, student_semester).apply();
             }
             avgat /= l;
             avgab /= l;
+            preferences.edit().putInt("AveragePresent", (int) avgat).apply();
+            preferences.edit().putInt("AverageAbsent", (avgab)).apply();
+            TextView avat = headerView.findViewById(R.id.avat);
+            avat.setText(getResources().getString(R.string.average_present, preferences.getInt("AveragePresent", 0)));
+            TextView avab = headerView.findViewById(R.id.avab);
+            avab.setText(String.valueOf(preferences.getInt("AverageAbsent", 0)));
+
         } catch (JSONException | InvalidResponseException e) {
             Snackbar snackbar = Snackbar.make(mainLayout, "Invalid API Response", Snackbar.LENGTH_SHORT);
             snackbar.show();
@@ -268,6 +277,11 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                 }
             } else {
                 getSavedAttendance();
+                TextView avat = headerView.findViewById(R.id.avat);
+                avat.setText(getResources().getString(R.string.average_present, preferences.getInt("AveragePresent", 0)));
+                TextView avab = headerView.findViewById(R.id.avab);
+                avab.setText(String.valueOf(preferences.getInt("AverageAbsent", 0)));
+
             }
             adapter = new AttendanceAdapter(this, attendanceDataArrayList, Integer.parseInt(Objects.requireNonNull(prefs.getString("pref_minimum_attendance", "75"))));
             recyclerView.setHasFixedSize(true);
@@ -275,29 +289,6 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
         }
     }
-
-//    public void downloadFile() {
-//        StorageReference storageReference_data = FirebaseStorage.getInstance().getReference().child("data.txt");
-//        StorageReference storageReference_video = FirebaseStorage.getInstance().getReference().child("video.txt");
-//        DownloadScrapFile downloadScrapFile = new DownloadScrapFile(AttendanceActivity.this);
-//        storageReference_data.getDownloadUrl().addOnSuccessListener(uri -> {
-//            downloadScrapFile.newDownload(uri.toString(), "data", false, "");
-//            storageReference_video.getDownloadUrl().addOnSuccessListener(uri1 -> {
-//                downloadScrapFile.newDownload(uri1.toString(), "video", false, "");
-//                hideBottomSheetDialog();
-//            }).addOnFailureListener(e -> {
-//                hideBottomSheetDialog();
-//                Toast.makeText(AttendanceActivity.this, "Something went wrong.Please try again.", Toast.LENGTH_SHORT).show();
-//                Log.d("errorStorage", e.toString());
-//                finish();
-//            });
-//        }).addOnFailureListener(e -> {
-//            hideBottomSheetDialog();
-//            Toast.makeText(AttendanceActivity.this, "Something went wrong.Please try again.", Toast.LENGTH_SHORT).show();
-//            Log.d("errorStorage", e.toString());
-//            finish();
-//        });
-//    }
 
     @SuppressLint("CommitPrefEdits")
     public void saveAttendance(ArrayList<AttendanceData> attendanceDataArrayList) {
@@ -413,8 +404,8 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
     private String Updated(JSONObject jObj, SharedPreferences sub, String code, int i) throws JSONException {
         if (sub.contains(code)) {
             JSONObject old = new JSONObject(Objects.requireNonNull(sub.getString(code, "")));
-            SharedPreferences status_lg = this.getSharedPreferences("status", 0);
-            String status = status_lg.getString("status", "");
+            SharedPreferences is_logout = this.getSharedPreferences("status", 0);
+            String status = is_logout.getString("status", "");
             if (Objects.requireNonNull(status).equals("0")) {
                 old.put("Latt", "");
                 old.put("Patt", "");
@@ -426,7 +417,7 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                 edit = sub.edit();
                 Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
                 if (v != null) {
-                    v.vibrate(400);
+                    v.vibrate(200);
                 }
                 edit.putString(code, jObj.toString());
                 edit.apply();
@@ -438,7 +429,7 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
             edit = sub.edit();
             Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
             if (v != null) {
-                v.vibrate(400);
+                v.vibrate(200);
             }
             edit.putString(code, jObj.toString());
             edit.commit();
@@ -672,13 +663,10 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
 //        } else {
 //            processAttendance();
 //        }
-        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        View headerView = navigationView.getHeaderView(0);
+        headerView = navigationView.getHeaderView(0);
         if (!Constants.Offline_mode) {
-            editor.putInt("AveragePresent", (int) avgat);
-            editor.putString("AverageAbsent", String.valueOf(avgab));
             if (bundle != null) {
                 String regis = bundle.getString(REGISTRATION_NUMBER);
                 editor.putString("RegistrationNumber", regis);
@@ -704,11 +692,6 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
             title.setText("Home");
         }
         reg.setText(preferences.getString("RegistrationNumber", null));
-        TextView avat = headerView.findViewById(R.id.avat);
-        avat.setText(preferences.getInt("AveragePresent", 0) + "%");
-        TextView avab = headerView.findViewById(R.id.avab);
-        avab.setText(preferences.getString("AverageAbsent", null));
-
         checkResult.setOnClickListener(view -> fetchResult());
     }
 
@@ -875,10 +858,10 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                 break;
             case R.id.lgout:
                 AlertDialog.Builder binder = new AlertDialog.Builder(AttendanceActivity.this);
-                binder.setMessage("Do you want to logout ?");
-                binder.setTitle(Html.fromHtml("<font color='#FF7F27'>Message</font>"));
+                binder.setMessage("Do you want to logout?");
+                binder.setTitle(Html.fromHtml("<font color='#ba000d'>Are you sure?</font>"));
                 binder.setCancelable(false);
-                binder.setPositiveButton(Html.fromHtml("<font color='#FF7F27'>Yes</font>"), (dialog, which) -> {
+                binder.setPositiveButton("YES", (dialog, which) -> {
                     if (sub == null) {
                         sub = getSharedPreferences("sub",
                                 Context.MODE_PRIVATE);
@@ -898,12 +881,15 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                     if (sharedPreferences != null) {
                         sharedPreferences.edit().clear().apply();
                     }
+                    if (preferences != null) {
+                        preferences.edit().clear().apply();
+                    }
                     FirebaseAuth.getInstance().signOut();
                     Intent intent3 = new Intent(getApplicationContext(), MainActivity.class);
                     intent3.putExtra("logout_status", "0");
                     startActivity(intent3);
                 });
-                binder.setNegativeButton(Html.fromHtml("<font color='#FF7F27'>No</font>"), (dialog, which) -> dialog.cancel());
+                binder.setNegativeButton("NO", (dialog, which) -> dialog.cancel());
                 AlertDialog alertDialog = binder.create();
                 Window window = alertDialog.getWindow();
                 WindowManager.LayoutParams wlp = null;
@@ -920,10 +906,6 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                     window.setAttributes(wlp);
                 }
                 alertDialog.show();
-                final Button nbutton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
-                nbutton.setBackgroundColor(Color.RED);
-                Button pbutton = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
-                pbutton.setBackgroundColor(Color.GREEN);
                 break;
             case R.id.pab: {
                 Intent intent = new Intent(AttendanceActivity.this, BunkActivity.class);

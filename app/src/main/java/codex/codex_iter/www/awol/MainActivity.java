@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
     private int current_version;
     private static final int EXTERNAL_STORAGE_PERMISSION_CODE = 1002;
     private boolean isQueried = false;
-    private String updatedAppID;
+    private String updatedAppID, appLink;
     private FirebaseAuth mAuth;
     private Long fileSize;
     private int downloadId;
@@ -178,8 +178,8 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
         if (extras != null) {
             status = extras.getString("logout_status");
         }
-        SharedPreferences status_lg = this.getSharedPreferences("status", 0);
-        SharedPreferences.Editor editor = status_lg.edit();
+        SharedPreferences is_logout = this.getSharedPreferences("status", 0);
+        SharedPreferences.Editor editor = is_logout.edit();
 
         editor.putString("status", status);
         editor.apply();
@@ -226,6 +226,7 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                     updated_version = Integer.parseInt(Objects.requireNonNull(documentChange.getDocument().getString("update_available")));
                     int check = Integer.parseInt(Objects.requireNonNull(documentChange.getDocument().getString("under_maintenance")));
                     fileSize = Long.parseLong(Objects.requireNonNull(documentChange.getDocument().getString("update_file_size")));
+                    appLink = documentChange.getDocument().getString("appLink");
                     isQueried = true;
                     new_message = documentChange.getDocument().getString("what's_new");
                     updatedAppID = documentChange.getDocument().getString("download_id");
@@ -240,22 +241,23 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                         finish();
                         return;
                     }
-                    if (updated_version > current_version && current_version > 0 && Utils.isNetworkAvailable(MainActivity.this)) {
-                        downloadUpdatedApp(updatedAppID, this.new_message);
-                    } else {
-                        autoFill();
-                        try {
-                            if (awolAppUpdateFile.exists() && Utils.isNetworkAvailable(MainActivity.this)) {
-                                if (awolAppUpdateFile.delete()) {
-                                    Log.d("fileDeleted", "True");
-                                } else {
-                                    Log.d("fileDeleted", "False");
-                                }
-                            }
-                        } catch (Exception e1) {
-                            Log.d("fileDeleted", "False");
-                        }
-                    }
+                    downloadUpdatedApp(updatedAppID, this.new_message, appLink);
+//                    if (updated_version > current_version && current_version > 0 && Utils.isNetworkAvailable(MainActivity.this)) {
+//                        downloadUpdatedApp(updatedAppID, this.new_message);
+//                    } else {
+//                        autoFill();
+//                        try {
+//                            if (awolAppUpdateFile.exists() && Utils.isNetworkAvailable(MainActivity.this)) {
+//                                if (awolAppUpdateFile.delete()) {
+//                                    Log.d("fileDeleted", "True");
+//                                } else {
+//                                    Log.d("fileDeleted", "False");
+//                                }
+//                            }
+//                        } catch (Exception e1) {
+//                            Log.d("fileDeleted", "False");
+//                        }
+//                    }
 
                 }
             }
@@ -574,11 +576,11 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
         queue.add(postRequest);
     }
 
-    public void downloadUpdatedApp(String updatedAppID, String new_message) {
+    public void downloadUpdatedApp(String updatedAppID, String new_message, String appLink) {
         if (hasPermission()) {
             try {
                 if (!awolAppUpdateFile.exists())
-                    FileDownloader(updatedAppID, new_message);
+                    FileDownloader(updatedAppID, new_message, appLink);
                 else
                     Utils.updateAvailable(MainActivity.this, new_message);
             } catch (Exception e) {
@@ -634,7 +636,7 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
         if (requestCode == EXTERNAL_STORAGE_PERMISSION_CODE) {
 
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                //downloadUpdatedApp(updatedAppID, this.new_message);
+                downloadUpdatedApp(updatedAppID, this.new_message, appLink);
             } else {
                 if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) || !ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
                     new android.app.AlertDialog.Builder(this)
@@ -673,7 +675,7 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
         }
     }
 
-    public void FileDownloader(String fileID, String new_message) {
+    public void FileDownloader(String fileID, String new_message, String appLink) {
         if (Status.RUNNING == PRDownloader.getStatus(downloadId)) {
             return;
         }
@@ -701,7 +703,8 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
             return;
         }
 
-        downloadId = PRDownloader.download("https://drive.google.com/uc?export=download&id=" + fileID, String.valueOf(awolAppUpdateFilePath), "awol.apk")
+        // https://drive.google.com/uc?export=download&id=" + fileID
+        downloadId = PRDownloader.download(appLink, String.valueOf(awolAppUpdateFilePath), "awol.apk")
                 .build()
                 .setOnStartOrResumeListener(() -> {
                     isDownloading = true;
@@ -711,7 +714,7 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                 .setOnPauseListener(() -> Toast.makeText(MainActivity.this, "Download Paused", Toast.LENGTH_SHORT).show())
                 .setOnCancelListener(() -> Toast.makeText(MainActivity.this, "Download Cancelled", Toast.LENGTH_SHORT).show())
                 .setOnProgressListener(progress -> {
-                    long progressPercent = progress.currentBytes * 100 / fileSize;
+                    long progressPercent = progress.currentBytes * 100 / progress.totalBytes;
                     update.setText((int) progressPercent + "%");
                     update_out_of_100.setText((int) progressPercent + "/100");
                     progressBar.setProgress((int) progressPercent);
@@ -751,7 +754,7 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
     public void onInternetConnectivityChanged(boolean isConnected) {
         if (isConnected) {
             if (isDownloading) {
-                FileDownloader(updatedAppID, new_message);
+                FileDownloader(updatedAppID, new_message, appLink);
             }
         }
     }
