@@ -314,7 +314,7 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                         user.setEnabled(true);
                         pass.setEnabled(true);
                         passLayout.setEndIconMode(TextInputLayout.END_ICON_PASSWORD_TOGGLE);
-                        Snackbar snackbar = Snackbar.make(mainLayout, "Wrong credentials", Snackbar.LENGTH_SHORT);
+                        Snackbar snackbar = Snackbar.make(mainLayout, "Wrong Credentials", Snackbar.LENGTH_SHORT);
                         snackbar.show();
                     } else if (response.equals("390")) {
                         //Attendance not present
@@ -469,7 +469,7 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                             user.setFocusable(true);
                             pass.setFocusableInTouchMode(true);
                             pass.setFocusable(true);
-                            Snackbar snackbar = Snackbar.make(mainLayout, "Wrong credentials", Snackbar.LENGTH_SHORT);
+                            Snackbar snackbar = Snackbar.make(mainLayout, "Wrong Credentials", Snackbar.LENGTH_SHORT);
                             snackbar.show();
                         } else {
                             JSONObject jobj = new JSONObject(response);
