@@ -37,7 +37,8 @@
     <string name="mohit_agarwal">Mohit Agarwal</string>
     <string name="codex">CODEX</string>
     <string name="_1641017271">404</string>
-    <string name="_98_76">98.76%</string>
+    <string name="placeholder_average_percentage">0%</string>
+    <string name="placeholder_average_absent">0</string>
     <string name="plan_bunk">Plan@Bunk</string>
     <string name="share_app">Share app</string>
     <string name="settings">Settings</string>

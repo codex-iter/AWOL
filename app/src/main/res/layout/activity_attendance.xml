@@ -202,9 +202,11 @@
                 android:textStyle="bold"
                 app:layout_constraintTop_toBottomOf="@+id/who_layout"
                 app:layout_constraintVertical_bias="0"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 tools:listitem="@layout/item_attendance" />
 
-            <!-- Sample Unit ID: ca-app-pub-3940256099942544/6300978111 -->
+                        <!-- Sample Unit ID: ca-app-pub-3940256099942544/6300978111 -->
 
 <!--            <com.google.android.gms.ads.AdView-->
 <!--                android:id="@+id/adView"-->

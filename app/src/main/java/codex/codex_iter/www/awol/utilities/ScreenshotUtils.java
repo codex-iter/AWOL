@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.Objects;
 
 public class ScreenshotUtils {
     //TODO refactor ScreenShotUtils
@@ -32,38 +33,43 @@ public class ScreenshotUtils {
             // Use 1/8th of the available memory for this memory cache.
             final int cacheSize = maxMemory / 8;
             LruCache<String, Bitmap> bitmaCache = new LruCache<>(cacheSize);
-            for (int i = 0; i < size; i++) {
-                RecyclerView.ViewHolder holder = adapter.createViewHolder(recyclerView, adapter.getItemViewType(i));
-                adapter.onBindViewHolder(holder, i);
-                holder.itemView.measure(View.MeasureSpec.makeMeasureSpec(view.getWidth(), View.MeasureSpec.EXACTLY),
-                        View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
-                holder.itemView.layout(0, 0, holder.itemView.getMeasuredWidth(), holder.itemView.getMeasuredHeight());
-                holder.itemView.setDrawingCacheEnabled(true);
-                holder.itemView.buildDrawingCache();
-                Bitmap drawingCache = holder.itemView.getDrawingCache();
-                if (drawingCache != null) {
-
-                    bitmaCache.put(String.valueOf(i), drawingCache);
+            try {
+                for (int i = 0; i < size; i++) {
+                    RecyclerView.ViewHolder holder = adapter.createViewHolder(recyclerView, adapter.getItemViewType(i));
+                    adapter.onBindViewHolder(holder, i);
+                    holder.itemView.measure(View.MeasureSpec.makeMeasureSpec(view.getWidth(), View.MeasureSpec.EXACTLY),
+                            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+                    holder.itemView.layout(0, 0, holder.itemView.getMeasuredWidth(), holder.itemView.getMeasuredHeight());
+                    holder.itemView.setDrawingCacheEnabled(true);
+                    holder.itemView.buildDrawingCache();
+                    Bitmap drawingCache = holder.itemView.getDrawingCache();
+                    if (drawingCache != null) {
+                        bitmaCache.put(String.valueOf(i), drawingCache);
+                    }
+                    height += holder.itemView.getMeasuredHeight();
                 }
-                height += holder.itemView.getMeasuredHeight();
+            } catch (Exception e) {
+                Log.d("exception_screenshot", Objects.requireNonNull(e.getMessage()));
             }
 
-            bigBitmap = Bitmap.createBitmap(view.getMeasuredWidth(), height, Bitmap.Config.ARGB_8888);
-            Canvas bigCanvas = new Canvas(bigBitmap);
-
-            for (int i = 0; i < size; i++) {
-                Bitmap bitmap = bitmaCache.get(String.valueOf(i));
-                if (bitmap != null) {
-                    bigCanvas.drawBitmap(bitmap, 0f, iHeight, paint);
+            try {
+                bigBitmap = Bitmap.createBitmap(view.getMeasuredWidth(), height, Bitmap.Config.ARGB_8888);
+                Canvas bigCanvas = new Canvas(bigBitmap);
+                for (int i = 0; i < size; i++) {
+                    Bitmap bitmap = bitmaCache.get(String.valueOf(i));
+                    if (bitmap != null) {
+                        bigCanvas.drawBitmap(bitmap, 0f, iHeight, paint);
+                    }
+                    if (bitmap != null) {
+                        iHeight += bitmap.getHeight();
+                    }
+                    if (bitmap != null) {
+                        bitmap.recycle();
+                    }
                 }
-                if (bitmap != null) {
-                    iHeight += bitmap.getHeight();
-                }
-                if (bitmap != null) {
-                    bitmap.recycle();
-                }
+            } catch (Exception e) {
+                Log.d("exception_screenshot", Objects.requireNonNull(e.getMessage()));
             }
-
         }
         return bigBitmap;
     }

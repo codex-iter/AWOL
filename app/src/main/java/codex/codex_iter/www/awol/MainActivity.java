@@ -241,23 +241,22 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                         finish();
                         return;
                     }
-                    downloadUpdatedApp(updatedAppID, this.new_message, appLink);
-//                    if (updated_version > current_version && current_version > 0 && Utils.isNetworkAvailable(MainActivity.this)) {
-//                        downloadUpdatedApp(updatedAppID, this.new_message);
-//                    } else {
-//                        autoFill();
-//                        try {
-//                            if (awolAppUpdateFile.exists() && Utils.isNetworkAvailable(MainActivity.this)) {
-//                                if (awolAppUpdateFile.delete()) {
-//                                    Log.d("fileDeleted", "True");
-//                                } else {
-//                                    Log.d("fileDeleted", "False");
-//                                }
-//                            }
-//                        } catch (Exception e1) {
-//                            Log.d("fileDeleted", "False");
-//                        }
-//                    }
+                    if (updated_version > current_version && current_version > 0 && Utils.isNetworkAvailable(MainActivity.this)) {
+                        downloadUpdatedApp(updatedAppID, this.new_message, appLink);
+                    } else {
+                        autoFill();
+                        try {
+                            if (awolAppUpdateFile.exists() && Utils.isNetworkAvailable(MainActivity.this)) {
+                                if (awolAppUpdateFile.delete()) {
+                                    Log.d("fileDeleted", "True");
+                                } else {
+                                    Log.d("fileDeleted", "False");
+                                }
+                            }
+                        } catch (Exception e1) {
+                            Log.d("fileDeleted", "False");
+                        }
+                    }
 
                 }
             }
@@ -459,21 +458,36 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
         StringRequest postRequest = new StringRequest(Request.Method.POST, param[0] + "/studentinfo",
                 response -> {
                     try {
-                        JSONObject jobj = new JSONObject(response);
-                        Log.d("response", jobj.toString());
-                        JSONArray jarr = jobj.getJSONArray("detail");
-                        JSONObject jobj1 = jarr.getJSONObject(0);
-                        if (!jobj1.has("name") || !jobj1.has(STUDENT_BRANCH)) {
-                            throw new InvalidResponseFetchNameException();
+                        if (response.equals("404")) {
+                            progressBar.setVisibility(View.INVISIBLE);
+                            welcomeMessage.setVisibility(View.GONE);
+                            login.setVisibility(View.VISIBLE);
+                            passLayout.setEndIconMode(TextInputLayout.END_ICON_PASSWORD_TOGGLE);
+                            user.setEnabled(true);
+                            pass.setEnabled(true);
+                            user.setFocusableInTouchMode(true);
+                            user.setFocusable(true);
+                            pass.setFocusableInTouchMode(true);
+                            pass.setFocusable(true);
+                            Snackbar snackbar = Snackbar.make(mainLayout, "Wrong credentials", Snackbar.LENGTH_SHORT);
+                            snackbar.show();
+                        } else {
+                            JSONObject jobj = new JSONObject(response);
+                            Log.d("response", jobj.toString());
+                            JSONArray jarr = jobj.getJSONArray("detail");
+                            JSONObject jobj1 = jarr.getJSONObject(0);
+                            if (!jobj1.has("name") || !jobj1.has(STUDENT_BRANCH)) {
+                                throw new InvalidResponseFetchNameException();
+                            }
+                            studentName = jobj1.getString("name");
+                            student_branch = jobj1.getString(STUDENT_BRANCH);
+                            editor = preferences.edit();
+                            Log.d("branch_portal", student_branch);
+                            editor.putString(STUDENT_NAME, studentName);
+                            editor.putString(STUDENT_BRANCH, student_branch);
+                            editor.apply();
+                            MainActivity.this.getData(api, param[1], param[2]);
                         }
-                        studentName = jobj1.getString("name");
-                        student_branch = jobj1.getString(STUDENT_BRANCH);
-                        editor = preferences.edit();
-                        Log.d("branch_portal", student_branch);
-                        editor.putString(STUDENT_NAME, studentName);
-                        editor.putString(STUDENT_BRANCH, student_branch);
-                        editor.apply();
-                        MainActivity.this.getData(api, param[1], param[2]);
                     } catch (JSONException | InvalidResponseFetchNameException e) {
                         progressBar.setVisibility(View.INVISIBLE);
                         welcomeMessage.setVisibility(View.GONE);
@@ -511,7 +525,7 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                             user.setFocusable(true);
                             pass.setFocusableInTouchMode(true);
                             pass.setFocusable(true);
-                            Snackbar snackbar = Snackbar.make(mainLayout, "Cannot connect to ITER servers right now. Try again with correct credentials.", Snackbar.LENGTH_SHORT);
+                            Snackbar snackbar = Snackbar.make(mainLayout, "Cannot connect to ITER servers right now.", Snackbar.LENGTH_SHORT);
                             snackbar.show();
                         } else {
                             Constants.Offline_mode = true;
