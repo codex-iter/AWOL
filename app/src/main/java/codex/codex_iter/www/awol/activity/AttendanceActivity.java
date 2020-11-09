@@ -3,7 +3,6 @@ package codex.codex_iter.www.awol.activity;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -200,7 +199,7 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
         } else {
             processAttendance();
             // if user is not logout, show updated time of attendance
-            this.getSharedPreferences("status", 0).edit().putString("status","").apply();
+            this.getSharedPreferences("status", 0).edit().putString("status", "").apply();
         }
     }
 
@@ -261,6 +260,12 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
 
         } catch (JSONException | InvalidResponseException e) {
             Snackbar snackbar = Snackbar.make(mainLayout, "Invalid API Response", Snackbar.LENGTH_SHORT);
+            snackbar.show();
+            if (!Constants.Offline_mode) {
+                noAttendance();
+            }
+        } catch (Exception e) {
+            Snackbar snackbar = Snackbar.make(mainLayout, "Something went wrong few things may not work", Snackbar.LENGTH_SHORT);
             snackbar.show();
             if (!Constants.Offline_mode) {
                 noAttendance();

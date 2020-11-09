@@ -150,6 +150,12 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
             if (!Constants.Offline_mode) {
                 noResult();
             }
+        } catch (Exception e) {
+            Snackbar snackbar = Snackbar.make(main_layout, "Something went wrong few things may not work", Snackbar.LENGTH_SHORT);
+            snackbar.show();
+            if (!Constants.Offline_mode) {
+                noResult();
+            }
         } finally {
             ResultData.ld = ld;
             if (!Constants.Offline_mode) {

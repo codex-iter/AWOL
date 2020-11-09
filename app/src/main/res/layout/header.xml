@@ -7,7 +7,7 @@
     android:gravity="center_horizontal"
     android:orientation="vertical"
     android:paddingHorizontal="10dp"
-    android:paddingTop="30dp"
+    android:paddingTop="33dp"
     android:paddingBottom="10dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark"
     tools:ignore="UnusedAttribute">

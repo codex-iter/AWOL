@@ -501,6 +501,19 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                         pass.setFocusable(true);
                         Snackbar snackbar = Snackbar.make(mainLayout, "Invalid API Response", Snackbar.LENGTH_SHORT);
                         snackbar.show();
+                    } catch (Exception e) {
+                        progressBar.setVisibility(View.INVISIBLE);
+                        welcomeMessage.setVisibility(View.GONE);
+                        login.setVisibility(View.VISIBLE);
+                        passLayout.setEndIconMode(TextInputLayout.END_ICON_PASSWORD_TOGGLE);
+                        user.setEnabled(true);
+                        pass.setEnabled(true);
+                        user.setFocusableInTouchMode(true);
+                        user.setFocusable(true);
+                        pass.setFocusableInTouchMode(true);
+                        pass.setFocusable(true);
+                        Snackbar snackbar = Snackbar.make(mainLayout, "Something went wrong few things may not work", Snackbar.LENGTH_SHORT);
+                        snackbar.show();
                     }
                 },
                 error -> {
@@ -728,7 +741,7 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                 .setOnPauseListener(() -> Toast.makeText(MainActivity.this, "Download Paused", Toast.LENGTH_SHORT).show())
                 .setOnCancelListener(() -> Toast.makeText(MainActivity.this, "Download Cancelled", Toast.LENGTH_SHORT).show())
                 .setOnProgressListener(progress -> {
-                    long progressPercent = progress.currentBytes * 100 / progress.totalBytes;
+                    long progressPercent = progress.currentBytes * 100 / fileSize;
                     update.setText((int) progressPercent + "%");
                     update_out_of_100.setText((int) progressPercent + "/100");
                     progressBar.setProgress((int) progressPercent);

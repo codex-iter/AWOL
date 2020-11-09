@@ -99,7 +99,9 @@ public class SettingsFragment extends PreferenceFragment {
                         editor1.putBoolean("STOP_NOTIFICATION", false);
                         editor1.apply();
                         if (!flag) {
-                            Snackbar.make(coordinatorLayout, "Notifications Enabled", Snackbar.LENGTH_SHORT).show();
+                            if (coordinatorLayout != null) {
+                                Snackbar.make(coordinatorLayout, "Notifications Enabled", Snackbar.LENGTH_SHORT).show();
+                            }
                             Calendar calendar = Calendar.getInstance();
                             Date alram_time = new Date();
                             calendar.set(Calendar.HOUR_OF_DAY, 7);
@@ -170,7 +172,9 @@ public class SettingsFragment extends PreferenceFragment {
                                 }
                             }
                         } else {
-                            Snackbar.make(coordinatorLayout, "Notifications Enabled", Snackbar.LENGTH_LONG).show();
+                            if (coordinatorLayout != null) {
+                                Snackbar.make(coordinatorLayout, "Notifications Enabled", Snackbar.LENGTH_LONG).show();
+                            }
                             /*Alram time*/
                             Calendar calendar = Calendar.getInstance();
                             calendar.set(Calendar.HOUR_OF_DAY, 7);
@@ -245,7 +249,9 @@ public class SettingsFragment extends PreferenceFragment {
                             }
                         }
                     } else {
-                        Snackbar.make(coordinatorLayout, "Notifications Disabled", Snackbar.LENGTH_LONG).show();
+                        if (coordinatorLayout != null) {
+                            Snackbar.make(coordinatorLayout, "Notifications Disabled", Snackbar.LENGTH_LONG).show();
+                        }
                         flag = false;
                         editor1.putBoolean("STOP_NOTIFICATION", true);
                         editor1.apply();

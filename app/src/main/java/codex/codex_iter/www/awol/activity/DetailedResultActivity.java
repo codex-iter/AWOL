@@ -136,6 +136,12 @@ public class DetailedResultActivity extends BaseThemedActivity {
             if (!Constants.Offline_mode) {
                 noResult();
             }
+        } catch (Exception e) {
+            Snackbar snackbar = Snackbar.make(main_layout, "Something went wrong few things may not work", Snackbar.LENGTH_SHORT);
+            snackbar.show();
+            if (!Constants.Offline_mode) {
+                noResult();
+            }
         } finally {
             DetailResultData.detailResultData = detailResultData;
             if (!Constants.Offline_mode) {
