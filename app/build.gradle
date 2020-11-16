@@ -22,8 +22,8 @@ android {
         minSdkVersion 21
         targetSdkVersion 30
         multiDexEnabled true
-        versionCode 14
-        versionName "1.1.1"
+        versionCode 15
+        versionName "1.1.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         manifestPlaceholders = [
@@ -60,7 +60,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
     //Firebase Crashlytics
-    implementation 'com.google.firebase:firebase-crashlytics:17.2.2'
+    implementation 'com.google.firebase:firebase-crashlytics:17.3.0'
 
     //Recycler View and CardView
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
@@ -95,7 +95,7 @@ dependencies {
     implementation 'com.google.android.exoplayer:exoplayer:2.11.1'
 
     //Firebase Remote Config
-    implementation 'com.google.firebase:firebase-config:20.0.0'
+    implementation 'com.google.firebase:firebase-config:20.0.1'
     implementation 'com.google.firebase:firebase-analytics:18.0.0'
 
     //picasso
@@ -106,7 +106,7 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.0'
 
     // Firebase Auth
-    implementation 'com.google.firebase:firebase-auth:20.0.0'
+    implementation 'com.google.firebase:firebase-auth:20.0.1'
 
     //AdMob
 //    implementation 'com.google.android.gms:play-services-ads:19.4.0'
@@ -116,5 +116,8 @@ dependencies {
 
     //Check InternetConnectivity
     implementation 'com.treebo:internetavailabilitychecker:1.0.4'
+
+    // Chrome Custom Tabs
+    implementation 'androidx.browser:browser:1.2.0'
 }
 apply plugin: 'com.google.gms.google-services'

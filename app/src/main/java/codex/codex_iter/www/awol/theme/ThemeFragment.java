@@ -34,6 +34,7 @@ import codex.codex_iter.www.awol.utilities.Constants;
 public class ThemeFragment extends BottomSheetDialogFragment {
 
     private static final String POSITION = "position";
+    private static final String TOOLBAR_COLOR = "toolbar_color";
     private boolean isDark = false;
     private SharedPreferences preferences;
     private static final String PREF_DARK_THEME = "dark_theme";
@@ -66,7 +67,7 @@ public class ThemeFragment extends BottomSheetDialogFragment {
             try {
                 SharedPreferences.Editor editor = preferences.edit();
                 ThemeItem item = items.get(adapter.getSelectedPosition());
-
+                editor.putInt(TOOLBAR_COLOR, item.getMainColor());
                 editor.putInt(POSITION, adapter.getSelectedPosition());
                 editor.putInt(THEME, item.getTheme());
                 editor.putBoolean(PREF_DARK_THEME, item.isDark());

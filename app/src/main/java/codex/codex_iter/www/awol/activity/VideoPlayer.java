@@ -42,6 +42,7 @@ import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.google.android.material.textview.MaterialTextView;
 
 import codex.codex_iter.www.awol.R;
 
@@ -60,7 +61,7 @@ public class VideoPlayer extends AppCompatActivity {
     private String videoUrl;
     private String videoId;
     private NetworkChangeReceiver networkChangeReceiver;
-    private TextView errorMessage;
+    private MaterialTextView errorMessage;
     private ProgressiveMediaSource mediaSource;
 
     @Override

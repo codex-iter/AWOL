@@ -18,11 +18,8 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -47,7 +44,9 @@ import com.downloader.PRDownloader;
 import com.downloader.PRDownloaderConfig;
 import com.downloader.Status;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -90,11 +89,11 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
     @BindView(R.id.mainLayout)
     CoordinatorLayout mainLayout;
     @BindView(R.id.user)
-    EditText user;
+    TextInputEditText user;
     @BindView(R.id.pass)
-    EditText pass;
+    TextInputEditText pass;
     @BindView(R.id.login_button)
-    Button login;
+    MaterialButton login;
     @BindView(R.id.progress_bar)
     ProgressBar progressBar;
     @BindView(R.id.passordLayout)
@@ -102,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
     @BindView(R.id.bottomSheet_view)
     ScrollView bottomSheetView;
     @BindView(R.id.hello)
-    TextView welcomeMessage;
+    MaterialTextView welcomeMessage;
     @BindView(R.id.manual)
     MaterialTextView maual;
     @BindView(R.id.manaul_layout)
@@ -185,8 +184,8 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
         editor.apply();
 
         login.setOnClickListener(view -> {
-            String u = user.getText().toString().trim();
-            String p = pass.getText().toString().trim();
+            String u = Objects.requireNonNull(user.getText()).toString().trim();
+            String p = Objects.requireNonNull(pass.getText()).toString().trim();
 
             if (u.equals("") || p.equals("")) {
                 Snackbar snackbar = Snackbar.make(mainLayout, "Enter your Details", Snackbar.LENGTH_SHORT);
@@ -218,54 +217,63 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
     }
 
     public void fetchDetails() {
-        CollectionReference apiCollection = FirebaseFirestore.getInstance().collection(DETAILS);
-        apiCollection.addSnapshotListener((queryDocumentSnapshots, e) -> {
-            if (queryDocumentSnapshots != null) {
-                for (DocumentChange documentChange : queryDocumentSnapshots.getDocumentChanges()) {
-                    api = documentChange.getDocument().getString(API);
-                    updated_version = Integer.parseInt(Objects.requireNonNull(documentChange.getDocument().getString("update_available")));
-                    int check = Integer.parseInt(Objects.requireNonNull(documentChange.getDocument().getString("under_maintenance")));
-                    fileSize = Long.parseLong(Objects.requireNonNull(documentChange.getDocument().getString("update_file_size")));
-                    appLink = documentChange.getDocument().getString("appLink");
-                    isQueried = true;
-                    new_message = documentChange.getDocument().getString("what's_new");
-                    updatedAppID = documentChange.getDocument().getString("download_id");
-                    edit = apiUrl.edit();
-                    edit.putString(API, api);
-                    edit.putInt("CHECK", check);
-                    edit.apply();
+        try {
+            CollectionReference apiCollection = FirebaseFirestore.getInstance().collection(DETAILS);
+            apiCollection.addSnapshotListener((queryDocumentSnapshots, e) -> {
+                if (queryDocumentSnapshots != null) {
+                    for (DocumentChange documentChange : queryDocumentSnapshots.getDocumentChanges()) {
+                        api = documentChange.getDocument().getString(API);
+                        updated_version = Integer.parseInt(Objects.requireNonNull(documentChange.getDocument().getString("update_available")));
+                        int check = Integer.parseInt(Objects.requireNonNull(documentChange.getDocument().getString("under_maintenance")));
+                        fileSize = Long.parseLong(Objects.requireNonNull(documentChange.getDocument().getString("update_file_size")));
+                        appLink = documentChange.getDocument().getString("appLink");
+                        isQueried = true;
+                        new_message = documentChange.getDocument().getString("what's_new");
+                        updatedAppID = documentChange.getDocument().getString("download_id");
+                        edit = apiUrl.edit();
+                        edit.putString(API, api);
+                        edit.putInt("CHECK", check);
+                        edit.apply();
 
-                    if (check == 1) {
-                        Intent intent = new Intent(MainActivity.this, UnderMaintenance.class);
-                        startActivity(intent);
-                        finish();
-                        return;
-                    }
-                    if (updated_version > current_version && current_version > 0 && Utils.isNetworkAvailable(MainActivity.this)) {
-                        downloadUpdatedApp(updatedAppID, this.new_message, appLink);
-                    } else {
-                        autoFill();
-                        try {
-                            if (awolAppUpdateFile.exists() && Utils.isNetworkAvailable(MainActivity.this)) {
-                                if (awolAppUpdateFile.delete()) {
-                                    Log.d("fileDeleted", "True");
-                                } else {
-                                    Log.d("fileDeleted", "False");
-                                }
-                            }
-                        } catch (Exception e1) {
-                            Log.d("fileDeleted", "False");
+                        if (check == 1) {
+                            Intent intent = new Intent(MainActivity.this, UnderMaintenance.class);
+                            startActivity(intent);
+                            finish();
+                            return;
                         }
-                    }
+                        if (updated_version > current_version && current_version > 0 && Utils.isNetworkAvailable(MainActivity.this)) {
+                            downloadUpdatedApp(updatedAppID, this.new_message, appLink);
+                        } else {
+                            autoFill();
+                            try {
+                                if (awolAppUpdateFile.exists() && Utils.isNetworkAvailable(MainActivity.this)) {
+                                    if (awolAppUpdateFile.delete()) {
+                                        Log.d("fileDeleted", "True");
+                                    } else {
+                                        Log.d("fileDeleted", "False");
+                                    }
+                                }
+                            } catch (Exception e1) {
+                                Log.d("fileDeleted", "False");
+                            }
+                        }
 
+                    }
                 }
-            }
-        });
+            });
+        } catch (Exception e) {
+
+            Snackbar snackbar = Snackbar.make(mainLayout, "Invalid firebase response", Snackbar.LENGTH_SHORT);
+            snackbar.show();
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        if (mAuth == null) {
+            mAuth = FirebaseAuth.getInstance();
+        }
         if (mAuth.getCurrentUser() != null) {
             fetchDetails();
         } else {
@@ -319,7 +327,7 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                     } else if (response.equals("390")) {
                         //Attendance not present
                         Intent intent = new Intent(MainActivity.this, AttendanceActivity.class);
-                        intent.putExtra(REGISTRATION_NUMBER, user.getText().toString());
+                        intent.putExtra(REGISTRATION_NUMBER, Objects.requireNonNull(user.getText()).toString());
                         intent.putExtra(NO_ATTENDANCE, true);
                         intent.putExtra(LOGIN, true);
                         intent.putExtra(API, api);
@@ -343,7 +351,7 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                         Intent intent = new Intent(MainActivity.this, AttendanceActivity.class);
                         response += "kkk" + param[1];
                         intent.putExtra(RESULTS, response);
-                        intent.putExtra(REGISTRATION_NUMBER, user.getText().toString());
+                        intent.putExtra(REGISTRATION_NUMBER, Objects.requireNonNull(user.getText()).toString());
                         intent.putExtra(LOGIN, true);
                         intent.putExtra(STUDENT_NAME, studentName);
                         intent.putExtra(API, api);
@@ -741,7 +749,7 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                 .setOnPauseListener(() -> Toast.makeText(MainActivity.this, "Download Paused", Toast.LENGTH_SHORT).show())
                 .setOnCancelListener(() -> Toast.makeText(MainActivity.this, "Download Cancelled", Toast.LENGTH_SHORT).show())
                 .setOnProgressListener(progress -> {
-                    long progressPercent = progress.currentBytes * 100 / fileSize;
+                    long progressPercent = progress.currentBytes * 100 / progress.totalBytes;
                     update.setText((int) progressPercent + "%");
                     update_out_of_100.setText((int) progressPercent + "/100");
                     progressBar.setProgress((int) progressPercent);

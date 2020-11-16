@@ -2,24 +2,55 @@
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <androidx.preference.PreferenceCategory
-        android:title="Mobile notifications"
+        android:title="Mobile Notifications"
         app:iconSpaceReserved="false">
         <androidx.preference.SwitchPreference
             android:key="pref_notification"
-            android:summary="Daily get attendance reminder at 7 AM."
+            android:summary="Get daily reminder to check attendance"
             android:title="Enable Notification"
             app:iconSpaceReserved="false" />
     </androidx.preference.PreferenceCategory>
     <androidx.preference.PreferenceCategory
-        android:title="Attendance stats"
+        android:title="Attendance Stats"
         app:iconSpaceReserved="false">
+
+        <androidx.preference.SwitchPreference
+            android:defaultValue="true"
+            android:key="pref_show_attendance_stats"
+            android:summary="Turn on to manage attendance efficiently"
+            android:title="Show attendance stats"
+            app:iconSpaceReserved="false" />
+
         <ListPreference
             android:defaultValue="75"
+            android:dependency="pref_show_attendance_stats"
             android:entries="@array/minimumAttendanceArray"
             android:entryValues="@array/minimumAttendanceValues"
             android:key="pref_minimum_attendance"
             android:summary="Set minimum required attendance"
             android:title="Minimum attendance"
             app:iconSpaceReserved="false" />
+
+        <androidx.preference.SwitchPreference
+            android:dependency="pref_show_attendance_stats"
+            android:key="pref_extended_stats"
+            android:summary="Show extended attendance stats"
+            android:title="Extended attendance stats"
+            app:iconSpaceReserved="false" />
+    </androidx.preference.PreferenceCategory>
+
+    <androidx.preference.PreferenceCategory
+        android:title="Contact Us"
+        app:iconSpaceReserved="false">
+
+        <androidx.preference.Preference
+            android:key="pref_contact_us"
+            android:title="Feature or Bug report"
+            app:iconSpaceReserved="false">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="mailto:codexiter@gmail.com" />
+        </androidx.preference.Preference>
+
     </androidx.preference.PreferenceCategory>
 </androidx.preference.PreferenceScreen>

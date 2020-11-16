@@ -26,8 +26,10 @@ import com.android.volley.RequestQueue;
 import com.android.volley.ServerError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textview.MaterialTextView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -56,7 +58,7 @@ import static codex.codex_iter.www.awol.utilities.Constants.RESULTS;
 public class ResultActivity extends BaseThemedActivity implements ResultAdapter.OnItemClickListener {
 
     @BindView(R.id.toolbar)
-    Toolbar toolbar;
+    MaterialToolbar toolbar;
     @BindView(R.id.main_layout)
     LinearLayout main_layout;
     @BindView(R.id.recyclerViewDetailedResult)
@@ -64,7 +66,7 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
     @BindView(R.id.NA)
     ConstraintLayout noAttendanceLayout;
     @BindView(R.id.NA_content)
-    TextView tv;
+    MaterialTextView tv;
     SharedPreferences userm;
     private String result;
     private int l;

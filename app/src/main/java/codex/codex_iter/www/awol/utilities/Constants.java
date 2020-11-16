@@ -48,6 +48,7 @@ public  class Constants {
     public static final String RESULT_STATUS = "resultStatus";
     public static final String SHOW_RESULT = "showResult";
     public static final String SHOW_LECTURES = "showLectures";
+    public static final String SHOW_CUSTOM_TABS = "showCustomTabs";
     public static final String UNDER_MAINTENANCE = "underMaintenance";
     public static final String REGISTRATION_NUMBER = "registrationNumber";
     public static final String RESULTS = "result";

@@ -15,6 +15,7 @@
     <color name="blackShade">#AB000000</color>
 
     <color name="grey50">#fafafa</color>
+    <color name="grey">#C9777474</color>
     <color name="red">#f44336</color>
     <color name="redDark">#ba000d</color>
     <color name="orange">#ff9800</color>

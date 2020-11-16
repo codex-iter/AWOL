@@ -20,7 +20,7 @@
     <string name="made_with_as_a_project_for_codex">MADE WITH 💚 AS A PROJECT FOR CODEX</string>
     <string name="disclaimer">DISCLAIMER</string>
     <string name="todo">TODO</string>
-    <string name="sharing_text">ScreenShot by AWOL-ITER\n Download it tiny.cc/iter_awol</string>
+    <string name="sharing_text">Screenshot by AWOL\nDownload now tiny.cc/iter_awol\n\n\n_Developed and maintained by CODEX_</string>
     <string name="share_title">Share Attendance</string>
     <string name="pawan_gorai">Pawan Kumar Gorai</string>
     <string name="nehal_kumar_singh">Nehal Kumar Singh</string>
@@ -81,5 +81,6 @@
     <string name="results_not_available">Results not available</string>
     <string name="downloading_new_updates">Downloading new updates</string>
     <string name="average_present">%d %%</string>
+    <string name="moodle">Moodle</string>
 </resources>
 

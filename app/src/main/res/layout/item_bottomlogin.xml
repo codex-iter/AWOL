@@ -13,7 +13,7 @@
         android:orientation="vertical"
         app:behavior_peekHeight="20dp">
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/hello"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

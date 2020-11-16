@@ -9,6 +9,8 @@ import android.view.View;
 
 import androidx.appcompat.widget.Toolbar;
 
+import com.google.android.material.appbar.MaterialToolbar;
+
 import java.util.Objects;
 
 import codex.codex_iter.www.awol.R;
@@ -20,7 +22,7 @@ public class AboutActivity extends BaseThemedActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        MaterialToolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle("About");
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);

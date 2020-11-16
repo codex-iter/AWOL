@@ -8,6 +8,8 @@ import android.view.MenuItem;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 
+import com.google.android.material.appbar.MaterialToolbar;
+
 import java.util.Objects;
 
 import codex.codex_iter.www.awol.R;
@@ -35,7 +37,7 @@ public class SettingsActivity extends BaseThemedActivity {
     }
 
     private void setupToolbar() {
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        MaterialToolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle("Settings");
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);

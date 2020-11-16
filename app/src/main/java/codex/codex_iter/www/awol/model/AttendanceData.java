@@ -134,7 +134,7 @@ public class AttendanceData {
         this.percent = String.format(Locale.US, "%.1f", new Scanner(percent).nextDouble());
     }
 
-    public void setBunk(int pref_min_attendance) {
+    public void setBunk(int pref_min_attendance, boolean attendance_stats, boolean show_attendance_stats) {
         StringBuilder bunkStats = new StringBuilder("");
         ArrayList<String> bunk = new ArrayList<>();
         ArrayList<String> need = new ArrayList<>();
@@ -176,11 +176,21 @@ public class AttendanceData {
                 }
             }
         }
-        if (!bunk.isEmpty()) bunkStats.append(bunk.get(bunk.size() - 1));
-        if (!need.isEmpty()) bunkStats.append(need.get(0));
 
-        if (bunkStats.length() != 0) bunkStats.setLength(bunkStats.length() - 1);
-
+        if (show_attendance_stats) {
+            if (attendance_stats) {
+                for (int i = 0; i < bunk.size(); i++) {
+                    bunkStats.append(bunk.get(i));
+                }
+                for (int i = 0; i < need.size(); i++) {
+                    bunkStats.append(need.get(i));
+                }
+            } else {
+                if (!bunk.isEmpty()) bunkStats.append(bunk.get(bunk.size() - 1));
+                if (!need.isEmpty()) bunkStats.append(need.get(0));
+            }
+            if (bunkStats.length() != 0) bunkStats.setLength(bunkStats.length() - 1);
+        }
         this.bunk_text_str = bunkStats.toString();
     }
 }

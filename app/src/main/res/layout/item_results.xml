@@ -11,7 +11,7 @@
     android:paddingLeft="5dp"
     android:paddingRight="5dp">
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/card_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_margin="5dp"
@@ -41,7 +41,7 @@
                     android:padding="5dp"
                     android:scaleType="fitXY" />
 
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
             <GridLayout
                 android:layout_width="wrap_content"
@@ -52,7 +52,7 @@
                 android:paddingEnd="15dp"
                 android:rowCount="4">
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_row="0"
@@ -63,7 +63,7 @@
                     android:textSize="15sp"
                     android:textStyle="bold" />
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/textViewSem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -77,7 +77,7 @@
                     android:textSize="15sp"
                     android:typeface="normal" />
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_row="1"
@@ -88,7 +88,7 @@
                     android:textSize="15sp"
                     android:textStyle="bold" />
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/textViewCredits"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -102,7 +102,7 @@
                     android:textSize="15sp"
                     android:typeface="normal" />
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_row="2"
@@ -113,7 +113,7 @@
                     android:textSize="15sp"
                     android:textStyle="bold" />
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/textViewSGPA"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -128,7 +128,7 @@
                     android:textSize="15sp"
                     android:typeface="normal" />
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_row="3"
@@ -139,7 +139,7 @@
                     android:textSize="15sp"
                     android:textStyle="bold" />
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/textViewCGPA"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -156,5 +156,5 @@
                     android:typeface="normal" />
             </GridLayout>
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 </LinearLayout>

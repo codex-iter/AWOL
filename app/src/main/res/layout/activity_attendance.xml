@@ -27,7 +27,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <androidx.appcompat.widget.Toolbar
+                <com.google.android.material.appbar.MaterialToolbar
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="?actionBarSize"
@@ -35,7 +35,7 @@
                     android:background="?toolbarColor"
                     android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
 
-                </androidx.appcompat.widget.Toolbar>
+                </com.google.android.material.appbar.MaterialToolbar>
             </com.google.android.material.appbar.AppBarLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -113,9 +113,10 @@
                 android:id="@+id/who_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@+id/download_stats_layout">
 
-                <androidx.cardview.widget.CardView
+                <com.google.android.material.card.MaterialCardView
                     android:id="@+id/whoCard"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -138,7 +139,7 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
-                        <TextView
+                        <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/heading"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -149,7 +150,7 @@
                             app:layout_constraintStart_toEndOf="@+id/logo"
                             app:layout_constraintTop_toTopOf="parent" />
 
-                        <TextView
+                        <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/heading_desp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -188,7 +189,7 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-                </androidx.cardview.widget.CardView>
+                </com.google.android.material.card.MaterialCardView>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.recyclerview.widget.RecyclerView

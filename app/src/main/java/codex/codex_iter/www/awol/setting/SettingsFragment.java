@@ -50,7 +50,12 @@ public class SettingsFragment extends PreferenceFragment {
         SharedPreferences preferences = getActivity().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preference);
+
+        final SharedPreferences prefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(getActivity());
         final SwitchPreference notifications = (SwitchPreference) findPreference("pref_notification");
+        final SwitchPreference pref_show_attendance_stats = (SwitchPreference) findPreference("pref_show_attendance_stats");
+        final SwitchPreference pref_extended_stats = (SwitchPreference) findPreference("pref_extended_stats");
+        final Preference pref_contact_us = (Preference) findPreference("pref_contact_us");
         ListPreference pref_minimum_attendance = (ListPreference) findPreference("pref_minimum_attendance");
 
         SharedPreferences preferences1 = getContext().getSharedPreferences("Dark", MODE_PRIVATE);
@@ -63,6 +68,58 @@ public class SettingsFragment extends PreferenceFragment {
             Spannable title_attendance = new SpannableString(pref_minimum_attendance.getTitle().toString());
             title_attendance.setSpan(new ForegroundColorSpan(Color.BLACK), 0, title_attendance.length(), 0);
             pref_minimum_attendance.setTitle(title_attendance);
+
+            Spannable title_attendance_stats = new SpannableString(pref_show_attendance_stats.getTitle().toString());
+            title_attendance_stats.setSpan(new ForegroundColorSpan(Color.BLACK), 0, title_attendance_stats.length(), 0);
+            pref_show_attendance_stats.setTitle(title_attendance_stats);
+
+            Spannable title_extended_stats = new SpannableString(pref_extended_stats.getTitle().toString());
+            title_extended_stats.setSpan(new ForegroundColorSpan(Color.BLACK), 0, title_extended_stats.length(), 0);
+            pref_extended_stats.setTitle(title_extended_stats);
+
+            Spannable title_contact_us = new SpannableString(pref_contact_us.getTitle().toString());
+            title_contact_us.setSpan(new ForegroundColorSpan(Color.BLACK), 0, title_contact_us.length(), 0);
+            pref_contact_us.setTitle(title_contact_us);
+
+            // Disable all the attendance stats prefs if show attendance stats pref is false
+            if (!prefs.getBoolean("pref_show_attendance_stats", false)) {
+                title_attendance.setSpan(new ForegroundColorSpan(Color.GRAY), 0, title_attendance.length(), 0);
+                pref_minimum_attendance.setTitle(title_attendance);
+
+                title_extended_stats.setSpan(new ForegroundColorSpan(Color.GRAY), 0, title_extended_stats.length(), 0);
+                pref_extended_stats.setTitle(title_extended_stats);
+
+            } else {
+                title_attendance.setSpan(new ForegroundColorSpan(Color.BLACK), 0, title_attendance.length(), 0);
+                pref_minimum_attendance.setTitle(title_attendance);
+
+                title_extended_stats.setSpan(new ForegroundColorSpan(Color.BLACK), 0, title_extended_stats.length(), 0);
+                pref_extended_stats.setTitle(title_extended_stats);
+            }
+            if (pref_show_attendance_stats != null) {
+                pref_show_attendance_stats.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                    @Override
+                    public boolean onPreferenceChange(Preference preference, Object newValue) {
+                        Boolean checked = (Boolean) newValue;
+                        if (!checked) {
+                            title_attendance.setSpan(new ForegroundColorSpan(Color.GRAY), 0, title_attendance.length(), 0);
+                            pref_minimum_attendance.setTitle(title_attendance);
+
+                            title_extended_stats.setSpan(new ForegroundColorSpan(Color.GRAY), 0, title_extended_stats.length(), 0);
+                            pref_extended_stats.setTitle(title_extended_stats);
+                        } else {
+                            title_attendance.setSpan(new ForegroundColorSpan(Color.BLACK), 0, title_attendance.length(), 0);
+                            pref_minimum_attendance.setTitle(title_attendance);
+
+                            title_extended_stats.setSpan(new ForegroundColorSpan(Color.BLACK), 0, title_extended_stats.length(), 0);
+                            pref_extended_stats.setTitle(title_extended_stats);
+                        }
+                        prefs.edit().putBoolean("pref_show_attendance_stats", checked).apply();
+                        return true;
+                    }
+                });
+            }
+
         }
 
         final SharedPreferences stop = getContext().getSharedPreferences("STOP", 0);
@@ -77,12 +134,14 @@ public class SettingsFragment extends PreferenceFragment {
         String packageName = getContext().getPackageName();
         PowerManager pm = (PowerManager) getContext().getSystemService(POWER_SERVICE);
         if (!pm.isIgnoringBatteryOptimizations(packageName)) {
-            Snackbar.make(coordinatorLayout, "Allow app to run in background to get Notifications", Snackbar.LENGTH_INDEFINITE).setActionTextColor(Color.RED).setAction("Allow", new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    openPowerSettings(getContext());
-                }
-            }).show();
+            if (coordinatorLayout != null) {
+                Snackbar.make(coordinatorLayout, "Allow app to run in background to get Notifications", Snackbar.LENGTH_INDEFINITE).setActionTextColor(Color.RED).setAction("Allow", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        openPowerSettings(getContext());
+                    }
+                }).show();
+            }
         }
         if (notifications != null && notifications.isChecked()) {
             editor1.putBoolean("STOP_NOTIFICATION", false);

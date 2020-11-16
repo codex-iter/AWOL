@@ -14,12 +14,9 @@ public abstract class BaseThemedActivity extends AppCompatActivity {
     private static final String PREFS_NAME = "prefs";
     private static final String THEME = "theme_pref";
 
-
     @Override
     public void setTheme(int resId) {
-
         SharedPreferences preferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-
         SharedPreferences theme = getSharedPreferences("theme", 0);
         dark = theme.getBoolean(PREF_DARK_THEME, false);
 //        if (useDarkTheme && dark) {
@@ -27,9 +24,5 @@ public abstract class BaseThemedActivity extends AppCompatActivity {
 //        }
 //        else super.setTheme(getLightTheme());
         super.setTheme(theme.getInt(THEME, R.style.AppTheme_NoActionBar));
-
-
     }
-
-
 }

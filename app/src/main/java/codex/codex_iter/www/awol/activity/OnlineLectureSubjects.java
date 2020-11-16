@@ -17,6 +17,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.gson.Gson;
@@ -45,7 +46,7 @@ public class OnlineLectureSubjects extends BaseThemedActivity implements OnlineL
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
     @BindView(R.id.toolbar)
-    Toolbar toolbar;
+    MaterialToolbar toolbar;
     @BindView(R.id.main_Layout)
     ConstraintLayout main_layout;
 

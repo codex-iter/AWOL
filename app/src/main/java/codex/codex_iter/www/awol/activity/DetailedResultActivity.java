@@ -17,7 +17,9 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textview.MaterialTextView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -47,11 +49,11 @@ public class DetailedResultActivity extends BaseThemedActivity {
     @BindView(R.id.recyclerViewDetailedResult)
     RecyclerView recyclerView;
     @BindView(R.id.toolbar)
-    Toolbar toolbar;
+    MaterialToolbar toolbar;
     @BindView(R.id.NA)
     ConstraintLayout noAttendanceLayout;
     @BindView(R.id.NA_content)
-    TextView tv;
+    MaterialTextView tv;
     private String msem;
     SharedPreferences userm;
     private String result;

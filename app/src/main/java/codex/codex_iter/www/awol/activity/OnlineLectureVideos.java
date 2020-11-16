@@ -22,6 +22,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.ServerError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
@@ -50,7 +51,7 @@ public class OnlineLectureVideos extends BaseThemedActivity implements OnlineLec
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
     @BindView(R.id.toolbar)
-    Toolbar toolbar;
+    MaterialToolbar toolbar;
     @BindView(R.id.main_Layout)
     ConstraintLayout mainLayout;
 

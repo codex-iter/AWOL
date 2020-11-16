@@ -35,7 +35,7 @@
             android:layout_height="70dp"
             android:layout_centerInParent="true" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/error_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

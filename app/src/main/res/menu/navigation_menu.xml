@@ -10,6 +10,10 @@
         android:icon="@drawable/ic_hotel"
         android:title="@string/plan_bunk" />
     <item
+        android:id="@+id/customTabs"
+        android:icon="@drawable/ic_moodle"
+        android:title="@string/moodle"/>
+    <item
         android:id="@+id/result"
         android:icon="@drawable/clipboard_text_outline"
         android:title="@string/results" />
@@ -33,10 +37,6 @@
         android:id="@+id/abt"
         android:icon="@drawable/ic_local"
         android:title="@string/about_us" />
-    <item
-        android:id="@+id/contactus"
-        android:icon="@drawable/mail"
-        android:title="@string/contact_us" />
     <item
         android:id="@+id/lgout"
         android:icon="@drawable/ic_home"

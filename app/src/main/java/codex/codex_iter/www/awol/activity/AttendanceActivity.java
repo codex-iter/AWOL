@@ -1,7 +1,6 @@
 package codex.codex_iter.www.awol.activity;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,17 +11,12 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.FileUriExposedException;
 import android.os.Vibrator;
 import android.text.Html;
 import android.text.format.DateUtils;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -31,8 +25,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.widget.Toolbar;
-import androidx.cardview.widget.CardView;
+import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.FileProvider;
 import androidx.core.view.GravityCompat;
@@ -49,7 +42,11 @@ import com.android.volley.ServerError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textview.MaterialTextView;
@@ -97,6 +94,7 @@ import static codex.codex_iter.www.awol.utilities.Constants.READ_DATABASE2;
 import static codex.codex_iter.www.awol.utilities.Constants.REGISTRATION_NUMBER;
 import static codex.codex_iter.www.awol.utilities.Constants.RESULTS;
 import static codex.codex_iter.www.awol.utilities.Constants.RESULT_STATUS;
+import static codex.codex_iter.www.awol.utilities.Constants.SHOW_CUSTOM_TABS;
 import static codex.codex_iter.www.awol.utilities.Constants.SHOW_LECTURES;
 import static codex.codex_iter.www.awol.utilities.Constants.SHOW_RESULT;
 import static codex.codex_iter.www.awol.utilities.Constants.STUDENT_NAME;
@@ -109,11 +107,11 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
     @BindView(R.id.check_result)
-    Button checkResult;
+    MaterialButton checkResult;
     @BindView(R.id.nav_view)
     NavigationView navigationView;
     @BindView(R.id.NA_content)
-    TextView tv;
+    MaterialTextView tv;
     @BindView(R.id.rl)
     RecyclerView recyclerView;
     @BindView(R.id.NA)
@@ -121,19 +119,19 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
     @BindView(R.id.who_layout)
     ConstraintLayout who_layout;
     @BindView(R.id.who_button)
-    Button who_button;
+    MaterialButton who_button;
     @BindView(R.id.removetile)
     ImageView removetile;
     @BindView(R.id.heading)
-    TextView heading;
+    MaterialTextView heading;
     @BindView(R.id.heading_desp)
-    TextView heading_desp;
+    MaterialTextView heading_desp;
     @BindView(R.id.whoCard)
-    CardView cardView;
+    MaterialCardView cardView;
     @BindView(R.id.logo)
     ImageView logo;
     @BindView(R.id.toolbar)
-    Toolbar toolbar;
+    MaterialToolbar toolbar;
 //    @BindView(R.id.adView)
 //    AdView adView;
 
@@ -154,7 +152,7 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
     private AttendanceAdapter adapter;
     private boolean no_attendance;
     private String api;
-    private String showResult, showlectures;
+    private String showResult, showlectures, custom_tabs_link, showCustomTabs;
     private BottomSheetDialog dialog;
     private int read_database;
     private static final String[] suffix = new String[]{"", "k", "m", "b", "t"};
@@ -163,6 +161,7 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
 //    private boolean isLoaded;
     private InternetAvailabilityChecker mInternetAvailabilityChecker;
     private View headerView;
+    private static final String TOOLBAR_COLOR = "toolbar_color";
 
     public AttendanceActivity() {
     }
@@ -243,7 +242,8 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                 attendanceData[i].setLab(jObj.getString("Patt"));
                 attendanceData[i].setUpd(ck);
                 attendanceData[i].setPercent(jObj.getString("TotalAttandence"));
-                attendanceData[i].setBunk(Integer.parseInt(Objects.requireNonNull(prefs.getString("pref_minimum_attendance", "75"))));
+                attendanceData[i].setBunk(Integer.parseInt(Objects.requireNonNull(prefs.getString("pref_minimum_attendance", "75"))),
+                        prefs.getBoolean("pref_extended_stats", false), prefs.getBoolean("pref_show_attendance_stats", true));
                 avgat += jObj.getDouble("TotalAttandence");
                 avgab += Integer.parseInt(attendanceData[i].getAbsent());
                 student_semester = jObj.getString(STUDENT_SEMESTER);
@@ -265,7 +265,7 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                 noAttendance();
             }
         } catch (Exception e) {
-            Snackbar snackbar = Snackbar.make(mainLayout, "Something went wrong few things may not work", Snackbar.LENGTH_SHORT);
+            Snackbar snackbar = Snackbar.make(mainLayout, "Something went wrong few things may not work properly", Snackbar.LENGTH_SHORT);
             snackbar.show();
             if (!Constants.Offline_mode) {
                 noAttendance();
@@ -569,14 +569,22 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                 for (DocumentChange documentChange : queryDocumentSnapshots.getDocumentChanges()) {
                     showResult = documentChange.getDocument().getString(SHOW_RESULT);
                     showlectures = documentChange.getDocument().getString(SHOW_LECTURES);
+                    showCustomTabs = documentChange.getDocument().getString(SHOW_CUSTOM_TABS);
                     read_database = Integer.parseInt(Objects.requireNonNull(documentChange.getDocument().getString("fetch_file")));
                     sharedPreferences.edit().putString(SHOW_RESULT, showResult).apply();
                     sharedPreferences.edit().putString(SHOW_LECTURES, showlectures).apply();
+                    sharedPreferences.edit().putString(SHOW_CUSTOM_TABS, showCustomTabs).apply();
+                    custom_tabs_link = String.valueOf(documentChange.getDocument().getString("custom_tabs_link"));
                     AUTH_KEY = documentChange.getDocument().getString("auth_key");
                     APP_ID = documentChange.getDocument().getString("app_id");
 
                     if (showlectures.equals("0"))
                         navigationView.getMenu().findItem(R.id.lecture).setVisible(false);
+                    if (showCustomTabs.equals("0")) {
+                        navigationView.getMenu().findItem(R.id.customTabs).setVisible(false);
+                    } else {
+                        navigationView.getMenu().findItem(R.id.customTabs).setVisible(true);
+                    }
 
                     if (sharedPreferences.getInt(READ_DATABASE, 0) < read_database) {
                         sharedPreferences.edit().putInt(READ_DATABASE, read_database).apply();
@@ -646,15 +654,24 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                 Snackbar snackbar = Snackbar.make(mainLayout, "Attendance is currently unavailable", Snackbar.LENGTH_SHORT);
                 snackbar.show();
             } else {
-                Bitmap bitmap = ScreenshotUtils.getScreenShot(recyclerView);
-                if (bitmap != null) {
-                    File save = ScreenshotUtils.getMainDirectoryName(this);
-                    File file = ScreenshotUtils.store(bitmap, "screenshot.jpg", save);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        shareScreenshot(file);
+                try {
+                    Bitmap bitmap = ScreenshotUtils.getScreenShot(recyclerView);
+                    if (bitmap != null) {
+                        Toast.makeText(this, "Taking screenshot...", Toast.LENGTH_SHORT).show();
+                        File save = ScreenshotUtils.getMainDirectoryName(this);
+                        File file = ScreenshotUtils.store(bitmap, "screenshot.jpg", save);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                            shareScreenshot(file);
+                        } else {
+                            shareScreenshot_low(file);
+                        }
                     } else {
-                        shareScreenshot_low(file);
+                        Snackbar snackbar = Snackbar.make(mainLayout, "Cannot take screenshot. Please try again", Snackbar.LENGTH_LONG);
+                        snackbar.show();
                     }
+                } catch (Exception e) {
+                    Snackbar snackbar = Snackbar.make(mainLayout, "Cannot take screenshot. Please try again", Snackbar.LENGTH_LONG);
+                    snackbar.show();
                 }
             }
         });
@@ -761,8 +778,9 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
             intent.putExtra(android.content.Intent.EXTRA_TEXT, getString(R.string.sharing_text));
             intent.putExtra(Intent.EXTRA_STREAM, uri);//pass uri here
             startActivity(Intent.createChooser(intent, getString(R.string.share_title)));
-        } catch (FileUriExposedException e) {
-            Toast.makeText(this, "Something, went wrong.", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Snackbar snackbar = Snackbar.make(mainLayout, "Cannot take screenshot. Please try again", Snackbar.LENGTH_LONG);
+            snackbar.show();
         }
     }
 
@@ -777,7 +795,8 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
             intent.putExtra(Intent.EXTRA_STREAM, uri);//pass uri here
             startActivity(Intent.createChooser(intent, getString(R.string.share_title)));
         } catch (Exception e) {
-            Toast.makeText(this, "Something, went wrong.", Toast.LENGTH_SHORT).show();
+            Snackbar snackbar = Snackbar.make(mainLayout, "Cannot take screenshot. Please try again", Snackbar.LENGTH_LONG);
+            snackbar.show();
         }
     }
 
@@ -862,7 +881,10 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().getString(R.string.github_url))));
                 break;
             case R.id.lgout:
-                AlertDialog.Builder binder = new AlertDialog.Builder(AttendanceActivity.this);
+                if (this.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                    this.drawerLayout.closeDrawer(GravityCompat.START);
+                }
+                MaterialAlertDialogBuilder binder = new MaterialAlertDialogBuilder(AttendanceActivity.this);
                 binder.setMessage("Do you want to logout?");
                 binder.setTitle(Html.fromHtml("<font color='#ba000d'>Are you sure?</font>"));
                 binder.setCancelable(false);
@@ -895,28 +917,8 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                     startActivity(intent3);
                 });
                 binder.setNegativeButton("NO", (dialog, which) -> dialog.cancel());
-                AlertDialog alertDialog = binder.create();
-                Window window = alertDialog.getWindow();
-                WindowManager.LayoutParams wlp = null;
-                if (window != null) {
-                    wlp = window.getAttributes();
-                }
-                if (wlp != null) {
-                    wlp.gravity = Gravity.BOTTOM;
-                }
-                if (wlp != null) {
-                    wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
-                }
-                if (window != null) {
-                    window.setAttributes(wlp);
-                }
-                alertDialog.show();
+                binder.show();
                 break;
-            case R.id.pab: {
-                Intent intent = new Intent(AttendanceActivity.this, BunkActivity.class);
-                startActivity(intent);
-                break;
-            }
             case R.id.result:
                 if (Objects.equals(sharedPreferences.getString(SHOW_RESULT, ""), "0")) {
                     Snackbar snackbar = Snackbar.make(mainLayout, "We will be back within 3-4 days", Snackbar.LENGTH_LONG);
@@ -934,12 +936,17 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                 Intent intent2 = new Intent(Intent.ACTION_VIEW, uri);
                 startActivity(intent2);
                 break;
-            case R.id.contactus:
-                Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                        "mailto", "codexiter@gmail.com", null));
-                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Feedback for AWOL");
-                emailIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(Intent.createChooser(emailIntent, null));
+            case R.id.customTabs:
+                if (!Objects.equals(sharedPreferences.getString(SHOW_CUSTOM_TABS, "0"), "0")) {
+                    if (custom_tabs_link != null && !custom_tabs_link.isEmpty()) {
+                        custom_tab(custom_tabs_link);
+                        Log.d("custom_link", custom_tabs_link);
+                    } else {
+                        Snackbar snackbar = Snackbar.make(mainLayout, "Something went wrong, please try again", Snackbar.LENGTH_SHORT);
+                        snackbar.show();
+                    }
+                }
+                break;
         }
         return true;
     }
@@ -960,6 +967,25 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
 //            }
 //        }
         //TODO refresh the activity when internet connection is available after disconnection
+    }
+
+    private void custom_tab(String url) {
+        try {
+            CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+            builder.setShowTitle(true);
+            builder.setStartAnimations(this, R.anim.slide_in_right, R.anim.slide_out_left);
+            builder.setExitAnimations(this, R.anim.slide_in_left, R.anim.slide_out_right);
+            if (this.getSharedPreferences("theme", 0).contains(TOOLBAR_COLOR)) {
+                builder.setToolbarColor(getResources().getColor(this.getSharedPreferences("theme", 0).getInt(TOOLBAR_COLOR, 0)));
+            } else {
+                builder.setToolbarColor(getResources().getColor(R.color.white));
+            }
+            builder.build().launchUrl(this, Uri.parse(url));
+        } catch (Exception e) {
+            Log.d("custom_tabs_link", Objects.requireNonNull(e.getMessage()));
+            Snackbar snackbar = Snackbar.make(mainLayout, "Something went wrong, please try again", Snackbar.LENGTH_SHORT);
+            snackbar.show();
+        }
     }
 
     @Override

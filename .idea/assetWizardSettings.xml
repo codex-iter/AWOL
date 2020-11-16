@@ -19,8 +19,8 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="outputName" value="ic_youtube" />
-                            <entry key="sourceFile" value="E:\Android Projects\AWOL\app\src\main\res\drawable\youtube.svg" />
+                            <entry key="outputName" value="ic_keyboard_backspace_white_24dp" />
+                            <entry key="sourceFile" value="E:\Android Projects\AWOL\app\src\main\res\drawable\keyboard_backspace-white-24dp.svg" />
                           </map>
                         </option>
                       </PersistentState>

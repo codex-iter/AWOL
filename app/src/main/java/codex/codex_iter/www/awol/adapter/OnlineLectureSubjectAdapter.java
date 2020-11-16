@@ -9,9 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textview.MaterialTextView;
 
 import java.util.ArrayList;
@@ -78,7 +78,7 @@ public class OnlineLectureSubjectAdapter extends RecyclerView.Adapter<OnlineLect
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         MaterialTextView subject;
-        CardView cardView;
+        MaterialCardView cardView;
         ImageView icon;
 
         public ViewHolder(@NonNull View itemView) {

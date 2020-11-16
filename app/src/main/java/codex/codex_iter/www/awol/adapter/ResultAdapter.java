@@ -8,11 +8,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.textview.MaterialTextView;
 
 import java.util.List;
 
@@ -89,10 +90,10 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.ResultHold
     }
 
     public static class ResultHolder extends RecyclerView.ViewHolder {
-        TextView semTextView, sgpaTextView, creditsTextView, cgpaTextView;
+        MaterialTextView semTextView, sgpaTextView, creditsTextView, cgpaTextView;
         LinearLayout recyclerResultParent;
         ImageView imageViewResultEmotion;
-        CardView cardView;
+        MaterialCardView cardView;
 
         public ResultHolder(@NonNull View itemView) {
             super(itemView);
@@ -109,5 +110,4 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.ResultHold
     public interface OnItemClickListener {
         void onResultClicked(int sem, String totalCredits, String status, String sgpa);
     }
-
 }

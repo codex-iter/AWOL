@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:theme="@style/AppTheme.AppBarOverlay">
 
-            <androidx.appcompat.widget.Toolbar
+            <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
@@ -27,7 +27,7 @@
                 android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
                 tools:titleTextColor="@color/colorAccent">
 
-            </androidx.appcompat.widget.Toolbar>
+            </com.google.android.material.appbar.MaterialToolbar>
         </com.google.android.material.appbar.AppBarLayout>
 
         <ImageView
@@ -37,7 +37,7 @@
             android:contentDescription="@string/todo"
             android:src="@drawable/app_logo" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -102,79 +102,25 @@
             android:gravity="center_vertical"
             android:orientation="vertical">
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:gravity="center_horizontal"
-            android:text="@string/disclaimer"
-            android:textColor="?aboutTextColor"
-            android:textSize="14sp" />
+                android:text="@string/disclaimer"
+                android:textColor="?aboutTextColor"
+                android:textSize="14sp" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="9dp"
-            android:gravity="center"
-            android:paddingHorizontal="15dp"
-            android:text="@string/abtAPP"
-            android:textColor="?aboutTextColor"
-            android:textSize="14sp"
-            tools:targetApi="o" />
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="9dp"
+                android:gravity="center"
+                android:paddingHorizontal="15dp"
+                android:text="@string/abtAPP"
+                android:textColor="?aboutTextColor"
+                android:textSize="14sp"
+                tools:targetApi="o" />
+        </LinearLayout>
     </LinearLayout>
-
-    <TextView
-        tools:targetApi="o"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10sp"
-        android:gravity="center"
-        android:paddingHorizontal="15dp"
-        android:text="@string/developers"
-        android:textAllCaps="true"
-        android:textColor="?aboutTextColor"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        android:visibility="gone" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/mohit_agarwal"
-        android:textAllCaps="true"
-        android:textColor="?aboutTextColor"
-        android:textSize="14sp"
-        android:visibility="gone" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/pawan_gorai"
-        android:textAllCaps="true"
-        android:textColor="?aboutTextColor"
-        android:textSize="14sp"
-        android:visibility="gone" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/avinav"
-        android:textAllCaps="true"
-        android:textColor="?aboutTextColor"
-        android:textSize="14sp"
-        android:visibility="gone" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/nehal_kumar_singh"
-        android:textAllCaps="true"
-        android:textColor="?aboutTextColor"
-        android:textSize="14sp"
-        android:visibility="gone" />
-
-</LinearLayout></ScrollView>
+</ScrollView>

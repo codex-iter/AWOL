@@ -7,13 +7,14 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.textview.MaterialTextView;
 
 import java.util.List;
 
@@ -89,7 +90,11 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.my
         holder.prac.setText(dataList.get(position).getLab() + dataList.get(position).getLabt());
         holder.ab.setText(dataList.get(position).getAbsent());
         holder.tc.setText(dataList.get(position).getClasses());
-        holder.bunk_text.setText(dataList.get(position).getBunk_text_str());
+        if (dataList.get(position).getBunk_text_str() != null && !dataList.get(position).getBunk_text_str().isEmpty()) {
+            holder.bunk_text.setText(dataList.get(position).getBunk_text_str());
+        } else {
+            holder.bunk_text.setVisibility(View.GONE);
+        }
 
         if (!dark) {
             holder.cardView.setCardBackgroundColor(Color.parseColor("#FFFFFF"));
@@ -130,10 +135,10 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.my
     }
 
     public static class myViewHolder extends RecyclerView.ViewHolder {
-        TextView sub, lu, th, prac, ab, tc, theory, updated, pract, classes, absents, bunk_text;
-        Button ta;
+        MaterialTextView sub, lu, th, prac, ab, tc, theory, updated, pract, classes, absents, bunk_text;
+        MaterialButton ta;
         ImageView up;
-        CardView cardView;
+        MaterialCardView cardView;
 
         public myViewHolder(@NonNull View view) {
             super(view);
