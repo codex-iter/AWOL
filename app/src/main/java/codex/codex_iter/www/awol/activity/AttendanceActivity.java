@@ -229,7 +229,7 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                 attendanceData[i] = new AttendanceData();
 
                 if (!jObj.has("subjectcode") || !jObj.has("subject") || !jObj.has("Latt") || !jObj.has("Patt")
-                        || !jObj.has("TotalAttandence")) {
+                        || !jObj.has("TotalAttandence") || attendanceData[i].getAbsent().isEmpty() || attendanceData[i].getAbsent() == null) {
                     throw new InvalidResponseException();
                 }
 
@@ -965,8 +965,15 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
 //                    adView.setVisibility(View.GONE);
 //                }
 //            }
+//            if (Constants.Offline_mode) {
+//                Constants.Offline_mode = false;
+//                Snackbar.make(mainLayout, "Your connection is back. Please refresh the app", Snackbar.LENGTH_INDEFINITE)
+//                        .setActionTextColor(Color.GREEN).setAction("REFRESH", v -> {
+//                    startActivity(new Intent(this, MainActivity.class));
+//                    finish();
+//                }).show();
+//            }
 //        }
-        //TODO refresh the activity when internet connection is available after disconnection
     }
 
     private void custom_tab(String url) {

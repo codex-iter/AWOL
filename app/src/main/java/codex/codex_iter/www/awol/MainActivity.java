@@ -262,7 +262,6 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                 }
             });
         } catch (Exception e) {
-
             Snackbar snackbar = Snackbar.make(mainLayout, "Invalid firebase response", Snackbar.LENGTH_SHORT);
             snackbar.show();
         }
@@ -333,12 +332,14 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                         intent.putExtra(API, api);
                         if (mAuth.getCurrentUser() != null) {
                             startActivity(intent);
+                            finish();
                         } else {
                             mAuth.signInAnonymously()
                                     .addOnCompleteListener(task -> {
                                         if (task.isSuccessful()) {
                                             Log.d("SignIn", "Successfully");
                                             startActivity(intent);
+                                            finish();
                                         } else {
                                             Log.d("SignIn", Objects.requireNonNull(task.getException()).toString());
                                             Snackbar snackbar = Snackbar.make(mainLayout, "Oops, something went wrong! Please try after sometime", Snackbar.LENGTH_SHORT);
@@ -359,12 +360,14 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                         edit.apply();
                         if (mAuth.getCurrentUser() != null) {
                             startActivity(intent);
+                            finish();
                         } else {
                             mAuth.signInAnonymously()
                                     .addOnCompleteListener(task -> {
                                         if (task.isSuccessful()) {
                                             Log.d("SignIn", "Successfully");
                                             startActivity(intent);
+                                            finish();
                                         } else {
                                             Log.d("SignIn", Objects.requireNonNull(task.getException()).toString());
                                             Snackbar snackbar = Snackbar.make(mainLayout, "Oops, something went wrong! Please try after sometime", Snackbar.LENGTH_SHORT);
@@ -402,6 +405,7 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                             Constants.Offline_mode = true;
                             Intent intent = new Intent(MainActivity.this, AttendanceActivity.class);
                             startActivity(intent);
+                            finish();
                         }
                     } else if (error instanceof NetworkError) {
                         if (Constants.offlineDataPreference.getString("StudentAttendance", null) == null) {
@@ -417,6 +421,7 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                             Constants.Offline_mode = true;
                             Intent intent = new Intent(MainActivity.this, AttendanceActivity.class);
                             startActivity(intent);
+                            finish();
                         }
                     } else if (error instanceof TimeoutError) {
                         if (!track) {
@@ -445,6 +450,7 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                                 Constants.Offline_mode = true;
                                 Intent intent = new Intent(MainActivity.this, AttendanceActivity.class);
                                 startActivity(intent);
+                                finish();
                             }
                         }
                     }
@@ -520,7 +526,7 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                         user.setFocusable(true);
                         pass.setFocusableInTouchMode(true);
                         pass.setFocusable(true);
-                        Snackbar snackbar = Snackbar.make(mainLayout, "Something went wrong few things may not work", Snackbar.LENGTH_SHORT);
+                        Snackbar snackbar = Snackbar.make(mainLayout, "Something went wrong few things may not work properly", Snackbar.LENGTH_SHORT);
                         snackbar.show();
                     }
                 },
@@ -550,8 +556,7 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                             snackbar.show();
                         } else {
                             Constants.Offline_mode = true;
-                            Intent intent = new Intent(MainActivity.this, AttendanceActivity.class);
-                            startActivity(intent);
+                            MainActivity.this.getData(api, param[1], param[2]);
                         }
                     } else if (error instanceof NetworkError) {
                         if (Constants.offlineDataPreference.getString("StudentAttendance", null) == null) {
@@ -565,8 +570,7 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                             snackbar.show();
                         } else {
                             Constants.Offline_mode = true;
-                            Intent intent = new Intent(MainActivity.this, AttendanceActivity.class);
-                            startActivity(intent);
+                            MainActivity.this.getData(api, param[1], param[2]);
                         }
                     } else if (error instanceof TimeoutError) {
                         if (!track) {
@@ -593,8 +597,7 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                                 track = false;
                             } else {
                                 Constants.Offline_mode = true;
-                                Intent intent = new Intent(MainActivity.this, AttendanceActivity.class);
-                                startActivity(intent);
+                                MainActivity.this.getData(api, param[1], param[2]);
                             }
                         }
                     }
