@@ -99,6 +99,7 @@ import static codex.codex_iter.www.awol.utilities.Constants.SHOW_LECTURES;
 import static codex.codex_iter.www.awol.utilities.Constants.SHOW_RESULT;
 import static codex.codex_iter.www.awol.utilities.Constants.STUDENT_NAME;
 import static codex.codex_iter.www.awol.utilities.Constants.STUDENT_SEMESTER;
+import static codex.codex_iter.www.awol.utilities.Constants.STUDENT_YEAR;
 
 public class AttendanceActivity extends BaseThemedActivity implements NavigationView.OnNavigationItemSelectedListener, InternetConnectivityListener {
 
@@ -152,7 +153,7 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
     private AttendanceAdapter adapter;
     private boolean no_attendance;
     private String api;
-    private String showResult, showlectures, custom_tabs_link, showCustomTabs;
+    private String showResult, showlectures, custom_tabs_link, showCustomTabs, custom_tabs_link_2;
     private BottomSheetDialog dialog;
     private int read_database;
     private static final String[] suffix = new String[]{"", "k", "m", "b", "t"};
@@ -575,6 +576,7 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                     sharedPreferences.edit().putString(SHOW_LECTURES, showlectures).apply();
                     sharedPreferences.edit().putString(SHOW_CUSTOM_TABS, showCustomTabs).apply();
                     custom_tabs_link = String.valueOf(documentChange.getDocument().getString("custom_tabs_link"));
+                    custom_tabs_link_2 = String.valueOf(documentChange.getDocument().getString("custom_tabs_link_2"));
                     AUTH_KEY = documentChange.getDocument().getString("auth_key");
                     APP_ID = documentChange.getDocument().getString("app_id");
 
@@ -938,9 +940,25 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                 break;
             case R.id.customTabs:
                 if (!Objects.equals(sharedPreferences.getString(SHOW_CUSTOM_TABS, "0"), "0")) {
-                    if (custom_tabs_link != null && !custom_tabs_link.isEmpty()) {
-                        custom_tab(custom_tabs_link);
-                        Log.d("custom_link", custom_tabs_link);
+                    if (studentnamePrefernces.contains(STUDENT_YEAR)) {
+                        if (Objects.equals(studentnamePrefernces.getString(STUDENT_YEAR, ""), "1920")
+                                || Objects.equals(studentnamePrefernces.getString(STUDENT_YEAR, ""), "2021")) {
+                            if (custom_tabs_link_2 != null && !custom_tabs_link_2.isEmpty()) {
+                                custom_tab(custom_tabs_link_2);
+                                Log.d("custom_link", custom_tabs_link_2);
+                            } else {
+                                Snackbar snackbar = Snackbar.make(mainLayout, "Something went wrong, please try again", Snackbar.LENGTH_SHORT);
+                                snackbar.show();
+                            }
+                        } else {
+                            if (custom_tabs_link != null && !custom_tabs_link.isEmpty()) {
+                                custom_tab(custom_tabs_link);
+                                Log.d("custom_link", custom_tabs_link);
+                            } else {
+                                Snackbar snackbar = Snackbar.make(mainLayout, "Something went wrong, please try again", Snackbar.LENGTH_SHORT);
+                                snackbar.show();
+                            }
+                        }
                     } else {
                         Snackbar snackbar = Snackbar.make(mainLayout, "Something went wrong, please try again", Snackbar.LENGTH_SHORT);
                         snackbar.show();

@@ -82,6 +82,7 @@ import static codex.codex_iter.www.awol.utilities.Constants.REGISTRATION_NUMBER;
 import static codex.codex_iter.www.awol.utilities.Constants.RESULTS;
 import static codex.codex_iter.www.awol.utilities.Constants.STUDENT_BRANCH;
 import static codex.codex_iter.www.awol.utilities.Constants.STUDENT_NAME;
+import static codex.codex_iter.www.awol.utilities.Constants.STUDENT_YEAR;
 
 
 public class MainActivity extends AppCompatActivity implements InternetConnectivityListener {
@@ -110,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
     private SharedPreferences userm, logout, apiUrl;
     private SharedPreferences.Editor edit;
     private boolean track;
-    private String studentName, student_branch, api, new_message;
+    private String studentName, student_branch, api, new_message, academic_year;
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
     private BottomSheetBehavior<View> bottomSheetBehavior;
@@ -199,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                 user.setFocusable(false);
                 pass.setFocusable(false);
                 passLayout.setEndIconMode(TextInputLayout.END_ICON_NONE);
-                if (!preferences.contains(STUDENT_NAME) || !preferences.contains(STUDENT_BRANCH)) {
+                if (!preferences.contains(STUDENT_NAME) || !preferences.contains(STUDENT_BRANCH) || !preferences.contains(STUDENT_YEAR)) {
                     getName(api, u, p);
                 } else {
                     getData(api, u, p);
@@ -490,12 +491,18 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                             Log.d("response", jobj.toString());
                             JSONArray jarr = jobj.getJSONArray("detail");
                             JSONObject jobj1 = jarr.getJSONObject(0);
+                            editor = preferences.edit();
                             if (!jobj1.has("name") || !jobj1.has(STUDENT_BRANCH)) {
                                 throw new InvalidResponseFetchNameException();
                             }
+                            if (jobj1.has("academicyear")) {
+                                academic_year = jobj1.getString("academicyear");
+                                if (!academic_year.isEmpty()) {
+                                    editor.putString(STUDENT_YEAR, academic_year);
+                                }
+                            }
                             studentName = jobj1.getString("name");
                             student_branch = jobj1.getString(STUDENT_BRANCH);
-                            editor = preferences.edit();
                             Log.d("branch_portal", student_branch);
                             editor.putString(STUDENT_NAME, studentName);
                             editor.putString(STUDENT_BRANCH, student_branch);
@@ -516,6 +523,7 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                         Snackbar snackbar = Snackbar.make(mainLayout, "Invalid API Response", Snackbar.LENGTH_SHORT);
                         snackbar.show();
                     } catch (Exception e) {
+                        Log.d("mainActivity", Objects.requireNonNull(e.getMessage()));
                         progressBar.setVisibility(View.INVISIBLE);
                         welcomeMessage.setVisibility(View.GONE);
                         login.setVisibility(View.VISIBLE);

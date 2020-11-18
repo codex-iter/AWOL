@@ -57,6 +57,7 @@ public  class Constants {
     public static final String NO_ATTENDANCE = "noAttendance";
     public static final String STUDENT_SEMESTER = "stynumber";
     public static final String STUDENT_BRANCH = "branchdesc";
+    public static final String STUDENT_YEAR = "academicyear";
     public static final String REMOTE_CONFIG = "remote_config";
     public static final String READ_DATABASE = "read_database";
     public static final String READ_DATABASE2 = "read_database2";
