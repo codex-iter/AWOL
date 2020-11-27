@@ -109,9 +109,9 @@
 
         <!-- Sample AdMob App ID: ca-app-pub-3940256099942544~3347511713 -->
 
-<!--        <meta-data-->
-<!--            android:name="com.google.android.gms.ads.APPLICATION_ID"-->
-<!--            android:value="ca-app-pub-5401501360955646~3612843770" />-->
+        <!--        <meta-data-->
+        <!--            android:name="com.google.android.gms.ads.APPLICATION_ID"-->
+        <!--            android:value="ca-app-pub-5401501360955646~3612843770" />-->
     </application>
 
 </manifest>

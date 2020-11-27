@@ -1,41 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/coordinator"
+    android:id="@+id/bottomSheet_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?windowColor"
-    android:fitsSystemWindows="true">
+    app:layout_behavior="@string/bottom_sheet_behavior">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/coordinator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:background="?windowColor"
+        android:fitsSystemWindows="true">
 
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar"
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="?actionBarSize"
-            android:layout_gravity="center_horizontal"
-            android:background="?toolbarColor"
-            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-            tools:titleTextColor="@color/colorAccent">
-        </com.google.android.material.appbar.MaterialToolbar>
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay">
 
-    </com.google.android.material.appbar.AppBarLayout>
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize"
+                android:layout_gravity="center_horizontal"
+                android:background="?toolbarColor"
+                android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+                tools:titleTextColor="@color/colorAccent" />
 
-    <FrameLayout
-        android:id="@+id/settings_fragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
+        </com.google.android.material.appbar.AppBarLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/shadow"
-        android:background="@drawable/shadow"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
+        <FrameLayout
+            android:id="@+id/settings_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/shadow"
+            android:background="@drawable/shadow"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
 
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</ScrollView>

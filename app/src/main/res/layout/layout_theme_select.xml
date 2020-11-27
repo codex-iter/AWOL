@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:layout_margin="16dp"
-        android:background="@null"
+        android:backgroundTint="?colorAccent"
         android:text="@string/apply"
         android:textColor="@color/white"
         android:theme="@style/Widget.MaterialComponents.Button.TextButton" />

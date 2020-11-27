@@ -11,7 +11,6 @@ import android.view.MenuItem;
 import android.view.View;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -159,7 +158,7 @@ public class OnlineLectureVideos extends BaseThemedActivity implements OnlineLec
 
     public void showBottomSheetDialog() {
         //    private BottomSheetBehavior bottomSheetBehavior;
-        @SuppressLint("InflateParams") View view = getLayoutInflater().inflate(R.layout.bottomprogressbar, null);
+        @SuppressLint("InflateParams") View view = getLayoutInflater().inflate(R.layout.layout_bottomprogressbar, null);
         if (dialog == null) {
             dialog = new BottomSheetDialog(this);
             dialog.setContentView(view);

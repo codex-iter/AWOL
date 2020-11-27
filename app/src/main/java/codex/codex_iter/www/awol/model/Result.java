@@ -1,6 +1,6 @@
 package codex.codex_iter.www.awol.model;
 
-public class ResultData {
+public class Result {
     private int stynumber;
     private String fail;
     private String Semesterdesc;
@@ -9,7 +9,7 @@ public class ResultData {
     private String examperiodfrom;
     private String sgpaR;
     private String cgpaR;
-    public static ResultData[] ld;
+
     public int getStynumber() {
         return stynumber;
     }

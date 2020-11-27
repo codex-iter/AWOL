@@ -4,7 +4,6 @@
         android:id="@+id/lecture"
         android:icon="@drawable/video"
         android:title="@string/video_lectures" />
-
     <item
         android:id="@+id/pab"
         android:icon="@drawable/ic_hotel"
@@ -12,33 +11,25 @@
     <item
         android:id="@+id/customTabs"
         android:icon="@drawable/ic_moodle"
-        android:title="@string/moodle"/>
+        android:title="@string/moodle" />
     <item
         android:id="@+id/result"
         android:icon="@drawable/clipboard_text_outline"
         android:title="@string/results" />
     <item
-        android:id="@+id/sa"
-        android:icon="@drawable/ic_send"
-        android:title="@string/share_app" />
-    <item
         android:id="@+id/setting"
         android:icon="@drawable/settings"
         android:title="@string/settings" />
     <item
-        android:id="@+id/cd"
-        android:icon="@drawable/ic_code"
-        android:title="@string/open_source_geek" />
-    <item
-        android:id="@+id/policy"
-        android:icon="@drawable/lock"
-        android:title="@string/privacy_policy" />
+        android:id="@+id/sa"
+        android:icon="@drawable/invite"
+        android:title="@string/share_app" />
     <item
         android:id="@+id/abt"
-        android:icon="@drawable/ic_local"
+        android:icon="@drawable/help_circle_outline"
         android:title="@string/about_us" />
     <item
         android:id="@+id/lgout"
-        android:icon="@drawable/ic_home"
+        android:icon="@drawable/arrow_right_bold_box_outline"
         android:title="@string/logout" />
 </menu>

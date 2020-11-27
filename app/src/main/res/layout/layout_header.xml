@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -27,8 +28,8 @@
         android:fontFamily="sans-serif"
         android:gravity="center_horizontal"
         android:paddingStart="8dp"
-        android:paddingEnd="0dp"
         android:paddingTop="20dp"
+        android:paddingEnd="0dp"
         android:text="@string/codex"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textColor="@color/white"
@@ -77,7 +78,7 @@
                 android:maxLines="2"
                 android:text="@string/avgat"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                android:textColor="@color/colorPrimary"
+                android:textColor="?colorAccent"
                 android:textSize="13sp" />
 
             <com.google.android.material.textview.MaterialTextView
@@ -110,7 +111,7 @@
                 android:gravity="center_horizontal"
                 android:text="@string/avgab"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                android:textColor="@color/colorPrimary"
+                android:textColor="?colorAccent"
                 android:textSize="13sp" />
 
             <com.google.android.material.textview.MaterialTextView
@@ -124,7 +125,41 @@
                 android:textColor="#cccccc"
                 android:textSize="17sp"
                 android:textStyle="bold" />
-
         </LinearLayout>
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/arrowDownUp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="2dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:paddingTop="1dp"
+        android:src="@drawable/arrow_down"
+        tools:ignore="ContentDescription" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layoutAccounts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="1.5dp"
+        android:layout_marginEnd="7dp"
+        android:layout_marginBottom="5dp"
+        android:visibility="gone">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/listAccount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0"
+            tools:listitem="@layout/item_multiple_account" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>

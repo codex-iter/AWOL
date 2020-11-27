@@ -5,13 +5,13 @@ import java.util.Formatter;
 import java.util.Locale;
 import java.util.Scanner;
 
-public class AttendanceData {
+public class Attendance {
     private String sub, code, upd, theory, lab, percent, that = "", labt = "", old = "", bunk_text_str = "";
     private double thT;
     private double thp;
     private double lat;
     private double lap;
-    public static AttendanceData[] attendanceData;
+    private long lastAttendanceUpdateTime;
 
     public String getClasses() {
         return Integer.toString((int) (thT + lat));
@@ -51,18 +51,6 @@ public class AttendanceData {
 
     public void setLabt(String labt) {
         this.labt = labt;
-    }
-
-    public int getStatus() {
-
-        double d = new Scanner(percent).nextDouble();
-        if (d < 65)
-            return 1;
-        else if (d >= 65 && d < 75)
-            return 2;
-        else if (d >= 75 && d < 90)
-            return 3;
-        else return 4;
     }
 
     public void setCode(String code) {
@@ -135,7 +123,7 @@ public class AttendanceData {
     }
 
     public void setBunk(int pref_min_attendance, boolean attendance_stats, boolean show_attendance_stats) {
-        StringBuilder bunkStats = new StringBuilder("");
+        StringBuilder bunkStats = new StringBuilder();
         ArrayList<String> bunk = new ArrayList<>();
         ArrayList<String> need = new ArrayList<>();
         int attendance = (int) Double.parseDouble(getPercent());
@@ -192,6 +180,14 @@ public class AttendanceData {
             if (bunkStats.length() != 0) bunkStats.setLength(bunkStats.length() - 1);
         }
         this.bunk_text_str = bunkStats.toString();
+    }
+
+    public void setLastAttendanceUpdateTime(long lastAttendanceUpdateTime) {
+        this.lastAttendanceUpdateTime = lastAttendanceUpdateTime;
+    }
+
+    public long getLastAttendanceUpdateTime() {
+        return lastAttendanceUpdateTime;
     }
 }
 

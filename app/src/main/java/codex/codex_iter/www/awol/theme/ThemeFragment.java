@@ -49,7 +49,7 @@ public class ThemeFragment extends BottomSheetDialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.theme_select_layout, container, false);
+        View view = inflater.inflate(R.layout.layout_theme_select, container, false);
         items = Constants.getThemes();
         preferences = requireActivity().getSharedPreferences("theme", 0);
         isDark = preferences.getBoolean(PREF_DARK_THEME, false);

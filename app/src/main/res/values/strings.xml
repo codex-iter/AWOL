@@ -2,8 +2,6 @@
     <string name="app_name">AWOL</string>
     <string name="avgat">AVERAGE\nATTENDANCE</string>
     <string name="avgab">AVERAGE\nABSENTS</string>
-    <!--    <string name="link">https://codexawol.herokuapp.com</string>-->
-    <string name="github_url">https://github.com/codex-iter/AWOL</string>
     <string name="abtAPP">THIS APP DOES NOT PROMOTE BUNKING. THE APP WAS DESIGNED TO ENSURE THAT YOU CAN MANAGE A PROPER
     ATTENDANCE AND BUNK SAFELY.THE ATTENDANCE SHOWN IS COMPLETELY MANAGED BY COLLEGE.THE DEVELOPER IS NOT RESPONSIBLE FOR
         INACCURATE ATTENDANCE OR DELAY IN ATTENDANCE UPDATE.</string>
@@ -22,8 +20,6 @@
     <string name="todo">TODO</string>
     <string name="sharing_text">Screenshot by AWOL\nDownload now tiny.cc/iter_awol\n\n\n_Developed and maintained by CODEX_</string>
     <string name="share_title">Share Attendance</string>
-    <string name="pawan_gorai">Pawan Kumar Gorai</string>
-    <string name="nehal_kumar_singh">Nehal Kumar Singh</string>
     <string name="your_target_attendance">Your Target Attendance:</string>
     <string name="result">Result</string>
     <string name="or">OR</string>
@@ -31,16 +27,15 @@
     <string name="bunk">Bunk</string>
     <string name="classes_you_gonna_attend">Classes you gonna attend:</string>
     <string name="attend">Attend</string>
-    <string name="username">USERNAME</string>
-    <string name="password">PASSWORD</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
     <string name="login">Login</string>
-    <string name="mohit_agarwal">Mohit Agarwal</string>
     <string name="codex">CODEX</string>
     <string name="_1641017271">404</string>
     <string name="placeholder_average_percentage">0%</string>
     <string name="placeholder_average_absent">0</string>
     <string name="plan_bunk">Plan@Bunk</string>
-    <string name="share_app">Share app</string>
+    <string name="share_app">Invite Friends</string>
     <string name="settings">Settings</string>
     <string name="about_us">About Us</string>
     <string name="open_source_geek">Open Source Geek?</string>
@@ -54,7 +49,7 @@
     <string name="avinav">Avinaba Ray</string>
     <string name="check_result"><u>Check Results</u></string>
     <string name="welcome_back">Getting things ready for you!</string>
-    <string name="data_is_not_automatically_filled_do_it_manually">Data not filled automatically?<u> Do it manually</u></string>
+    <string name="forgot_password"><u>Forgot password?</u></string>
     <string name="codex_info">Codex Join Us</string>
     <string name="learn_more">Learn more</string>
     <string name="please_wait">Please Wait</string>
@@ -82,5 +77,19 @@
     <string name="downloading_new_updates">Downloading new updates</string>
     <string name="average_present">%d %%</string>
     <string name="moodle">Moodle</string>
+    <string name="update_percentage">%d %%</string>
+    <string name="update_percentage_100">%d /100</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="password_message">We recommend you to keep a strong password.\n\n
+        <li>At least 8 characters</li>\n
+        <li>A mixture of both uppercase and lowercase letters</li>\n
+        <li>A mixture of letters and numbers</li>\n
+        <li>Inclusion of at least one special character, e.g., ! @ # ?</li>\n </string>
+    <string name="update_password">Update</string>
+    <string name="new_password_setting_screen">New Password</string>
+    <string name="confirm_password_setting_screen">Confirm Password</string>
+    <string name="otp_message">Please wait, we are sending you an SMS with containing your credentials</string>
+    <string name="add_account">Add Account</string>
+    <string name="updated_just_now">Updated just now</string>
 </resources>
 

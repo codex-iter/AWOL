@@ -1,13 +1,12 @@
 package codex.codex_iter.www.awol.model;
 
-public class DetailResultData {
+public class DetailResult {
     String subjectdesc;
     String stynumber;
     String subjectcode;
     String grade;
     String earnedcredit;
 
-    public static DetailResultData[] detailResultData;
     public String getSubjectdesc() {
         return subjectdesc;
     }

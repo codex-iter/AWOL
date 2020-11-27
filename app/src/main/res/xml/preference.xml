@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.preference.PreferenceCategory
+        android:title="Profile"
+        app:iconSpaceReserved="false">
+        <androidx.preference.Preference
+            android:key="pref_reset_password"
+            android:title="Reset Password"
+            app:iconSpaceReserved="false" />
+    </androidx.preference.PreferenceCategory>
+
     <androidx.preference.PreferenceCategory
         android:title="Mobile Notifications"
         app:iconSpaceReserved="false">
@@ -10,6 +20,7 @@
             android:title="Enable Notification"
             app:iconSpaceReserved="false" />
     </androidx.preference.PreferenceCategory>
+
     <androidx.preference.PreferenceCategory
         android:title="Attendance Stats"
         app:iconSpaceReserved="false">
@@ -40,7 +51,7 @@
     </androidx.preference.PreferenceCategory>
 
     <androidx.preference.PreferenceCategory
-        android:title="Contact Us"
+        android:title="Help"
         app:iconSpaceReserved="false">
 
         <androidx.preference.Preference
@@ -51,6 +62,11 @@
                 android:action="android.intent.action.VIEW"
                 android:data="mailto:codexiter@gmail.com" />
         </androidx.preference.Preference>
+
+        <androidx.preference.Preference
+            android:key="pref_contact_us"
+            android:title="Privacy Policy"
+            app:iconSpaceReserved="false" />
 
     </androidx.preference.PreferenceCategory>
 </androidx.preference.PreferenceScreen>

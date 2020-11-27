@@ -15,14 +15,14 @@ import com.google.android.material.textview.MaterialTextView;
 import java.util.List;
 
 import codex.codex_iter.www.awol.R;
-import codex.codex_iter.www.awol.model.DetailResultData;
+import codex.codex_iter.www.awol.model.DetailResult;
 
 public class DetailedResultAdapter extends RecyclerView.Adapter<DetailedResultAdapter.DetailViewHolder> {
 
     private Context ctx;
-    private List<DetailResultData> detailResultData;
+    private List<DetailResult> detailResultData;
 
-    public DetailedResultAdapter (Context ctx, List<DetailResultData>  detailResultData) {
+    public DetailedResultAdapter (Context ctx, List<DetailResult>  detailResultData) {
         this.ctx = ctx;
         this.detailResultData = detailResultData;
     }

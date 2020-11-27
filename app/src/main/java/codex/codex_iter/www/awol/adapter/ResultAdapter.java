@@ -18,15 +18,15 @@ import com.google.android.material.textview.MaterialTextView;
 import java.util.List;
 
 import codex.codex_iter.www.awol.R;
-import codex.codex_iter.www.awol.model.ResultData;
+import codex.codex_iter.www.awol.model.Result;
 
 public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.ResultHolder> {
 
     private Context ctx;
-    private List<ResultData> resultData;
+    private List<Result> resultData;
     private OnItemClickListener listener;
 
-    public ResultAdapter(Context ctx, List<ResultData> resultData, OnItemClickListener listener) {
+    public ResultAdapter(Context ctx, List<Result> resultData, OnItemClickListener listener) {
         this.ctx = ctx;
         this.resultData = resultData;
         this.listener = listener;

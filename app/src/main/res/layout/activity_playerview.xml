@@ -27,7 +27,7 @@
             android:layout_centerInParent="true"
             app:surface_type="texture_view"
             xmlns:app="http://schemas.android.com/apk/res-auto"
-            app:controller_layout_id="@layout/vod_player_control_layout"/>
+            app:controller_layout_id="@layout/layout_vod_player_control"/>
 
         <ProgressBar
             android:id="@+id/progress_bar"

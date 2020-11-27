@@ -54,8 +54,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
 import com.treebo.internetavailabilitychecker.InternetAvailabilityChecker;
 import com.treebo.internetavailabilitychecker.InternetConnectivityListener;
@@ -65,8 +63,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.lang.reflect.Type;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -79,8 +75,12 @@ import butterknife.ButterKnife;
 import codex.codex_iter.www.awol.MainActivity;
 import codex.codex_iter.www.awol.R;
 import codex.codex_iter.www.awol.adapter.AttendanceAdapter;
+import codex.codex_iter.www.awol.adapter.MultipleAccountAdapter;
+import codex.codex_iter.www.awol.data.LocalDB;
+import codex.codex_iter.www.awol.exceptions.InvalidFirebaseResponseException;
 import codex.codex_iter.www.awol.exceptions.InvalidResponseException;
-import codex.codex_iter.www.awol.model.AttendanceData;
+import codex.codex_iter.www.awol.model.Attendance;
+import codex.codex_iter.www.awol.model.Student;
 import codex.codex_iter.www.awol.setting.SettingsActivity;
 import codex.codex_iter.www.awol.theme.ThemeFragment;
 import codex.codex_iter.www.awol.utilities.Constants;
@@ -88,7 +88,13 @@ import codex.codex_iter.www.awol.utilities.FirebaseConfig;
 import codex.codex_iter.www.awol.utilities.ScreenshotUtils;
 
 import static codex.codex_iter.www.awol.utilities.Constants.API;
+import static codex.codex_iter.www.awol.utilities.Constants.APP_ID_ONESIGNAL;
+import static codex.codex_iter.www.awol.utilities.Constants.AUTH_KEY_ONESIGNAL;
+import static codex.codex_iter.www.awol.utilities.Constants.CUSTOM_TABS_LINK;
+import static codex.codex_iter.www.awol.utilities.Constants.CUSTOM_TABS_LINK_2;
+import static codex.codex_iter.www.awol.utilities.Constants.FETCH_FILE;
 import static codex.codex_iter.www.awol.utilities.Constants.NO_ATTENDANCE;
+import static codex.codex_iter.www.awol.utilities.Constants.PASSWORD;
 import static codex.codex_iter.www.awol.utilities.Constants.READ_DATABASE;
 import static codex.codex_iter.www.awol.utilities.Constants.READ_DATABASE2;
 import static codex.codex_iter.www.awol.utilities.Constants.REGISTRATION_NUMBER;
@@ -97,11 +103,12 @@ import static codex.codex_iter.www.awol.utilities.Constants.RESULT_STATUS;
 import static codex.codex_iter.www.awol.utilities.Constants.SHOW_CUSTOM_TABS;
 import static codex.codex_iter.www.awol.utilities.Constants.SHOW_LECTURES;
 import static codex.codex_iter.www.awol.utilities.Constants.SHOW_RESULT;
+import static codex.codex_iter.www.awol.utilities.Constants.STUDENT_BRANCH;
 import static codex.codex_iter.www.awol.utilities.Constants.STUDENT_NAME;
 import static codex.codex_iter.www.awol.utilities.Constants.STUDENT_SEMESTER;
 import static codex.codex_iter.www.awol.utilities.Constants.STUDENT_YEAR;
 
-public class AttendanceActivity extends BaseThemedActivity implements NavigationView.OnNavigationItemSelectedListener, InternetConnectivityListener {
+public class AttendanceActivity extends BaseThemedActivity implements NavigationView.OnNavigationItemSelectedListener, InternetConnectivityListener, MultipleAccountAdapter.OnItemClickListener {
 
     @BindView(R.id.main_layout)
     ConstraintLayout mainLayout;
@@ -137,211 +144,131 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
 //    AdView adView;
 
     private String result;
-    private AttendanceData[] attendanceData;
+    private Attendance[] attendanceData;
     private int l;
-    @SuppressWarnings("FieldCanBeLocal")
-    private String[] r;
-    public ArrayList<AttendanceData> attendanceDataArrayList = new ArrayList<>();
+    public ArrayList<Attendance> attendanceArrayList = new ArrayList<>();
     private String student_semester;
-    private SharedPreferences sub;
-    private SharedPreferences studentnamePrefernces;
-    private SharedPreferences preferences;
-    private SharedPreferences sharedPreferences;
-    private SharedPreferences prefs;
-    private SharedPreferences.Editor edit;
+    private SharedPreferences sharedPreference;
     @SuppressWarnings("FieldCanBeLocal")
     private AttendanceAdapter adapter;
     private boolean no_attendance;
-    private String api;
     private String showResult, showlectures, custom_tabs_link, showCustomTabs, custom_tabs_link_2;
     private BottomSheetDialog dialog;
     private int read_database;
-    private static final String[] suffix = new String[]{"", "k", "m", "b", "t"};
+    private static final String[] suffix = new String[]{"k", "m", "b", "t"};
     private String AUTH_KEY;
-    //    private AdRequest adRequest;
-//    private boolean isLoaded;
     private InternetAvailabilityChecker mInternetAvailabilityChecker;
     private View headerView;
     private static final String TOOLBAR_COLOR = "toolbar_color";
-
-    public AttendanceActivity() {
-    }
-
-    public static String convertToTitleCaseIteratingChars(String text) {
-        if (text == null || text.isEmpty()) {
-            return text;
-        }
-
-        StringBuilder converted = new StringBuilder();
-
-        boolean convertNext = true;
-        for (char ch : text.toCharArray()) {
-            if (Character.isSpaceChar(ch)) {
-                convertNext = true;
-            } else if (convertNext) {
-                ch = Character.toTitleCase(ch);
-                convertNext = false;
-            } else {
-                ch = Character.toLowerCase(ch);
-            }
-            converted.append(ch);
-        }
-
-        return converted.toString();
-    }
+    private LocalDB localDB;
+    private Student preferredStudent;
+    private boolean dropArrowDown;
 
     @Override
     protected void onResume() {
         super.onResume();
         //TODO Check if attendance available or not from MainActivity
+        if (localDB.getStudent(this.sharedPreference.getString("pref_student", null)) != null) {
+            preferredStudent = localDB.getStudent(this.sharedPreference.getString("pref_student", null));
+        }
+
         if (no_attendance) {
             noAttendance();
         } else {
             processAttendance();
-            // if user is not logout, show updated time of attendance
-            this.getSharedPreferences("status", 0).edit().putString("status", "").apply();
         }
     }
 
     void processAttendance() {
-        attendanceDataArrayList.clear();
-        if (result != null) {
-            r = result.split("kkk");
-            result = r[0];
-        }
+        attendanceArrayList.clear();
         int avgab = 0;
         double avgat = 0;
-        sub = getSharedPreferences("sub",
-                Context.MODE_PRIVATE);
 
         try {
             JSONObject jObj1;
-            if (result != null) {
+            JSONArray arr;
+            if (result != null && !result.isEmpty()) {
+                result = result.split("kkk")[0];
                 jObj1 = new JSONObject(result);
             } else {
                 throw new InvalidResponseException();
             }
-            JSONArray arr = jObj1.getJSONArray("griddata");
-            l = arr.length();
 
-            attendanceData = new AttendanceData[l];
+            try {
+                arr = jObj1.getJSONArray("griddata");
+                l = arr.length();
+            } catch (Exception e) {
+                throw new InvalidResponseException();
+            }
+
+            attendanceData = new Attendance[l];
             for (int i = 0; i < l; i++) {
                 JSONObject jObj = arr.getJSONObject(i);
-                attendanceData[i] = new AttendanceData();
+                attendanceData[i] = new Attendance();
 
                 if (!jObj.has("subjectcode") || !jObj.has("subject") || !jObj.has("Latt") || !jObj.has("Patt")
                         || !jObj.has("TotalAttandence") || attendanceData[i].getAbsent().isEmpty() || attendanceData[i].getAbsent() == null) {
                     throw new InvalidResponseException();
                 }
-
-                String code = jObj.getString("subjectcode");
-                String ck = Updated(jObj, sub, code, i);
-
-                attendanceData[i].setCode(code);
+                Updated(jObj, localDB.getStudent(this.sharedPreference.getString("pref_student", null)), i);
+                attendanceData[i].setCode(jObj.getString("subjectcode"));
                 attendanceData[i].setSub(jObj.getString("subject"));
                 attendanceData[i].setTheory(jObj.getString("Latt"));
                 attendanceData[i].setLab(jObj.getString("Patt"));
-                attendanceData[i].setUpd(ck);
                 attendanceData[i].setPercent(jObj.getString("TotalAttandence"));
-                attendanceData[i].setBunk(Integer.parseInt(Objects.requireNonNull(prefs.getString("pref_minimum_attendance", "75"))),
-                        prefs.getBoolean("pref_extended_stats", false), prefs.getBoolean("pref_show_attendance_stats", true));
+                attendanceData[i].setBunk(Integer.parseInt(Objects.requireNonNull(this.sharedPreference.getString("pref_minimum_attendance", "75"))),
+                        this.sharedPreference.getBoolean("pref_extended_stats", false), this.sharedPreference.getBoolean("pref_show_attendance_stats", true));
                 avgat += jObj.getDouble("TotalAttandence");
                 avgab += Integer.parseInt(attendanceData[i].getAbsent());
                 student_semester = jObj.getString(STUDENT_SEMESTER);
-                sharedPreferences.edit().putString(STUDENT_SEMESTER, student_semester).apply();
+                preferredStudent.setSemester(student_semester);
             }
+            preferredStudent.setAttendances(attendanceData);
             avgat /= l;
             avgab /= l;
-            preferences.edit().putInt("AveragePresent", (int) avgat).apply();
-            preferences.edit().putInt("AverageAbsent", (avgab)).apply();
-            TextView avat = headerView.findViewById(R.id.avat);
-            avat.setText(getResources().getString(R.string.average_present, preferences.getInt("AveragePresent", 0)));
-            TextView avab = headerView.findViewById(R.id.avab);
-            avab.setText(String.valueOf(preferences.getInt("AverageAbsent", 0)));
-
+            preferredStudent.setAveragePresent(Math.round(avgat));
+            preferredStudent.setAverageAbsent(avgab);
         } catch (JSONException | InvalidResponseException e) {
+            Log.d("message", Objects.requireNonNull(e.getMessage()));
             Snackbar snackbar = Snackbar.make(mainLayout, "Invalid API Response", Snackbar.LENGTH_SHORT);
             snackbar.show();
-            if (!Constants.Offline_mode) {
-                noAttendance();
-            }
+            if (preferredStudent != null) attendanceData = preferredStudent.getAttendances();
+            else noAttendance();
         } catch (Exception e) {
+            Log.d("message", Objects.requireNonNull(e.getMessage()));
             Snackbar snackbar = Snackbar.make(mainLayout, "Something went wrong few things may not work properly", Snackbar.LENGTH_SHORT);
             snackbar.show();
-            if (!Constants.Offline_mode) {
+            if (preferredStudent != null) attendanceData = preferredStudent.getAttendances();
+            else noAttendance();
+        } finally {
+            try {
+                localDB.setStudent(this.sharedPreference.getString("pref_student", null), preferredStudent);
+                attendanceArrayList.addAll(Arrays.asList(attendanceData).subList(0, l));
+            } catch (Exception e) {
                 noAttendance();
             }
-        } finally {
-            AttendanceData.attendanceData = attendanceData;
-            if (!Constants.Offline_mode) {
-                try {
-                    attendanceDataArrayList.addAll(Arrays.asList(attendanceData).subList(0, l));
-                    saveAttendance(attendanceDataArrayList);
-                } catch (Exception e) {
-                    Log.d("error", "Array might be null");
-                    noAttendance();
-                }
-            } else {
-                getSavedAttendance();
-                TextView avat = headerView.findViewById(R.id.avat);
-                avat.setText(getResources().getString(R.string.average_present, preferences.getInt("AveragePresent", 0)));
-                TextView avab = headerView.findViewById(R.id.avab);
-                avab.setText(String.valueOf(preferences.getInt("AverageAbsent", 0)));
 
+            if (preferredStudent != null) {
+                TextView avat = headerView.findViewById(R.id.avat);
+                avat.setText(getResources().getString(R.string.average_present, preferredStudent.getAveragePresent()));
+                TextView avab = headerView.findViewById(R.id.avab);
+                avab.setText(String.valueOf(preferredStudent.getAverageAbsent()));
             }
-            adapter = new AttendanceAdapter(this, attendanceDataArrayList, Integer.parseInt(Objects.requireNonNull(prefs.getString("pref_minimum_attendance", "75"))));
+
+            adapter = new AttendanceAdapter(this, attendanceArrayList, Integer.parseInt(Objects.requireNonNull(
+                    this.sharedPreference.getString("pref_minimum_attendance", "75"))));
             recyclerView.setHasFixedSize(true);
             recyclerView.setAdapter(adapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
         }
     }
 
-    @SuppressLint("CommitPrefEdits")
-    public void saveAttendance(ArrayList<AttendanceData> attendanceDataArrayList) {
-        try {
-            Constants.offlineDataEditor = Constants.offlineDataPreference.edit();
-            Gson gson = new Gson();
-            String json = gson.toJson(attendanceDataArrayList);
-            Constants.offlineDataEditor.putString("StudentAttendance", json);
-            Constants.offlineDataEditor.apply();
-        } catch (Exception e) {
-            Log.d("error", "Might be arrayList null");
-        }
-    }
-
-    public void getSavedAttendance() {
-        Snackbar snackbar = Snackbar.make(mainLayout, "Offline mode enabled", Snackbar.LENGTH_SHORT);
-        snackbar.show();
-        try {
-            Gson gson = new Gson();
-            String json = Constants.offlineDataPreference.getString("StudentAttendance", null);
-            Type type = new TypeToken<ArrayList<AttendanceData>>() {
-            }.getType();
-            attendanceDataArrayList = gson.fromJson(json, type);
-
-            if (attendanceDataArrayList == null) {
-                attendanceDataArrayList = new ArrayList<>();
-            }
-
-            if (attendanceDataArrayList.isEmpty()) {
-                noAttendance();
-            }
-        } catch (Exception e) {
-            Log.d("error", "Something might be wrong");
-            noAttendance();
-        }
-    }
-
     public void fetchResult() {
-        SharedPreferences userm = getSharedPreferences("user",
-                Context.MODE_PRIVATE);
-        String u = userm.getString("user", "");
-        String p = userm.getString("pass", "");
-        getData(api, u, p);
+        getResultAPI(this.sharedPreference.getString(API, ""), preferredStudent.getRedgNo(), preferredStudent.getPassword());
         showBottomSheetDialog();
     }
 
-    private void getData(final String... param) {
+    private void getResultAPI(final String... param) {
         RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
         StringRequest postRequest = new StringRequest(Request.Method.POST, param[0] + "/result",
                 response -> {
@@ -354,43 +281,37 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                         Intent intent = new Intent(AttendanceActivity.this, ResultActivity.class);
                         response += "kkk" + param[1];
                         intent.putExtra(RESULTS, response);
-                        intent.putExtra(API, api);
                         startActivity(intent);
                     }
                 },
                 error -> {
                     hideBottomSheetDialog();
+                    Intent intent = new Intent(AttendanceActivity.this, ResultActivity.class);
                     if (error instanceof AuthFailureError) {
-                        if (Constants.offlineDataPreference.getString("StudentResult", null) == null) {
-                            Snackbar snackbar = Snackbar.make(mainLayout, "Wrong Credentials!", Snackbar.LENGTH_SHORT);
-                            snackbar.show();
-                        } else {
-                            Intent intent = new Intent(AttendanceActivity.this, ResultActivity.class);
-                            startActivity(intent);
-                        }
+                        Snackbar snackbar = Snackbar.make(mainLayout, "Wrong Credentials!", Snackbar.LENGTH_SHORT);
+                        snackbar.show();
                     } else if (error instanceof ServerError) {
-                        if (Constants.offlineDataPreference.getString("StudentResult", null) == null) {
+                        if (preferredStudent == null) {
                             Snackbar snackbar = Snackbar.make(mainLayout, "Wrong Credentials!", Snackbar.LENGTH_SHORT);
                             snackbar.show();
                         } else {
-                            Intent intent = new Intent(AttendanceActivity.this, ResultActivity.class);
+                            intent.putExtra(RESULTS, preferredStudent.getOfflineResult());
                             startActivity(intent);
                         }
                     } else if (error instanceof NetworkError) {
-                        if (Constants.offlineDataPreference.getString("StudentResult", null) == null) {
+                        if (preferredStudent == null) {
                             Snackbar snackbar = Snackbar.make(mainLayout, "Cannot establish connection", Snackbar.LENGTH_SHORT);
                             snackbar.show();
                         } else {
-                            Log.e("Volley_error", String.valueOf(error));
-                            Intent intent = new Intent(AttendanceActivity.this, ResultActivity.class);
+                            intent.putExtra(RESULTS, preferredStudent.getOfflineResult());
                             startActivity(intent);
                         }
                     } else {
-                        if (Constants.offlineDataPreference.getString("StudentResult", null) == null) {
+                        if (preferredStudent == null) {
                             Snackbar snackbar = Snackbar.make(mainLayout, "Cannot establish connection", Snackbar.LENGTH_SHORT);
                             snackbar.show();
                         } else {
-                            Intent intent = new Intent(AttendanceActivity.this, ResultActivity.class);
+                            intent.putExtra(RESULTS, preferredStudent.getOfflineResult());
                             startActivity(intent);
                         }
                     }
@@ -407,46 +328,42 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
         queue.add(postRequest);
     }
 
-    private String Updated(JSONObject jObj, SharedPreferences sub, String code, int i) throws JSONException {
-        if (sub.contains(code)) {
-            JSONObject old = new JSONObject(Objects.requireNonNull(sub.getString(code, "")));
-            SharedPreferences is_logout = this.getSharedPreferences("status", 0);
-            String status = is_logout.getString("status", "");
-            if (Objects.requireNonNull(status).equals("0")) {
-                old.put("Latt", "");
-                old.put("Patt", "");
-                old.put("TotalAttandence", "");
-            }
-            if ((!old.getString("Latt").equals(jObj.getString("Latt"))) || (!old.getString("Patt").equals(jObj.getString("Patt")))) {
-                jObj.put("updated", new Date().getTime());
-                attendanceData[i].setOld(old.getString("TotalAttandence"));
-                edit = sub.edit();
-                Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                if (v != null) {
-                    v.vibrate(200);
+    private void Updated(JSONObject newAttendance, Student oldAttendance, int i) throws JSONException {
+        if (oldAttendance != null) {
+            for (Attendance student : oldAttendance.getAttendances()) {
+                if (student.getCode().equals(newAttendance.getString("subjectcode"))) {
+                    if ((!student.getTheory().equals(newAttendance.getString("Latt")))
+                            || (!student.getLab().equals(newAttendance.getString("Patt")))) {
+                        attendanceData[i].setLastAttendanceUpdateTime(new Date().getTime());
+                        attendanceData[i].setOld(student.getPercent());
+                        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                        if (v != null) {
+                            v.vibrate(200);
+                        }
+                        attendanceData[i].setUpd("just now");
+                        break;
+                    } else {
+                        attendanceData[i].setLastAttendanceUpdateTime(student.getLastAttendanceUpdateTime());
+                        attendanceData[i].setUpd(DateUtils.getRelativeTimeSpanString(student.getLastAttendanceUpdateTime(), new Date().getTime(), 0).toString());
+                    }
                 }
-                edit.putString(code, jObj.toString());
-                edit.apply();
-                return "Just now";
-            } else
-                return DateUtils.getRelativeTimeSpanString(old.getLong("updated"), new Date().getTime(), 0).toString();
+            }
         } else {
-            jObj.put("updated", new Date().getTime());
-            edit = sub.edit();
+            attendanceData[i].setLastAttendanceUpdateTime(new Date().getTime());
             Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
             if (v != null) {
                 v.vibrate(200);
             }
-            edit.putString(code, jObj.toString());
-            edit.commit();
-            return "Just now";
+            attendanceData[i].setUpd("just now");
         }
     }
 
     public void noAttendance() {
-        navigationView.getMenu().findItem(R.id.pab).setVisible(false);
+        localDB.setStudent(sharedPreference.getString("pref_student", null), null);
+
         recyclerView.setVisibility(View.GONE);
         noAttendanceLayout.setVisibility(View.VISIBLE);
+
         if (dark) {
             tv.setTextColor(Color.parseColor("#FFFFFF"));
             mainLayout.setBackgroundColor(Color.parseColor("#141414"));
@@ -458,14 +375,18 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
 
     private String APP_ID;
 
-    private static String numberFormat(double number) {
-        String r = new DecimalFormat("##0E0").format(number);
-        r = r.replaceAll("E[0-9]", suffix[Character.getNumericValue(r.charAt(r.length() - 1)) / 3]);
-        int MAX_LENGTH = 4;
-        while (r.length() > MAX_LENGTH || r.matches("[0-9]+\\.[a-z]")) {
-            r = r.substring(0, r.length() - 2) + r.substring(r.length() - 1);
+    private static String numberFormat(double n, int iteration) {
+        try {
+            double d = ((long) n / 100.0) / 10.0;
+            boolean isRound = (d * 10) % 10 == 0;
+            return (d < 1000 ?
+                    ((d > 99.9 || isRound || (!isRound && d > 9.99) ?
+                            (int) d * 10 / 10 : d + ""
+                    ) + "" + suffix[iteration])
+                    : numberFormat(d, iteration + 1));
+        } catch (Exception e) {
+            return "";
         }
-        return r;
     }
 
     @SuppressLint("SetTextI18n")
@@ -477,6 +398,44 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setTitle("");
+        Objects.requireNonNull(this.getSupportActionBar()).setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getSupportActionBar().setDisplayShowCustomEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setCustomView(R.layout.activity_action_bar);
+
+        localDB = new LocalDB(this);
+
+        sharedPreference = PreferenceManager.getDefaultSharedPreferences(this);
+
+        headerView = navigationView.getHeaderView(0);
+        navigationView.setNavigationItemSelectedListener(this);
+        // hide plan bunk item
+        navigationView.getMenu().findItem(R.id.pab).setVisible(false);
+
+        TextView student_name = headerView.findViewById(R.id.name);
+        TextView student_regdno = headerView.findViewById(R.id.reg);
+        View view_cus = getSupportActionBar().getCustomView();
+        MaterialTextView title = view_cus.findViewById(R.id.title);
+        ImageView icon = view_cus.findViewById(R.id.image);
+        ImageView share = view_cus.findViewById(R.id.share);
+        ImageView arrowUpDown = headerView.findViewById(R.id.arrowDownUp);
+
+        // make multiple account arrow by default true
+        dropArrowDown = true;
+
+        preferredStudent = localDB.getStudent(this.sharedPreference.getString("pref_student", null));
+        if (preferredStudent == null) {
+            preferredStudent = new Student();
+        }
+
+        // change the color accordingly
+        if (dark) {
+            cardView.setBackgroundColor(Color.parseColor("#141414"));
+            heading.setTextColor(Color.parseColor("#FFFFFFFF"));
+            heading_desp.setTextColor(Color.parseColor("#FFCCCCCC"));
+            heading_desp.setTextColor(Color.parseColor("#FFCCCCCC"));
+            recyclerView.setBackgroundColor(Color.parseColor("#141414"));
+        }
 
         try {
             mInternetAvailabilityChecker = InternetAvailabilityChecker.getInstance();
@@ -487,169 +446,92 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
             mInternetAvailabilityChecker.addInternetConnectivityListener(AttendanceActivity.this);
         }
 
-        Objects.requireNonNull(getSupportActionBar()).setTitle("");
-        Objects.requireNonNull(this.getSupportActionBar()).setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getSupportActionBar().setDisplayShowCustomEnabled(true);
-        Objects.requireNonNull(getSupportActionBar()).setCustomView(R.layout.activity_action_bar);
-        View view_cus = getSupportActionBar().getCustomView();
-        MaterialTextView title = view_cus.findViewById(R.id.title);
-        ImageView icon = view_cus.findViewById(R.id.image);
-        ImageView share = view_cus.findViewById(R.id.share);
-        preferences = getSharedPreferences("CLOSE", MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        Constants.offlineDataPreference = this.getSharedPreferences("OFFLINEDATA", Context.MODE_PRIVATE);
-        Bundle bundle = getIntent().getExtras();
+        getDataFromFirebase();
+        FirebaseConfig();
 
-        // Mobile Ads
-//        MobileAds.initialize(this);
-//        MobileAds.setRequestConfiguration(
-//                new RequestConfiguration.Builder().setTestDeviceIds(Collections.singletonList("623B1B7759D51209294A77125459D9B7"))
-//                        .build());
-//
-//        adRequest = new AdRequest.Builder().build();
-//
-//        adView.loadAd(adRequest);
-//        adView.setAdListener(new AdListener() {
-//            @Override
-//            public void onAdLoaded() {
-//                super.onAdLoaded();
-//                Log.d("Banner", "Loaded");
-//                isLoaded = true;
-//            }
-//
-//            @Override
-//            public void onAdFailedToLoad(LoadAdError loadAdError) {
-//                super.onAdFailedToLoad(loadAdError);
-//                Log.d("adsError", loadAdError.toString());
-//                adView.setVisibility(View.GONE);
-//                isLoaded = false;
-//            }
-//
-//            @Override
-//            public void onAdClicked() {
-//                super.onAdClicked();
-//                Log.d("Banner", "Clicked");
-//            }
-//
-//            @Override
-//            public void onAdOpened() {
-//                super.onAdOpened();
-//                Log.d("Banner", "Opened");
-//            }
-//        });
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            no_attendance = bundle.getBoolean(NO_ATTENDANCE);
+            preferredStudent.setName(bundle.getString(STUDENT_NAME));
+            preferredStudent.setBranch(bundle.getString(STUDENT_BRANCH));
+            preferredStudent.setAcademic_year(bundle.getString(STUDENT_YEAR));
+            preferredStudent.setRedgNo(bundle.getString(REGISTRATION_NUMBER));
+            preferredStudent.setPassword(bundle.getString(PASSWORD));
+            result = bundle.getString(RESULTS);
+            preferredStudent.setOfflineAttendance(result);
+            student_name.setText(bundle.getString(STUDENT_NAME));
+            student_regdno.setText(bundle.getString(REGISTRATION_NUMBER));
+            String[] split = Objects.requireNonNull(bundle.getString(STUDENT_NAME)).split("\\s+");
+            try {
+                if (!split[0].isEmpty()) {
+                    title.setText("Hi, " + Constants.convertToTitleCaseIteratingChars(split[0]) + "!");
+                } else {
+                    title.setText("Home");
+                }
+            } catch (Exception e) {
+                title.setText("Home");
+            }
+        }
 
         try {
             PackageInfo pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
             String current_versionName = pInfo.versionName;
             MaterialTextView version = findViewById(R.id.version);
             version.setText("v" + current_versionName);
-            if (dark) {
-                version.setTextColor(getResources().getColor(R.color.white));
-            }
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
 
         SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
-        prefs = PreferenceManager.getDefaultSharedPreferences(this);
-
         if (pref.getBoolean("is_First_Run2", true)) {
             pref.edit().putBoolean("is_First_Run2", false).apply();
             who_layout.setVisibility(View.GONE);
         }
-        if (bundle != null) {
-            api = bundle.getString(API);
-            no_attendance = bundle.getBoolean(NO_ATTENDANCE);
-            result = bundle.getString(RESULTS);
-        }
-
-        sharedPreferences = getSharedPreferences(API, MODE_PRIVATE);
-        CollectionReference apiCollection = FirebaseFirestore.getInstance().collection(RESULT_STATUS);
-        apiCollection.addSnapshotListener((queryDocumentSnapshots, e) -> {
-            if (queryDocumentSnapshots != null) {
-                for (DocumentChange documentChange : queryDocumentSnapshots.getDocumentChanges()) {
-                    showResult = documentChange.getDocument().getString(SHOW_RESULT);
-                    showlectures = documentChange.getDocument().getString(SHOW_LECTURES);
-                    showCustomTabs = documentChange.getDocument().getString(SHOW_CUSTOM_TABS);
-                    read_database = Integer.parseInt(Objects.requireNonNull(documentChange.getDocument().getString("fetch_file")));
-                    sharedPreferences.edit().putString(SHOW_RESULT, showResult).apply();
-                    sharedPreferences.edit().putString(SHOW_LECTURES, showlectures).apply();
-                    sharedPreferences.edit().putString(SHOW_CUSTOM_TABS, showCustomTabs).apply();
-                    custom_tabs_link = String.valueOf(documentChange.getDocument().getString("custom_tabs_link"));
-                    custom_tabs_link_2 = String.valueOf(documentChange.getDocument().getString("custom_tabs_link_2"));
-                    AUTH_KEY = documentChange.getDocument().getString("auth_key");
-                    APP_ID = documentChange.getDocument().getString("app_id");
-
-                    if (showlectures.equals("0"))
-                        navigationView.getMenu().findItem(R.id.lecture).setVisible(false);
-                    if (showCustomTabs.equals("0")) {
-                        navigationView.getMenu().findItem(R.id.customTabs).setVisible(false);
-                    } else {
-                        navigationView.getMenu().findItem(R.id.customTabs).setVisible(true);
-                    }
-
-                    if (sharedPreferences.getInt(READ_DATABASE, 0) < read_database) {
-                        sharedPreferences.edit().putInt(READ_DATABASE, read_database).apply();
-                        showBottomSheetDialog();
-//                        downloadFile();
-                    }
-                    downloadStats(AUTH_KEY, APP_ID);
-                }
-            }
-        });
-
-        FirebaseConfig firebaseConfig = new FirebaseConfig();
-        String json = firebaseConfig.fetch_latest_news(this);
-        try {
-            JSONObject jsonObject = new JSONObject(json);
-            if (jsonObject.getInt("version") >= 1) {
-                if (who_layout.getVisibility() == View.GONE && preferences.getInt("version", 0) < jsonObject.getInt("version")) {
-                    who_layout.setVisibility(View.VISIBLE);
-                }
-                preferences.edit().putInt("version", jsonObject.getInt("version")).apply();
-                who_button.setOnClickListener(view -> {
-                    Uri uri;
-                    try {
-                        uri = Uri.parse(jsonObject.getString("link"));
-                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                        startActivity(intent);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                });
-                heading.setText(jsonObject.getString("news_title"));
-                heading_desp.setText(jsonObject.getString("news_text"));
-                Picasso.get()
-                        .load(jsonObject.getString("image_url"))
-                        .placeholder(R.drawable.ic_image)
-                        .into(logo);
-                if (preferences.getBoolean("close", false)) {
-                    who_layout.setVisibility(View.GONE);
-                }
-                removetile.setOnClickListener(view -> {
-                    editor.putBoolean("close", true);
-                    who_layout.setVisibility(View.GONE);
-                    editor.apply();
-                });
-            } else {
-                who_layout.setVisibility(View.GONE);
-            }
-        } catch (JSONException e) {
-            Log.d("error_cardtile", e.toString());
-        }
 
         icon.setOnClickListener(view -> drawerLayout.openDrawer(GravityCompat.START));
-        navigationView.setNavigationItemSelectedListener(this);
 
+        headerView.findViewById(R.id.changeTheme).setOnClickListener(view -> {
+            drawerLayout.closeDrawer(GravityCompat.START);
+            ThemeFragment fragment = ThemeFragment.newInstance();
+            fragment.show(getSupportFragmentManager(), "theme_fragment");
+        });
 
-        if (dark) {
-            cardView.setBackgroundColor(Color.parseColor("#141414"));
-            heading.setTextColor(Color.parseColor("#FFFFFFFF"));
-            heading_desp.setTextColor(Color.parseColor("#FFCCCCCC"));
-            heading_desp.setTextColor(Color.parseColor("#FFCCCCCC"));
-            recyclerView.setBackgroundColor(Color.parseColor("#141414"));
-            title.setTextColor(Color.parseColor("#ffffff"));
-        }
+        arrowUpDown.setOnClickListener(view -> {
+            ConstraintLayout accountsLayout = headerView.findViewById(R.id.layoutAccounts);
+            RecyclerView listAccounts = headerView.findViewById(R.id.listAccount);
+            MultipleAccountAdapter multipleAccountAdapter;
+
+            if (dropArrowDown) {
+                accountsLayout.setVisibility(View.VISIBLE);
+                arrowUpDown.setImageResource(R.drawable.arrow_up);
+                dropArrowDown = false;
+            } else {
+                accountsLayout.setVisibility(View.GONE);
+                arrowUpDown.setImageResource(R.drawable.arrow_down);
+                dropArrowDown = true;
+            }
+
+            ArrayList<Student> students = localDB.getStudents();
+            Student addAccountCard = new Student();
+            addAccountCard.setName("Add Account");
+            students.add(addAccountCard);
+
+            if (preferredStudent != null) {
+                for (Student student : students) {
+                    if (student.getRedgNo().equals(preferredStudent.getRedgNo())) {
+                        students.remove(student);
+                        break;
+                    }
+                }
+            }
+
+            if (!students.isEmpty()) {
+                multipleAccountAdapter = new MultipleAccountAdapter(this, students, AttendanceActivity.this);
+                listAccounts.setHasFixedSize(true);
+                listAccounts.setAdapter(multipleAccountAdapter);
+                listAccounts.setLayoutManager(new LinearLayoutManager(this));
+            }
+        });
 
         share.setOnClickListener(view -> {
             if (no_attendance) {
@@ -659,7 +541,7 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                 try {
                     Bitmap bitmap = ScreenshotUtils.getScreenShot(recyclerView);
                     if (bitmap != null) {
-                        Toast.makeText(this, "Taking screenshot...", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Taking screenshot please wait...", Toast.LENGTH_SHORT).show();
                         File save = ScreenshotUtils.getMainDirectoryName(this);
                         File file = ScreenshotUtils.store(bitmap, "screenshot.jpg", save);
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -677,46 +559,101 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                 }
             }
         });
-        navigationView.getMenu().findItem(R.id.pab).setVisible(false);
 
-        studentnamePrefernces = this.getSharedPreferences(STUDENT_NAME, MODE_PRIVATE);
-        String studentName = studentnamePrefernces.getString(STUDENT_NAME, "");
-//
-//        if (no_attendance) {
-//            noAttendance();
-//        } else {
-//            processAttendance();
-//        }
-        setSupportActionBar(toolbar);
-
-        headerView = navigationView.getHeaderView(0);
-        if (!Constants.Offline_mode) {
-            if (bundle != null) {
-                String regis = bundle.getString(REGISTRATION_NUMBER);
-                editor.putString("RegistrationNumber", regis);
-            }
-            editor.apply();
-        }
-        headerView.findViewById(R.id.changeTheme).setOnClickListener(view -> {
-            drawerLayout.closeDrawer(GravityCompat.START);
-            ThemeFragment fragment = ThemeFragment.newInstance();
-            fragment.show(getSupportFragmentManager(), "theme_fragment");
-        });
-        TextView name = headerView.findViewById(R.id.name);
-        TextView reg = headerView.findViewById(R.id.reg);
-        name.setText(studentName);
-        String[] split = Objects.requireNonNull(studentName).split("\\s+");
-        try {
-            if (!split[0].isEmpty()) {
-                title.setText("Hi, " + convertToTitleCaseIteratingChars(split[0]) + "!");
-            } else {
-                title.setText("Home");
-            }
-        } catch (Exception e) {
-            title.setText("Home");
-        }
-        reg.setText(preferences.getString("RegistrationNumber", null));
         checkResult.setOnClickListener(view -> fetchResult());
+    }
+
+    public void getDataFromFirebase() {
+        try {
+            CollectionReference apiCollection = FirebaseFirestore.getInstance().collection(RESULT_STATUS);
+            apiCollection.addSnapshotListener((queryDocumentSnapshots, e) -> {
+                if (queryDocumentSnapshots != null) {
+                    for (DocumentChange documentChange : queryDocumentSnapshots.getDocumentChanges()) {
+                        if (!documentChange.getDocument().contains(SHOW_RESULT) || !documentChange.getDocument().contains(SHOW_LECTURES) ||
+                                !documentChange.getDocument().contains(SHOW_CUSTOM_TABS) || !documentChange.getDocument().contains(FETCH_FILE) ||
+                                !documentChange.getDocument().contains(CUSTOM_TABS_LINK) || !documentChange.getDocument().contains(CUSTOM_TABS_LINK_2) ||
+                                !documentChange.getDocument().contains(AUTH_KEY_ONESIGNAL) || !documentChange.getDocument().contains(APP_ID_ONESIGNAL)) {
+                            throw new InvalidFirebaseResponseException();
+                        }
+                        showResult = documentChange.getDocument().getString(SHOW_RESULT);
+                        showlectures = documentChange.getDocument().getString(SHOW_LECTURES);
+                        showCustomTabs = documentChange.getDocument().getString(SHOW_CUSTOM_TABS);
+                        read_database = Integer.parseInt(Objects.requireNonNull(documentChange.getDocument().getString(FETCH_FILE)));
+                        this.sharedPreference.edit().putString(SHOW_RESULT, showResult).apply();
+                        this.sharedPreference.edit().putString(SHOW_LECTURES, showlectures).apply();
+                        this.sharedPreference.edit().putString(SHOW_CUSTOM_TABS, showCustomTabs).apply();
+                        custom_tabs_link = String.valueOf(documentChange.getDocument().getString(CUSTOM_TABS_LINK));
+                        custom_tabs_link_2 = String.valueOf(documentChange.getDocument().getString(CUSTOM_TABS_LINK_2));
+                        AUTH_KEY = documentChange.getDocument().getString(AUTH_KEY_ONESIGNAL);
+                        APP_ID = documentChange.getDocument().getString(APP_ID_ONESIGNAL);
+
+                        if (showlectures.equals("0"))
+                            navigationView.getMenu().findItem(R.id.lecture).setVisible(false);
+                        if (showCustomTabs.equals("0")) {
+                            navigationView.getMenu().findItem(R.id.customTabs).setVisible(false);
+                        } else {
+                            navigationView.getMenu().findItem(R.id.customTabs).setVisible(true);
+                        }
+
+                        if (this.sharedPreference.getInt(READ_DATABASE, 0) < read_database) {
+                            this.sharedPreference.edit().putInt(READ_DATABASE, read_database).apply();
+                            showBottomSheetDialog();
+//                        downloadFile();
+                        }
+                        downloadStats(AUTH_KEY, APP_ID);
+                    }
+                }
+            });
+        } catch (InvalidFirebaseResponseException e) {
+            Snackbar snackbar = Snackbar.make(mainLayout, Objects.requireNonNull(e.getMessage()), Snackbar.LENGTH_SHORT);
+            snackbar.show();
+            navigationView.getMenu().findItem(R.id.lecture).setVisible(false);
+        } catch (Exception e) {
+            Snackbar snackbar = Snackbar.make(mainLayout, "Something went wrong few things may not work properly", Snackbar.LENGTH_SHORT);
+            snackbar.show();
+            navigationView.getMenu().findItem(R.id.lecture).setVisible(false);
+        }
+    }
+
+    public void FirebaseConfig() {
+        FirebaseConfig firebaseConfig = new FirebaseConfig();
+        String json = firebaseConfig.fetch_latest_news(this);
+        try {
+            JSONObject jsonObject = new JSONObject(json);
+            if (jsonObject.getInt("version") >= 1) {
+                if (who_layout.getVisibility() == View.GONE && this.sharedPreference.getInt("version", 0) < jsonObject.getInt("version")) {
+                    who_layout.setVisibility(View.VISIBLE);
+                }
+                this.sharedPreference.edit().putInt("version", jsonObject.getInt("version")).apply();
+                who_button.setOnClickListener(view -> {
+                    Uri uri;
+                    try {
+                        uri = Uri.parse(jsonObject.getString("link"));
+                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                        startActivity(intent);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                });
+                heading.setText(jsonObject.getString("news_title"));
+                heading_desp.setText(jsonObject.getString("news_text"));
+                Picasso.get()
+                        .load(jsonObject.getString("image_url"))
+                        .placeholder(R.drawable.ic_image)
+                        .into(logo);
+                if (this.sharedPreference.getBoolean("close", false)) {
+                    who_layout.setVisibility(View.GONE);
+                }
+                removetile.setOnClickListener(view -> {
+                    this.sharedPreference.edit().putBoolean("close", true).apply();
+                    who_layout.setVisibility(View.GONE);
+                });
+            } else {
+                who_layout.setVisibility(View.GONE);
+            }
+        } catch (JSONException e) {
+            Log.d("error_cardtile", e.toString());
+        }
     }
 
     public void downloadStats(String auth_key, String app_id) {
@@ -734,19 +671,34 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                             ImageView imageView = findViewById(R.id.download_icon);
                             imageView.setImageResource(R.drawable.eye_light);
                         }
-                        String s = numberFormat((double) response.getInt("players"));
+
+                        String s = numberFormat((double) response.getInt("players"), 0);
                         Log.d("size", String.valueOf(s.length()));
                         String word;
 
                         double d = Double.parseDouble(s.split("(?<=[\\d\\.])(?=[a-z])")[0]);
-                        if (s.split("(?<=[\\d\\.])(?=[a-z])")[1].equals("k")) {
-                            word = "Thousand";
-                        } else if (s.split("")[1].equals("m")) {
-                            word = "Million";
+                        if (!s.isEmpty()) {
+                            switch (s.split("(?<=[\\d\\.])(?=[a-z])")[1]) {
+                                case "k":
+                                    word = "Thousand";
+                                    break;
+                                case "m":
+                                    word = "Million";
+                                    break;
+                                case "b":
+                                    word = "Billion";
+                                    break;
+                                case "t":
+                                    word = "Trillion";
+                                    break;
+                                default:
+                                    word = "Hundred";
+                                    break;
+                            }
+                            download_stats.setText(getResources().getString(R.string.download_stats, d, word));
                         } else {
-                            word = "Hundred";
+                            download_stats.setVisibility(View.GONE);
                         }
-                        download_stats.setText(getResources().getString(R.string.download_stats, d, word));
                     } catch (Exception e) {
                         e.printStackTrace();
                         download_stats_layout.setVisibility(View.GONE);
@@ -803,8 +755,7 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
     }
 
     public void showBottomSheetDialog() {
-        //    private BottomSheetBehavior bottomSheetBehavior;
-        @SuppressLint("InflateParams") View view = getLayoutInflater().inflate(R.layout.bottomprogressbar, null);
+        @SuppressLint("InflateParams") View view = getLayoutInflater().inflate(R.layout.layout_bottomprogressbar, null);
         if (dialog == null) {
             dialog = new BottomSheetDialog(this);
             dialog.setContentView(view);
@@ -830,19 +781,18 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        SharedPreferences.Editor editor = preferences.edit();
         switch (item.getItemId()) {
             case R.id.sa:
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, "Hey check this out: tiny.cc/iter_awol \n ");
+                sendIntent.putExtra(Intent.EXTRA_TEXT, "All in one app for ITER students - check your attendance, results and a lot more: https://codex-iter.github.io/AWOL/ \n\n_Developed and Maintained by CODEX_ ");
                 sendIntent.setType("text/plain");
                 startActivity(sendIntent);
                 break;
             case R.id.lecture: {
-                if (!Objects.equals(sharedPreferences.getString(SHOW_LECTURES, "0"), "0")) {
+                if (!Objects.equals(this.sharedPreference.getString(SHOW_LECTURES, "0"), "0")) {
                     Intent intent = new Intent(AttendanceActivity.this, OnlineLectureSubjects.class);
-                    switch (Objects.requireNonNull(sharedPreferences.getString(STUDENT_SEMESTER, "1"))) {
+                    switch (Objects.requireNonNull(this.sharedPreference.getString(STUDENT_SEMESTER, "1"))) {
                         case "1":
                             student_semester = "1st";
                             break;
@@ -879,9 +829,6 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                 startActivity(intent);
                 break;
             }
-            case R.id.cd:
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().getString(R.string.github_url))));
-                break;
             case R.id.lgout:
                 if (this.drawerLayout.isDrawerOpen(GravityCompat.START)) {
                     this.drawerLayout.closeDrawer(GravityCompat.START);
@@ -889,40 +836,19 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                 MaterialAlertDialogBuilder binder = new MaterialAlertDialogBuilder(AttendanceActivity.this);
                 binder.setMessage("Do you want to logout?");
                 binder.setTitle(Html.fromHtml("<font color='#ba000d'>Are you sure?</font>"));
-                binder.setCancelable(false);
+                binder.setCancelable(true);
                 binder.setPositiveButton("YES", (dialog, which) -> {
-                    if (sub == null) {
-                        sub = getSharedPreferences("sub",
-                                Context.MODE_PRIVATE);
-                    }
-                    edit = sub.edit();
-                    edit.putBoolean("logout", true);
-                    edit.apply();
-                    if (studentnamePrefernces != null) {
-                        studentnamePrefernces.edit().clear().apply();
-                    }
-                    editor.putBoolean("close", false);
-                    editor.apply();
-                    //Clearing the saved data
-                    if (Constants.offlineDataPreference != null) {
-                        Constants.offlineDataPreference.edit().clear().apply();
-                    }
-                    if (sharedPreferences != null) {
-                        sharedPreferences.edit().clear().apply();
-                    }
-                    if (preferences != null) {
-                        preferences.edit().clear().apply();
-                    }
+                    localDB.setStudent(sharedPreference.getString("pref_student", null), null);
+
                     FirebaseAuth.getInstance().signOut();
                     Intent intent3 = new Intent(getApplicationContext(), MainActivity.class);
-                    intent3.putExtra("logout_status", "0");
                     startActivity(intent3);
                 });
                 binder.setNegativeButton("NO", (dialog, which) -> dialog.cancel());
                 binder.show();
                 break;
             case R.id.result:
-                if (Objects.equals(sharedPreferences.getString(SHOW_RESULT, ""), "0")) {
+                if (Objects.equals(this.sharedPreference.getString(SHOW_RESULT, ""), "0")) {
                     Snackbar snackbar = Snackbar.make(mainLayout, "We will be back within 3-4 days", Snackbar.LENGTH_LONG);
                     snackbar.show();
                 } else {
@@ -933,16 +859,11 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                 Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
                 startActivity(intent);
                 break;
-            case R.id.policy:
-                Uri uri = Uri.parse("https://awol-iter.flycricket.io/privacy.html");
-                Intent intent2 = new Intent(Intent.ACTION_VIEW, uri);
-                startActivity(intent2);
-                break;
             case R.id.customTabs:
-                if (!Objects.equals(sharedPreferences.getString(SHOW_CUSTOM_TABS, "0"), "0")) {
-                    if (studentnamePrefernces.contains(STUDENT_YEAR)) {
-                        if (Objects.equals(studentnamePrefernces.getString(STUDENT_YEAR, ""), "1920")
-                                || Objects.equals(studentnamePrefernces.getString(STUDENT_YEAR, ""), "2021")) {
+                if (!Objects.equals(this.sharedPreference.getString(SHOW_CUSTOM_TABS, "0"), "0")) {
+                    if (preferredStudent != null) {
+                        if (preferredStudent.getAcademic_year().equals("1920")
+                                || preferredStudent.getAcademic_year().equals("2021")) {
                             if (custom_tabs_link_2 != null && !custom_tabs_link_2.isEmpty()) {
                                 custom_tab(custom_tabs_link_2);
                                 Log.d("custom_link", custom_tabs_link_2);
@@ -971,27 +892,6 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
 
     @Override
     public void onInternetConnectivityChanged(boolean isConnected) {
-//        if (isConnected) {
-//            if (!isLoaded) {
-//                try {
-//                    if (adRequest == null) {
-//                        adRequest = new AdRequest.Builder().build();
-//                    }
-//                    adView.loadAd(adRequest);
-//                } catch (Exception e) {
-//                    //Exception
-//                    adView.setVisibility(View.GONE);
-//                }
-//            }
-//            if (Constants.Offline_mode) {
-//                Constants.Offline_mode = false;
-//                Snackbar.make(mainLayout, "Your connection is back. Please refresh the app", Snackbar.LENGTH_INDEFINITE)
-//                        .setActionTextColor(Color.GREEN).setAction("REFRESH", v -> {
-//                    startActivity(new Intent(this, MainActivity.class));
-//                    finish();
-//                }).show();
-//            }
-//        }
     }
 
     private void custom_tab(String url) {
@@ -1003,11 +903,10 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
             if (this.getSharedPreferences("theme", 0).contains(TOOLBAR_COLOR)) {
                 builder.setToolbarColor(getResources().getColor(this.getSharedPreferences("theme", 0).getInt(TOOLBAR_COLOR, 0)));
             } else {
-                builder.setToolbarColor(getResources().getColor(R.color.white));
+                builder.setToolbarColor(getResources().getColor(R.color.green));
             }
             builder.build().launchUrl(this, Uri.parse(url));
         } catch (Exception e) {
-            Log.d("custom_tabs_link", Objects.requireNonNull(e.getMessage()));
             Snackbar snackbar = Snackbar.make(mainLayout, "Something went wrong, please try again", Snackbar.LENGTH_SHORT);
             snackbar.show();
         }
@@ -1018,5 +917,19 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
         super.onDestroy();
         mInternetAvailabilityChecker
                 .removeInternetConnectivityChangeListener(this);
+    }
+
+    @Override
+    public void switchToClickedAccount(Student student) {
+        this.sharedPreference.edit().putString("pref_student", student.getRedgNo()).apply();
+        finish();
+        startActivity(new Intent(AttendanceActivity.this, MainActivity.class));
+    }
+
+    @Override
+    public void addAccountClicked() {
+        this.sharedPreference.edit().putString("pref_student", null).apply();
+        finish();
+        startActivity(new Intent(AttendanceActivity.this, MainActivity.class));
     }
 }
