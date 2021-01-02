@@ -1,20 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/bottomSheet_view"
+    android:id="@+id/bottomSheetView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/shape_login_bottom_sheet"
+    android:orientation="vertical"
+    app:behavior_peekHeight="20dp"
     app:layout_behavior="@string/bottom_sheet_behavior">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/loginLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/shape_login_bottom_sheet"
-        android:orientation="vertical"
-        app:behavior_peekHeight="20dp">
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <com.google.android.material.textview.MaterialTextView
+        <TextView
             android:id="@+id/hello"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -43,6 +46,7 @@
             android:layout_marginTop="15dp"
             android:layout_marginEnd="30dp"
             android:hint="@string/username"
+            android:textColorHint="@color/black"
             app:layout_constraintTop_toBottomOf="@+id/hello">
 
             <com.google.android.material.textfield.MaterialAutoCompleteTextView
@@ -68,10 +72,11 @@
             android:layout_marginTop="0dp"
             android:layout_marginEnd="30dp"
             android:hint="@string/password"
-            app:endIconMode="password_toggle"
-            app:endIconTint="?colorAccent"
+            android:textColorHint="@color/black"
             app:layout_constraintBottom_toTopOf="@+id/button_layout"
-            app:layout_constraintTop_toBottomOf="@+id/userLayout">
+            app:layout_constraintTop_toBottomOf="@+id/userLayout"
+            app:passwordToggleEnabled="true"
+            app:passwordToggleTint="#000">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/pass"
@@ -80,7 +85,6 @@
                 android:focusable="true"
                 android:inputType="textPassword"
                 android:textColor="@color/black"
-                android:textCursorDrawable="@null"
                 android:textSize="14sp" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -99,10 +103,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="30dp"
                 android:layout_marginEnd="30dp"
-                android:backgroundTint="?colorAccent"
+                android:backgroundTint="@color/colorPrimary"
                 android:text="@string/login"
                 android:textAllCaps="true"
-                android:textColor="@color/white"
                 android:textSize="14sp"
                 app:cornerRadius="5dp"
                 app:layout_constraintBottom_toBottomOf="parent" />
@@ -112,12 +115,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
-                android:indeterminateTint="?colorAccent"
+                android:indeterminateTint="@color/colorPrimary"
                 android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

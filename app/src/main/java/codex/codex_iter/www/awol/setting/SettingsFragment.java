@@ -83,7 +83,7 @@ public class SettingsFragment extends PreferenceFragment {
 
         preferred_student = localDB.getStudent(sharedPreferences.getString("pref_student", null));
 
-        scrollViewLayout = (ScrollView) getActivity().findViewById(R.id.bottomSheet_view);
+        scrollViewLayout = (ScrollView) getActivity().findViewById(R.id.bottomSheetView);
 
         final SwitchPreference notifications = (SwitchPreference) findPreference("pref_notification");
         final SwitchPreference pref_show_attendance_stats = (SwitchPreference) findPreference("pref_show_attendance_stats");

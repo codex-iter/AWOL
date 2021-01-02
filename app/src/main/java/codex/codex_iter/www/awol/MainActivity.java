@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -111,8 +112,8 @@ public class MainActivity extends BaseThemedActivity implements InternetConnecti
     ProgressBar progressBar;
     @BindView(R.id.passwordLayout)
     TextInputLayout passLayout;
-    @BindView(R.id.bottomSheet_view)
-    ScrollView bottomSheetView;
+    @BindView(R.id.bottomSheetView)
+    ConstraintLayout bottomSheetView;
     @BindView(R.id.hello)
     MaterialTextView welcomeMessage;
 
@@ -484,7 +485,9 @@ public class MainActivity extends BaseThemedActivity implements InternetConnecti
                                 if (!jobj1.getString("academicyear").isEmpty()) {
                                     academic_year = jobj1.getString("academicyear");
                                 }
-                            }
+                            }  //TODO to be removed
+                            academic_year = "2021";
+
                             String studentName = jobj1.getString("name");
                             String student_branch = jobj1.getString(STUDENT_BRANCH);
                             MainActivity.this.getAttendanceAPI(this.sharedPreferences.getString(API, api), param[1], param[2], academic_year, studentName, student_branch);
