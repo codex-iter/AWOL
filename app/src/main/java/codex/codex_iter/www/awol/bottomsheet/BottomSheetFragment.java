@@ -11,7 +11,6 @@ import codex.codex_iter.www.awol.R;
 
 public class BottomSheetFragment extends BottomSheetDialogFragment {
     public BottomSheetFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -22,7 +21,6 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.layout_bottomprogressbar, container, false);
     }
 }

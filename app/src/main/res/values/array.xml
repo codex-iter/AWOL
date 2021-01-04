@@ -25,4 +25,9 @@
         <item>50</item>
     </string-array>
 
+    <string-array name="preferredThemes">
+        <item>Light</item>
+        <item>Dark</item>
+        <item>Follow system</item>
+    </string-array>
 </resources>

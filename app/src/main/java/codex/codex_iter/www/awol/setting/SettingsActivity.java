@@ -4,21 +4,23 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.appbar.MaterialToolbar;
 
 import java.util.Objects;
 
 import codex.codex_iter.www.awol.R;
-import codex.codex_iter.www.awol.activity.BaseThemedActivity;
+import codex.codex_iter.www.awol.databinding.ActivitySettingsBinding;
 
-public class SettingsActivity extends BaseThemedActivity {
+public class SettingsActivity extends AppCompatActivity {
     @SuppressWarnings("FieldCanBeLocal")
+    private ActivitySettingsBinding activitySettingsBinding;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
+        activitySettingsBinding = ActivitySettingsBinding.inflate(getLayoutInflater());
+        setContentView(activitySettingsBinding.getRoot());
         setupToolbar();
         setupPreferences();
     }
@@ -34,8 +36,7 @@ public class SettingsActivity extends BaseThemedActivity {
     }
 
     private void setupToolbar() {
-        MaterialToolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setSupportActionBar(activitySettingsBinding.toolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle("Settings");
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         Objects.requireNonNull(getSupportActionBar()).setElevation(0);
@@ -43,6 +44,6 @@ public class SettingsActivity extends BaseThemedActivity {
     }
 
     private void setupPreferences() {
-        getFragmentManager().beginTransaction().replace(R.id.settings_fragment, new SettingsFragment()).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.settingsFragment, new SettingsFragment()).commit();
     }
 }

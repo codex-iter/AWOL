@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.appbar.MaterialToolbar;
@@ -14,25 +15,20 @@ import com.google.android.material.appbar.MaterialToolbar;
 import java.util.Objects;
 
 import codex.codex_iter.www.awol.R;
+import codex.codex_iter.www.awol.databinding.ActivityAboutBinding;
 
-public class AboutActivity extends BaseThemedActivity {
+public class AboutActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_about);
-
-        MaterialToolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        ActivityAboutBinding activityAboutBinding = ActivityAboutBinding.inflate(getLayoutInflater());
+        setContentView(activityAboutBinding.getRoot());
+        setSupportActionBar(activityAboutBinding.toolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle("About");
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         Objects.requireNonNull(getSupportActionBar()).setElevation(0);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowHomeEnabled(true);
-//
-//        if (!dark) {
-//            toolbar.setTitleTextColor(getResources().getColor(R.color.black));
-//            Objects.requireNonNull(toolbar.getNavigationIcon()).setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP);
-//        }
     }
 
 

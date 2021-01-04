@@ -1,8 +1,6 @@
 package codex.codex_iter.www.awol.adapter;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,9 +20,9 @@ import codex.codex_iter.www.awol.model.Result;
 
 public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.ResultHolder> {
 
-    private Context ctx;
-    private List<Result> resultData;
-    private OnItemClickListener listener;
+    private final Context ctx;
+    private final List<Result> resultData;
+    private final OnItemClickListener listener;
 
     public ResultAdapter(Context ctx, List<Result> resultData, OnItemClickListener listener) {
         this.ctx = ctx;
@@ -42,9 +40,6 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.ResultHold
 
     @Override
     public void onBindViewHolder(@NonNull ResultAdapter.ResultHolder holder, int position) {
-        SharedPreferences theme = ctx.getSharedPreferences("theme", 0);
-        boolean dark = theme.getBoolean("dark_theme", false);
-
         holder.semTextView.setText(String.valueOf(resultData.get(position).getStynumber()));
         holder.creditsTextView.setText(resultData.get(position).getTotalearnedcredit());
         holder.sgpaTextView.setText(resultData.get(position).getSgpaR());
@@ -70,18 +65,6 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.ResultHold
                         resultData.get(position).getFail(), resultData.get(position).getSgpaR());
             }
         });
-
-        if (!dark) {
-            holder.semTextView.setTextColor(Color.parseColor("#141831"));
-            holder.sgpaTextView.setTextColor(Color.parseColor("#141831"));
-            holder.cgpaTextView.setTextColor(Color.parseColor("#141831"));
-            holder.creditsTextView.setTextColor(Color.parseColor("#141831"));
-        } else {
-            holder.semTextView.setTextColor(Color.parseColor("#FFFFFF"));
-            holder.sgpaTextView.setTextColor(Color.parseColor("#FFFFFF"));
-            holder.cgpaTextView.setTextColor(Color.parseColor("#FFFFFF"));
-            holder.creditsTextView.setTextColor(Color.parseColor("#FFFFFF"));
-        }
     }
 
     @Override

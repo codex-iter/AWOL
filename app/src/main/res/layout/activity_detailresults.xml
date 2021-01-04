@@ -10,7 +10,7 @@
         android:orientation="vertical">
 
         <LinearLayout
-            android:id="@+id/main_layout"
+            android:id="@+id/mainLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -26,8 +26,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="?actionBarSize"
                     android:layout_gravity="center_horizontal"
-                    android:background="?toolbarColor"
-                    android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+                    android:theme="@style/AppTheme.Toolbar"
                     app:titleTextColor="@color/colorAccent">
 
                 </com.google.android.material.appbar.MaterialToolbar>

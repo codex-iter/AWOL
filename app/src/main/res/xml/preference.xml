@@ -12,11 +12,12 @@
     </androidx.preference.PreferenceCategory>
 
     <androidx.preference.PreferenceCategory
-        android:title="Mobile Notifications"
+        android:title="Push Notifications"
         app:iconSpaceReserved="false">
         <androidx.preference.SwitchPreference
+            android:defaultValue="true"
             android:key="pref_notification"
-            android:summary="Get daily reminder to check attendance"
+            android:summary="Receive important notification"
             android:title="Enable Notification"
             app:iconSpaceReserved="false" />
     </androidx.preference.PreferenceCategory>
@@ -38,16 +39,32 @@
             android:entries="@array/minimumAttendanceArray"
             android:entryValues="@array/minimumAttendanceValues"
             android:key="pref_minimum_attendance"
-            android:summary="Set minimum required attendance"
+            android:summary="%s"
             android:title="Minimum attendance"
             app:iconSpaceReserved="false" />
 
         <androidx.preference.SwitchPreference
+            android:defaultValue="true"
             android:dependency="pref_show_attendance_stats"
             android:key="pref_extended_stats"
             android:summary="Show extended attendance stats"
             android:title="Extended attendance stats"
             app:iconSpaceReserved="false" />
+    </androidx.preference.PreferenceCategory>
+
+    <androidx.preference.PreferenceCategory
+        android:title="General"
+        app:iconSpaceReserved="false">
+
+        <ListPreference
+            android:defaultValue="Light"
+            android:entries="@array/preferredThemes"
+            android:entryValues="@array/preferredThemes"
+            android:key="pref_theme"
+            android:summary="%s"
+            android:title="Theme"
+            app:iconSpaceReserved="false" />
+
     </androidx.preference.PreferenceCategory>
 
     <androidx.preference.PreferenceCategory
@@ -62,11 +79,17 @@
                 android:action="android.intent.action.VIEW"
                 android:data="mailto:codexiter@gmail.com" />
         </androidx.preference.Preference>
+    </androidx.preference.PreferenceCategory>
 
+    <androidx.preference.PreferenceCategory app:iconSpaceReserved="false">
         <androidx.preference.Preference
-            android:key="pref_contact_us"
+            android:key="pref_privacy"
             android:title="Privacy Policy"
             app:iconSpaceReserved="false" />
 
+        <androidx.preference.Preference
+            android:key="pref_sign_out"
+            android:title="Sign Out"
+            app:iconSpaceReserved="false" />
     </androidx.preference.PreferenceCategory>
 </androidx.preference.PreferenceScreen>

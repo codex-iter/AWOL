@@ -1,14 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/lecture"
-        android:icon="@drawable/video"
-        android:title="@string/video_lectures" />
-    <item
-        android:id="@+id/pab"
-        android:icon="@drawable/ic_hotel"
-        android:title="@string/plan_bunk" />
-    <item
         android:id="@+id/customTabs"
         android:icon="@drawable/ic_moodle"
         android:title="@string/moodle" />
@@ -17,10 +9,6 @@
         android:icon="@drawable/clipboard_text_outline"
         android:title="@string/results" />
     <item
-        android:id="@+id/setting"
-        android:icon="@drawable/settings"
-        android:title="@string/settings" />
-    <item
         android:id="@+id/sa"
         android:icon="@drawable/invite"
         android:title="@string/share_app" />
@@ -28,8 +16,4 @@
         android:id="@+id/abt"
         android:icon="@drawable/help_circle_outline"
         android:title="@string/about_us" />
-    <item
-        android:id="@+id/lgout"
-        android:icon="@drawable/arrow_right_bold_box_outline"
-        android:title="@string/logout" />
 </menu>

@@ -77,7 +77,6 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.my
         if (!s.equals("")) {
             double n = Double.parseDouble(dataList.get(position).getPercent());
             double o = Double.parseDouble(s);
-            //    Toast.makeText(context, "New Attendance : " + n, Toast.LENGTH_SHORT).show();
             if (n >= o) {
                 holder.up.setBackgroundResource(R.drawable.up);
             } else {
@@ -103,33 +102,6 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.my
             holder.bunk_text.setText(dataList.get(position).getBunk_text_str());
         } else {
             holder.bunk_text.setVisibility(View.GONE);
-        }
-
-        if (!dark) {
-            holder.cardView.setCardBackgroundColor(Color.parseColor("#FFFFFF"));
-            holder.ta.setTextColor(Color.parseColor("#141831"));
-            holder.lastUpdated.setTextColor(Color.parseColor("#141831"));
-            holder.th.setTextColor(Color.parseColor("#141831"));
-            holder.prac.setTextColor(Color.parseColor("#141831"));
-            holder.ab.setTextColor(Color.parseColor("#141831"));
-            holder.tc.setTextColor(Color.parseColor("#141831"));
-            holder.absents.setTextColor(Color.parseColor("#141831"));
-            holder.pract.setTextColor(Color.parseColor("#141831"));
-            holder.theory.setTextColor(Color.parseColor("#141831"));
-            holder.classes.setTextColor(Color.parseColor("#141831"));
-            holder.bunk_text.setTextColor(Color.parseColor("#141831"));
-        } else {
-            holder.ta.setTextColor(Color.parseColor("#141831"));
-            holder.lastUpdated.setTextColor(Color.parseColor("#FFFFFF"));
-            holder.th.setTextColor(Color.parseColor("#FFFFFF"));
-            holder.prac.setTextColor(Color.parseColor("#FFFFFF"));
-            holder.ab.setTextColor(Color.parseColor("#FFFFFF"));
-            holder.tc.setTextColor(Color.parseColor("#FFFFFF"));
-            holder.absents.setTextColor(Color.parseColor("#FFFFFF"));
-            holder.pract.setTextColor(Color.parseColor("#FFFFFF"));
-            holder.theory.setTextColor(Color.parseColor("#FFFFFF"));
-            holder.classes.setTextColor(Color.parseColor("#FFFFFF"));
-            holder.bunk_text.setTextColor(Color.parseColor("#FFFFFF"));
         }
     }
 

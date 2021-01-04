@@ -1,122 +1,24 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <item name="dropdownColor">@android:color/black</item>
-        <item name="aboutTextColor">@color/textColorDark</item>
-        <!--        <item name="logoo">@drawable/codex_l</item>-->
-        <item name="windowColor">@color/lightBackground</item>
-        <item name="toolbarTitle">@color/colorPrimary</item>
-        <item name="toolbarColor">@android:color/white</item>
-        <item name="colorPrimary">@color/colorPrimaryDark</item>
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="menuIconTint">@color/colorPrimary</item>
-        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
-        <item name="android:textColorPrimary">@color/black</item>
-        <item name="android:textColorSecondary">@color/black</item>
-    </style>
-    <style name="AppTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-        <item name="android:textColor">@color/colorwhite</item>
+        <item name="appBarLayoutStyle">@style/AppTheme.AppBarOverlay</item>
+        <item name="toolbarStyle">@style/AppTheme.Toolbar</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar" />
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Light" />
-
-    <style name="DialogLight" parent="Theme.MaterialComponents.Light.Dialog.Alert">
-        <item name="colorAccent">@color/black</item>
-        <item name="android:textColor">@color/black</item>
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar">
+        <item name="android:background">?colorPrimary</item>
     </style>
 
-    <style name="DrawerArrowStyle" parent="@style/Widget.AppCompat.DrawerArrowToggle">
-        <item name="spinBars">true</item>
-        <item name="color">@android:color/black</item>
+    <style name="AppTheme.Toolbar" parent="ThemeOverlay.MaterialComponents.Toolbar.Primary">
+        <item name="titleTextAppearance">@style/TextAppearance.MaterialComponents.Body1</item>
+        <item name="background">?colorAccent</item>
     </style>
 
-    <!-- Dark application theme. -->
-    <style name="AppTheme.Dark" parent="Theme.MaterialComponents">
-        <item name="dropdownColor">@android:color/white</item>
-        <item name="menuIconTint">@color/colorPrimary</item>
-        <!--        <item name="logoo">@drawable/codex</item>-->
-        <item name="aboutTextColor">@color/colorwhite</item>
-        <item name="windowColor">@color/darkBackground</item>
-        <item name="toolbarColor">@color/darkColorPrimary</item>
-        <item name="toolbarTitle">@android:color/white</item>
-        <item name="colorPrimary">@color/darkColorAccent</item>
-        <item name="colorPrimaryDark">@color/darkColorPrimaryDark</item>
-        <item name="colorAccent">@color/darkColorAccent</item>
-    </style>
-
-    <style name="AppTheme.Dark.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
-
-    <style name="AppTheme.Dark.AppBarTitle" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
-        <item name="android:textSize">@dimen/text_x_large</item>
-        <item name="android:textColor">@color/colorwhite</item>
-    </style>
-
-
-    <style name="AppTheme.NoActionBar.Orange">
-        <item name="menuIconTint">@android:color/white</item>
-        <item name="colorPrimaryDark">@color/orangeDark</item>
-        <item name="toolbarColor">@color/orange</item>
-        <item name="toolbarTitle">@android:color/white</item>
-    </style>
-
-    <style name="AppTheme.Dark.NoActionBar.Orange">
-        <item name="menuIconTint">@android:color/white</item>
-        <item name="toolbarColor">@color/orange</item>
-        <item name="colorPrimaryDark">@color/orangeDark</item>
-    </style>
-
-    <style name="AppTheme.NoActionBar.Red">
-        <item name="menuIconTint">@android:color/white</item>
-        <item name="colorPrimaryDark">@color/redDark</item>
-        <item name="toolbarColor">@color/red</item>
-        <item name="toolbarTitle">@android:color/white</item>
-    </style>
-
-    <style name="AppTheme.Dark.NoActionBar.Red">
-        <item name="menuIconTint">@android:color/white</item>
-        <item name="colorPrimaryDark">@color/redDark</item>
-        <item name="toolbarColor">@color/red</item>
-        <item name="toolbarTitle">@android:color/white</item>
-    </style>
-
-    <style name="AppTheme.NoActionBar.Blue">
-        <item name="menuIconTint">@android:color/white</item>
-        <item name="colorPrimaryDark">@color/blueDark</item>
-        <item name="toolbarColor">@color/blue</item>
-        <item name="toolbarTitle">@android:color/white</item>
-    </style>
-
-    <style name="AppTheme.Dark.NoActionBar.Blue">
-        <item name="menuIconTint">@android:color/white</item>
-        <item name="colorPrimaryDark">@color/blueDark</item>
-        <item name="toolbarColor">@color/blue</item>
-        <item name="toolbarTitle">@android:color/white</item>
-    </style>
-
-    <style name="AppTheme.NoActionBar.Green">
-        <item name="menuIconTint">@android:color/white</item>
-        <item name="colorPrimaryDark">@color/greenDark</item>
-        <item name="toolbarColor">@color/green</item>
-        <item name="toolbarTitle">@android:color/white</item>
-    </style>
-
-    <style name="AppTheme.Dark.NoActionBar.Green">
-        <item name="menuIconTint">@android:color/white</item>
-        <item name="colorPrimaryDark">@color/greenDark</item>
-        <item name="toolbarColor">@color/green</item>
-        <item name="toolbarTitle">@android:color/white</item>
-    </style>
-
-    <style name="SplashTheme" parent="Theme.MaterialComponents.NoActionBar">
+    <style name="SplashTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:windowBackground">@xml/background</item>
     </style>
 
@@ -127,4 +29,98 @@
         <item name="boxCornerRadiusBottomEnd">15dp</item>
         <item name="boxCornerRadiusBottomStart">15dp</item>
     </style>
+
+    <!--    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar" />-->
+
+    <!--    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Light" />-->
+
+    <!--    <style name="DialogLight" parent="Theme.MaterialComponents.Light.Dialog.Alert">-->
+    <!--        <item name="colorAccent">@color/black</item>-->
+    <!--        <item name="android:textColor">@color/black</item>-->
+    <!--    </style>-->
+
+    <!--    <style name="DrawerArrowStyle" parent="@style/Widget.AppCompat.DrawerArrowToggle">-->
+    <!--        <item name="spinBars">true</item>-->
+    <!--        <item name="color">@android:color/black</item>-->
+    <!--    </style>-->
+
+    <!--    &lt;!&ndash; Dark application theme. &ndash;&gt;-->
+    <!--    <style name="AppTheme.Dark" parent="Theme.MaterialComponents">-->
+    <!--        <item name="dropdownColor">@android:color/white</item>-->
+    <!--        <item name="menuIconTint">@color/colorPrimary</item>-->
+    <!--        &lt;!&ndash;        <item name="logoo">@drawable/codex</item>&ndash;&gt;-->
+    <!--        <item name="aboutTextColor">@color/colorwhite</item>-->
+    <!--        <item name="windowColor">@color/darkBackground</item>-->
+    <!--        <item name="toolbarColor">@color/darkColorPrimary</item>-->
+    <!--        <item name="toolbarTitle">@android:color/white</item>-->
+    <!--        <item name="colorPrimary">@color/darkColorAccent</item>-->
+    <!--        <item name="colorPrimaryDark">@color/darkColorPrimaryDark</item>-->
+    <!--        <item name="colorAccent">@color/darkColorAccent</item>-->
+    <!--    </style>-->
+
+    <!--    <style name="AppTheme.Dark.NoActionBar">-->
+    <!--        <item name="windowActionBar">false</item>-->
+    <!--        <item name="windowNoTitle">true</item>-->
+    <!--    </style>-->
+
+    <!--    <style name="AppTheme.Dark.AppBarTitle" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">-->
+    <!--        <item name="android:textSize">@dimen/text_x_large</item>-->
+    <!--        <item name="android:textColor">@color/colorwhite</item>-->
+    <!--    </style>-->
+
+
+    <!--    <style name="AppTheme.NoActionBar.Orange">-->
+    <!--        <item name="menuIconTint">@android:color/white</item>-->
+    <!--        <item name="colorPrimaryDark">@color/orangeDark</item>-->
+    <!--        <item name="toolbarColor">@color/orange</item>-->
+    <!--        <item name="toolbarTitle">@android:color/white</item>-->
+    <!--    </style>-->
+
+    <!--    <style name="AppTheme.Dark.NoActionBar.Orange">-->
+    <!--        <item name="menuIconTint">@android:color/white</item>-->
+    <!--        <item name="toolbarColor">@color/orange</item>-->
+    <!--        <item name="colorPrimaryDark">@color/orangeDark</item>-->
+    <!--    </style>-->
+
+    <!--    <style name="AppTheme.NoActionBar.Red">-->
+    <!--        <item name="menuIconTint">@android:color/white</item>-->
+    <!--        <item name="colorPrimaryDark">@color/redDark</item>-->
+    <!--        <item name="toolbarColor">@color/red</item>-->
+    <!--        <item name="toolbarTitle">@android:color/white</item>-->
+    <!--    </style>-->
+
+    <!--    <style name="AppTheme.Dark.NoActionBar.Red">-->
+    <!--        <item name="menuIconTint">@android:color/white</item>-->
+    <!--        <item name="colorPrimaryDark">@color/redDark</item>-->
+    <!--        <item name="toolbarColor">@color/red</item>-->
+    <!--        <item name="toolbarTitle">@android:color/white</item>-->
+    <!--    </style>-->
+
+    <!--    <style name="AppTheme.NoActionBar.Blue">-->
+    <!--        <item name="menuIconTint">@android:color/white</item>-->
+    <!--        <item name="colorPrimaryDark">@color/blueDark</item>-->
+    <!--        <item name="toolbarColor">@color/blue</item>-->
+    <!--        <item name="toolbarTitle">@android:color/white</item>-->
+    <!--    </style>-->
+
+    <!--    <style name="AppTheme.Dark.NoActionBar.Blue">-->
+    <!--        <item name="menuIconTint">@android:color/white</item>-->
+    <!--        <item name="colorPrimaryDark">@color/blueDark</item>-->
+    <!--        <item name="toolbarColor">@color/blue</item>-->
+    <!--        <item name="toolbarTitle">@android:color/white</item>-->
+    <!--    </style>-->
+
+    <!--    <style name="AppTheme.NoActionBar.Green">-->
+    <!--        <item name="menuIconTint">@android:color/white</item>-->
+    <!--        <item name="colorPrimaryDark">@color/greenDark</item>-->
+    <!--        <item name="toolbarColor">@color/green</item>-->
+    <!--        <item name="toolbarTitle">@android:color/white</item>-->
+    <!--    </style>-->
+
+    <!--    <style name="AppTheme.Dark.NoActionBar.Green">-->
+    <!--        <item name="menuIconTint">@android:color/white</item>-->
+    <!--        <item name="colorPrimaryDark">@color/greenDark</item>-->
+    <!--        <item name="toolbarColor">@color/green</item>-->
+    <!--        <item name="toolbarTitle">@android:color/white</item>-->
+    <!--    </style>-->
 </resources>

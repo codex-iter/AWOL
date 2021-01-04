@@ -1,20 +1,16 @@
 package codex.codex_iter.www.awol.activity;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
@@ -23,10 +19,8 @@ import com.android.volley.RequestQueue;
 import com.android.volley.ServerError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.textview.MaterialTextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,36 +32,22 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import codex.codex_iter.www.awol.R;
 import codex.codex_iter.www.awol.adapter.ResultAdapter;
 import codex.codex_iter.www.awol.data.LocalDB;
+import codex.codex_iter.www.awol.databinding.ActivityDetailresultsBinding;
 import codex.codex_iter.www.awol.exceptions.InvalidResponseException;
 import codex.codex_iter.www.awol.model.Result;
 import codex.codex_iter.www.awol.model.Student;
-import codex.codex_iter.www.awol.utilities.Constants;
 
 import static codex.codex_iter.www.awol.utilities.Constants.API;
 import static codex.codex_iter.www.awol.utilities.Constants.RESULTS;
 
-public class ResultActivity extends BaseThemedActivity implements ResultAdapter.OnItemClickListener {
-
-    @BindView(R.id.toolbar)
-    MaterialToolbar toolbar;
-    @BindView(R.id.main_layout)
-    LinearLayout main_layout;
-    @BindView(R.id.recyclerViewDetailedResult)
-    RecyclerView recyclerView;
-    @BindView(R.id.NA)
-    ConstraintLayout noAttendanceLayout;
-    @BindView(R.id.NA_content)
-    MaterialTextView tv;
-
+public class ResultActivity extends AppCompatActivity implements ResultAdapter.OnItemClickListener {
     private String result;
     private int l;
     private Result[] resultData;
-    private ArrayList<Result> resultArrayList = new ArrayList<>();
+    private final ArrayList<Result> resultArrayList = new ArrayList<>();
     private int sem;
     private String totalCredit;
     private String sgpa;
@@ -75,17 +55,14 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
     private BottomSheetDialog dialog;
     private SharedPreferences sharedPreferences;
     private Student preferred_student;
+    private ActivityDetailresultsBinding activityDetailresultsBinding;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        activityDetailresultsBinding = ActivityDetailresultsBinding.inflate(getLayoutInflater());
         setContentView(R.layout.activity_detailresults);
-
-        Constants.offlineDataPreference = this.getSharedPreferences("OFFLINEDATA", Context.MODE_PRIVATE);
-
-        ButterKnife.bind(this);
-
-        setSupportActionBar(toolbar);
+        setSupportActionBar(activityDetailresultsBinding.toolbar);
 
         LocalDB localDB = new LocalDB(this);
 
@@ -99,14 +76,9 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         Objects.requireNonNull(getSupportActionBar()).setElevation(0);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowHomeEnabled(true);
-        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+        activityDetailresultsBinding.toolbar.setTitleTextColor(getResources().getColor(R.color.white));
 
         Bundle bundle = getIntent().getExtras();
-
-        if (dark) {
-            recyclerView.setBackgroundColor(Color.parseColor("#141414"));
-        }
-
         if (bundle != null) {
             result = bundle.getString(RESULTS);
             preferred_student.setOfflineResult(result);
@@ -150,12 +122,12 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
             }
             preferred_student.setResult(resultData);
         } catch (JSONException | InvalidResponseException e) {
-            Snackbar snackbar = Snackbar.make(main_layout, "Invalid API Response", Snackbar.LENGTH_SHORT);
+            Snackbar snackbar = Snackbar.make(activityDetailresultsBinding.mainLayout, "Invalid API Response", Snackbar.LENGTH_SHORT);
             snackbar.show();
             if (preferred_student != null) resultData = preferred_student.getResult();
             else noResult();
         } catch (Exception e) {
-            Snackbar snackbar = Snackbar.make(main_layout, "Something went wrong few things may not work", Snackbar.LENGTH_SHORT);
+            Snackbar snackbar = Snackbar.make(activityDetailresultsBinding.mainLayout, "Something went wrong few things may not work", Snackbar.LENGTH_SHORT);
             snackbar.show();
             if (preferred_student != null) resultData = preferred_student.getResult();
             else noResult();
@@ -167,21 +139,15 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
                 noResult();
             }
             ResultAdapter resultAdapter = new ResultAdapter(this, resultArrayList, this);
-            recyclerView.setHasFixedSize(true);
-            recyclerView.setAdapter(resultAdapter);
-            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+            activityDetailresultsBinding.recyclerViewDetailedResult.setHasFixedSize(true);
+            activityDetailresultsBinding.recyclerViewDetailedResult.setAdapter(resultAdapter);
+            activityDetailresultsBinding.recyclerViewDetailedResult.setLayoutManager(new LinearLayoutManager(this));
         }
     }
 
     public void noResult() {
-        recyclerView.setVisibility(View.GONE);
-        noAttendanceLayout.setVisibility(View.VISIBLE);
-        if (dark) {
-            tv.setTextColor(Color.parseColor("#FFFFFF"));
-            main_layout.setBackgroundColor(Color.parseColor("#141414"));
-        } else {
-            tv.setTextColor(Color.parseColor("#141414"));
-        }
+        activityDetailresultsBinding.recyclerViewDetailedResult.setVisibility(View.GONE);
+        activityDetailresultsBinding.NA.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -200,7 +166,7 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
                 response -> {
                     hideBottomSheetDialog();
                     if (response.equals("169")) {
-                        Snackbar snackbar = Snackbar.make(main_layout, "Results not found", Snackbar.LENGTH_SHORT);
+                        Snackbar snackbar = Snackbar.make(activityDetailresultsBinding.mainLayout, "Results not found", Snackbar.LENGTH_SHORT);
                         snackbar.show();
                     } else {
                         Intent intent = new Intent(ResultActivity.this, DetailedResultActivity.class);
@@ -219,25 +185,25 @@ public class ResultActivity extends BaseThemedActivity implements ResultAdapter.
                     Intent intent = new Intent(ResultActivity.this, DetailedResultActivity.class);
                     intent.putExtra("Semester", String.valueOf(sem));
                     if (error instanceof AuthFailureError) {
-                        Snackbar snackbar = Snackbar.make(main_layout, "Wrong Credentials!", Snackbar.LENGTH_SHORT);
+                        Snackbar snackbar = Snackbar.make(activityDetailresultsBinding.mainLayout, "Wrong Credentials!", Snackbar.LENGTH_SHORT);
                         snackbar.show();
                     } else if (error instanceof ServerError) {
                         if (preferred_student == null) {
-                            Snackbar snackbar = Snackbar.make(main_layout, "Cannot connect to ITER servers right now.Try again", Snackbar.LENGTH_SHORT);
+                            Snackbar snackbar = Snackbar.make(activityDetailresultsBinding.mainLayout, "Cannot connect to ITER servers right now.Try again", Snackbar.LENGTH_SHORT);
                             snackbar.show();
                         } else {
                             startActivity(intent);
                         }
                     } else if (error instanceof NetworkError) {
                         if (preferred_student == null) {
-                            Snackbar snackbar = Snackbar.make(main_layout, "Cannot establish connection", Snackbar.LENGTH_SHORT);
+                            Snackbar snackbar = Snackbar.make(activityDetailresultsBinding.mainLayout, "Cannot establish connection", Snackbar.LENGTH_SHORT);
                             snackbar.show();
                         } else {
                             startActivity(intent);
                         }
                     } else {
                         if (preferred_student == null) {
-                            Snackbar snackbar = Snackbar.make(main_layout, "Cannot establish connection", Snackbar.LENGTH_SHORT);
+                            Snackbar snackbar = Snackbar.make(activityDetailresultsBinding.mainLayout, "Cannot establish connection", Snackbar.LENGTH_SHORT);
                             snackbar.show();
                         } else {
                             startActivity(intent);

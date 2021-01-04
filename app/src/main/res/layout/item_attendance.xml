@@ -13,11 +13,6 @@
         android:id="@+id/card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:elevation="10dp"
-        card_view:cardBackgroundColor="@color/cardview_shadow_end_color"
-        card_view:cardCornerRadius="7dp"
-        card_view:contentPadding="3dp"
         tools:ignore="PrivateResource">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -42,10 +37,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:backgroundTint="@color/blue"
+                    android:backgroundTint="@color/colorPrimary"
                     android:clickable="false"
                     android:gravity="center"
-                    android:shadowColor="@color/darkColorPrimary"
                     android:text="@string/_95_5"
                     android:textColor="@color/black"
                     android:textSize="18sp"
@@ -131,7 +125,6 @@
                             android:layout_weight="1.1"
                             android:gravity="center_vertical"
                             android:text="@string/not_applicable"
-                            android:textColor="@color/colorAccent"
                             android:textSize="14sp"
                             android:typeface="normal" />
                     </LinearLayout>
@@ -162,7 +155,6 @@
                             android:layout_weight="1.1"
                             android:gravity="center_vertical"
                             android:text="@string/not_applicable"
-                            android:textColor="@color/colorAccent"
                             android:textSize="14sp"
                             android:typeface="normal" />
                     </LinearLayout>
@@ -192,7 +184,6 @@
                             android:layout_weight="1.1"
                             android:gravity="center_vertical"
                             android:text="@string/not_applicable"
-                            android:textColor="@color/colorAccent"
                             android:textSize="14sp"
                             android:typeface="normal" />
                     </LinearLayout>
@@ -223,7 +214,6 @@
                             android:layout_weight="1.1"
                             android:gravity="center_vertical"
                             android:text="@string/not_applicable"
-                            android:textColor="@color/colorAccent"
                             android:textSize="14sp"
                             android:typeface="normal" />
                     </LinearLayout>
@@ -235,7 +225,6 @@
                         android:layout_marginTop="5dp"
                         android:layout_marginBottom="8sp"
                         android:gravity="start"
-                        android:textColor="@color/colorAccent"
                         android:textSize="14sp"
                         android:typeface="normal" />
                 </LinearLayout>
@@ -245,7 +234,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/updated_just_now"
-                    android:textColor="@color/colorAccent"
                     android:textSize="14sp"
                     android:textStyle="italic"
                     android:layout_marginEnd="5sp"

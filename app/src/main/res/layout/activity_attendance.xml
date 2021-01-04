@@ -29,11 +29,11 @@
 
                 <com.google.android.material.appbar.MaterialToolbar
                     android:id="@+id/toolbar"
+                    style="@style/Widget.MaterialComponents.Toolbar.Primary"
                     android:layout_width="match_parent"
-                    android:layout_height="?actionBarSize"
+                    android:layout_height="?android:actionBarSize"
                     android:layout_gravity="center_horizontal"
-                    android:background="?toolbarColor"
-                    android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
+                    android:theme="@style/AppTheme.Toolbar">
 
                 </com.google.android.material.appbar.MaterialToolbar>
             </com.google.android.material.appbar.AppBarLayout>
@@ -67,7 +67,6 @@
                     android:background="@color/transparent"
                     android:text="@string/check_result"
                     android:textAllCaps="false"
-                    android:textColor="@android:color/white"
                     android:textSize="14sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -81,7 +80,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:background="?colorAccent"
+                android:background="?colorPrimary"
                 android:orientation="horizontal"
                 android:padding="2dp"
                 android:visibility="gone"
@@ -109,118 +108,17 @@
                     android:textSize="13sp" />
             </LinearLayout>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/who_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                app:layout_constraintTop_toBottomOf="@+id/download_stats_layout">
-
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/whoCard"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:cardCornerRadius="6dp"
-                    app:cardElevation="3dp"
-                    app:cardUseCompatPadding="true"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <ImageView
-                            android:id="@+id/logo"
-                            android:layout_width="131dp"
-                            android:layout_height="139dp"
-                            android:layout_margin="10dp"
-                            android:contentDescription="@string/todo"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <com.google.android.material.textview.MaterialTextView
-                            android:id="@+id/heading"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="10dp"
-                            android:text="@string/codex"
-                            android:textColor="@color/black"
-                            android:textSize="20sp"
-                            app:layout_constraintStart_toEndOf="@+id/logo"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <com.google.android.material.textview.MaterialTextView
-                            android:id="@+id/heading_desp"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="149dp"
-                            android:layout_marginTop="8dp"
-                            android:text="@string/codex_info"
-                            android:textColor="@color/black"
-                            android:textSize="15sp"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@+id/logo"
-                            app:layout_constraintTop_toBottomOf="@+id/heading" />
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/who_button"
-                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="149dp"
-                            android:layout_marginEnd="4dp"
-                            android:text="@string/learn_more"
-                            android:textAllCaps="true"
-                            android:textColor="@color/colorPrimary"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@+id/logo" />
-
-                        <ImageView
-                            android:id="@+id/removetile"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="10dp"
-                            android:contentDescription="@string/todo"
-                            android:src="@drawable/closedark"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-                </com.google.android.material.card.MaterialCardView>
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rl"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:clipToPadding="false"
                 android:divider="@null"
-                android:textColor="#000"
-                android:textSize="25sp"
-                android:textStyle="bold"
-                app:layout_constraintTop_toBottomOf="@+id/who_layout"
-                app:layout_constraintVertical_bias="0"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/download_stats_layout"
+                app:layout_constraintVertical_bias="0"
                 tools:listitem="@layout/item_attendance" />
-
-                        <!-- Sample Unit ID: ca-app-pub-3940256099942544/6300978111 -->
-
-<!--            <com.google.android.gms.ads.AdView-->
-<!--                android:id="@+id/adView"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_gravity="bottom"-->
-<!--                app:adSize="BANNER"-->
-<!--                app:adUnitId="ca-app-pub-5401501360955646/8083098484"-->
-<!--                app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintStart_toStartOf="parent" />-->
         </androidx.constraintlayout.widget.ConstraintLayout>
-
 
         <com.google.android.material.navigation.NavigationView
             android:id="@+id/nav_view"
@@ -245,7 +143,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:textColor="?colorAccent" />
+                    android:textColor="@android:color/black" />
             </LinearLayout>
         </com.google.android.material.navigation.NavigationView>
     </androidx.drawerlayout.widget.DrawerLayout>

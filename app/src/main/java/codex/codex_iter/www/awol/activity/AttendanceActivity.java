@@ -7,12 +7,10 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.text.Html;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.MenuItem;
@@ -25,11 +23,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.FileProvider;
 import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -42,19 +40,13 @@ import com.android.volley.ServerError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.button.MaterialButton;
-import com.google.android.material.card.MaterialCardView;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textview.MaterialTextView;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.squareup.picasso.Picasso;
 import com.treebo.internetavailabilitychecker.InternetAvailabilityChecker;
 import com.treebo.internetavailabilitychecker.InternetConnectivityListener;
 
@@ -70,21 +62,18 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import codex.codex_iter.www.awol.MainActivity;
 import codex.codex_iter.www.awol.R;
 import codex.codex_iter.www.awol.adapter.AttendanceAdapter;
 import codex.codex_iter.www.awol.adapter.MultipleAccountAdapter;
 import codex.codex_iter.www.awol.data.LocalDB;
+import codex.codex_iter.www.awol.databinding.ActivityAttendanceBinding;
 import codex.codex_iter.www.awol.exceptions.InvalidFirebaseResponseException;
 import codex.codex_iter.www.awol.exceptions.InvalidResponseException;
 import codex.codex_iter.www.awol.model.Attendance;
 import codex.codex_iter.www.awol.model.Student;
 import codex.codex_iter.www.awol.setting.SettingsActivity;
-import codex.codex_iter.www.awol.theme.ThemeFragment;
 import codex.codex_iter.www.awol.utilities.Constants;
-import codex.codex_iter.www.awol.utilities.FirebaseConfig;
 import codex.codex_iter.www.awol.utilities.ScreenshotUtils;
 
 import static codex.codex_iter.www.awol.utilities.Constants.API;
@@ -95,8 +84,6 @@ import static codex.codex_iter.www.awol.utilities.Constants.CUSTOM_TABS_LINK_2;
 import static codex.codex_iter.www.awol.utilities.Constants.FETCH_FILE;
 import static codex.codex_iter.www.awol.utilities.Constants.NO_ATTENDANCE;
 import static codex.codex_iter.www.awol.utilities.Constants.PASSWORD;
-import static codex.codex_iter.www.awol.utilities.Constants.READ_DATABASE;
-import static codex.codex_iter.www.awol.utilities.Constants.READ_DATABASE2;
 import static codex.codex_iter.www.awol.utilities.Constants.REGISTRATION_NUMBER;
 import static codex.codex_iter.www.awol.utilities.Constants.RESULTS;
 import static codex.codex_iter.www.awol.utilities.Constants.RESULT_STATUS;
@@ -108,53 +95,18 @@ import static codex.codex_iter.www.awol.utilities.Constants.STUDENT_NAME;
 import static codex.codex_iter.www.awol.utilities.Constants.STUDENT_SEMESTER;
 import static codex.codex_iter.www.awol.utilities.Constants.STUDENT_YEAR;
 
-public class AttendanceActivity extends BaseThemedActivity implements NavigationView.OnNavigationItemSelectedListener, InternetConnectivityListener, MultipleAccountAdapter.OnItemClickListener {
-
-    @BindView(R.id.main_layout)
-    ConstraintLayout mainLayout;
-    @BindView(R.id.drawer_layout)
-    DrawerLayout drawerLayout;
-    @BindView(R.id.check_result)
-    MaterialButton checkResult;
-    @BindView(R.id.nav_view)
-    NavigationView navigationView;
-    @BindView(R.id.NA_content)
-    MaterialTextView tv;
-    @BindView(R.id.rl)
-    RecyclerView recyclerView;
-    @BindView(R.id.NA)
-    ConstraintLayout noAttendanceLayout;
-    @BindView(R.id.who_layout)
-    ConstraintLayout who_layout;
-    @BindView(R.id.who_button)
-    MaterialButton who_button;
-    @BindView(R.id.removetile)
-    ImageView removetile;
-    @BindView(R.id.heading)
-    MaterialTextView heading;
-    @BindView(R.id.heading_desp)
-    MaterialTextView heading_desp;
-    @BindView(R.id.whoCard)
-    MaterialCardView cardView;
-    @BindView(R.id.logo)
-    ImageView logo;
-    @BindView(R.id.toolbar)
-    MaterialToolbar toolbar;
-//    @BindView(R.id.adView)
-//    AdView adView;
+public class AttendanceActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, InternetConnectivityListener, MultipleAccountAdapter.OnItemClickListener {
 
     private String result;
     private Attendance[] attendanceData;
     private int l;
     public ArrayList<Attendance> attendanceArrayList = new ArrayList<>();
-    private String student_semester;
     private SharedPreferences sharedPreference;
     @SuppressWarnings("FieldCanBeLocal")
     private AttendanceAdapter adapter;
     private boolean no_attendance;
     private String showResult, showlectures, custom_tabs_link, showCustomTabs, custom_tabs_link_2;
     private BottomSheetDialog dialog;
-    private int read_database;
     private static final String[] suffix = new String[]{"k", "m", "b", "t"};
     private String AUTH_KEY;
     private InternetAvailabilityChecker mInternetAvailabilityChecker;
@@ -163,11 +115,11 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
     private LocalDB localDB;
     private Student preferredStudent;
     private boolean dropArrowDown;
+    private ActivityAttendanceBinding activityAttendanceBinding;
 
     @Override
     protected void onResume() {
         super.onResume();
-        //TODO Check if attendance available or not from MainActivity
         if (localDB.getStudent(this.sharedPreference.getString("pref_student", null)) != null) {
             preferredStudent = localDB.getStudent(this.sharedPreference.getString("pref_student", null));
         }
@@ -220,7 +172,7 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                         this.sharedPreference.getBoolean("pref_extended_stats", false), this.sharedPreference.getBoolean("pref_show_attendance_stats", true));
                 avgat += jObj.getDouble("TotalAttandence");
                 avgab += Integer.parseInt(attendanceData[i].getAbsent());
-                student_semester = jObj.getString(STUDENT_SEMESTER);
+                String student_semester = jObj.getString(STUDENT_SEMESTER);
                 preferredStudent.setSemester(student_semester);
             }
             preferredStudent.setAttendances(attendanceData);
@@ -230,13 +182,13 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
             preferredStudent.setAverageAbsent(avgab);
         } catch (JSONException | InvalidResponseException e) {
             Log.d("message", Objects.requireNonNull(e.getMessage()));
-            Snackbar snackbar = Snackbar.make(mainLayout, "Invalid API Response", Snackbar.LENGTH_SHORT);
+            Snackbar snackbar = Snackbar.make(activityAttendanceBinding.mainLayout, "Invalid API Response", Snackbar.LENGTH_SHORT);
             snackbar.show();
             if (preferredStudent != null) attendanceData = preferredStudent.getAttendances();
             else noAttendance();
         } catch (Exception e) {
             Log.d("message", Objects.requireNonNull(e.getMessage()));
-            Snackbar snackbar = Snackbar.make(mainLayout, "Something went wrong few things may not work properly", Snackbar.LENGTH_SHORT);
+            Snackbar snackbar = Snackbar.make(activityAttendanceBinding.mainLayout, "Something went wrong few things may not work properly", Snackbar.LENGTH_SHORT);
             snackbar.show();
             if (preferredStudent != null) attendanceData = preferredStudent.getAttendances();
             else noAttendance();
@@ -257,9 +209,9 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
 
             adapter = new AttendanceAdapter(this, attendanceArrayList, Integer.parseInt(Objects.requireNonNull(
                     this.sharedPreference.getString("pref_minimum_attendance", "75"))));
-            recyclerView.setHasFixedSize(true);
-            recyclerView.setAdapter(adapter);
-            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+            activityAttendanceBinding.rl.setHasFixedSize(true);
+            activityAttendanceBinding.rl.setAdapter(adapter);
+            activityAttendanceBinding.rl.setLayoutManager(new LinearLayoutManager(this));
         }
     }
 
@@ -274,7 +226,7 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                 response -> {
                     if (response.equals("900")) {
                         hideBottomSheetDialog();
-                        Snackbar snackbar = Snackbar.make(mainLayout, "Results not found", Snackbar.LENGTH_SHORT);
+                        Snackbar snackbar = Snackbar.make(activityAttendanceBinding.mainLayout, "Results not found", Snackbar.LENGTH_SHORT);
                         snackbar.show();
                     } else {
                         hideBottomSheetDialog();
@@ -288,11 +240,11 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                     hideBottomSheetDialog();
                     Intent intent = new Intent(AttendanceActivity.this, ResultActivity.class);
                     if (error instanceof AuthFailureError) {
-                        Snackbar snackbar = Snackbar.make(mainLayout, "Wrong Credentials!", Snackbar.LENGTH_SHORT);
+                        Snackbar snackbar = Snackbar.make(activityAttendanceBinding.mainLayout, "Wrong Credentials!", Snackbar.LENGTH_SHORT);
                         snackbar.show();
                     } else if (error instanceof ServerError) {
                         if (preferredStudent == null) {
-                            Snackbar snackbar = Snackbar.make(mainLayout, "Wrong Credentials!", Snackbar.LENGTH_SHORT);
+                            Snackbar snackbar = Snackbar.make(activityAttendanceBinding.mainLayout, "Wrong Credentials!", Snackbar.LENGTH_SHORT);
                             snackbar.show();
                         } else {
                             intent.putExtra(RESULTS, preferredStudent.getOfflineResult());
@@ -300,7 +252,7 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                         }
                     } else if (error instanceof NetworkError) {
                         if (preferredStudent == null) {
-                            Snackbar snackbar = Snackbar.make(mainLayout, "Cannot establish connection", Snackbar.LENGTH_SHORT);
+                            Snackbar snackbar = Snackbar.make(activityAttendanceBinding.mainLayout, "Cannot establish connection", Snackbar.LENGTH_SHORT);
                             snackbar.show();
                         } else {
                             intent.putExtra(RESULTS, preferredStudent.getOfflineResult());
@@ -308,7 +260,7 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                         }
                     } else {
                         if (preferredStudent == null) {
-                            Snackbar snackbar = Snackbar.make(mainLayout, "Cannot establish connection", Snackbar.LENGTH_SHORT);
+                            Snackbar snackbar = Snackbar.make(activityAttendanceBinding.mainLayout, "Cannot establish connection", Snackbar.LENGTH_SHORT);
                             snackbar.show();
                         } else {
                             intent.putExtra(RESULTS, preferredStudent.getOfflineResult());
@@ -360,17 +312,8 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
 
     public void noAttendance() {
         localDB.setStudent(sharedPreference.getString("pref_student", null), null);
-
-        recyclerView.setVisibility(View.GONE);
-        noAttendanceLayout.setVisibility(View.VISIBLE);
-
-        if (dark) {
-            tv.setTextColor(Color.parseColor("#FFFFFF"));
-            mainLayout.setBackgroundColor(Color.parseColor("#141414"));
-        } else {
-            checkResult.setTextColor(Color.parseColor("#141414"));
-            tv.setTextColor(Color.parseColor("#141414"));
-        }
+        activityAttendanceBinding.rl.setVisibility(View.GONE);
+        activityAttendanceBinding.NA.setVisibility(View.VISIBLE);
     }
 
     private String APP_ID;
@@ -393,11 +336,10 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_attendance);
+        activityAttendanceBinding = ActivityAttendanceBinding.inflate(getLayoutInflater());
+        setContentView(activityAttendanceBinding.getRoot());
 
-        ButterKnife.bind(this);
-
-        setSupportActionBar(toolbar);
+        setSupportActionBar(activityAttendanceBinding.toolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle("");
         Objects.requireNonNull(this.getSupportActionBar()).setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
@@ -407,17 +349,16 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
 
         sharedPreference = PreferenceManager.getDefaultSharedPreferences(this);
 
-        headerView = navigationView.getHeaderView(0);
-        navigationView.setNavigationItemSelectedListener(this);
-        // hide plan bunk item
-        navigationView.getMenu().findItem(R.id.pab).setVisible(false);
+        headerView = activityAttendanceBinding.navView.getHeaderView(0);
+        activityAttendanceBinding.navView.setNavigationItemSelectedListener(this);
 
         TextView student_name = headerView.findViewById(R.id.name);
         TextView student_regdno = headerView.findViewById(R.id.reg);
         View view_cus = getSupportActionBar().getCustomView();
         MaterialTextView title = view_cus.findViewById(R.id.title);
-        ImageView icon = view_cus.findViewById(R.id.image);
+        ImageView icon = view_cus.findViewById(R.id.nav);
         ImageView share = view_cus.findViewById(R.id.share);
+        ImageView setting = view_cus.findViewById(R.id.setting);
         ImageView arrowUpDown = headerView.findViewById(R.id.arrowDownUp);
 
         // make multiple account arrow by default true
@@ -426,15 +367,6 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
         preferredStudent = localDB.getStudent(this.sharedPreference.getString("pref_student", null));
         if (preferredStudent == null) {
             preferredStudent = new Student();
-        }
-
-        // change the color accordingly
-        if (dark) {
-            cardView.setBackgroundColor(Color.parseColor("#141414"));
-            heading.setTextColor(Color.parseColor("#FFFFFFFF"));
-            heading_desp.setTextColor(Color.parseColor("#FFCCCCCC"));
-            heading_desp.setTextColor(Color.parseColor("#FFCCCCCC"));
-            recyclerView.setBackgroundColor(Color.parseColor("#141414"));
         }
 
         try {
@@ -447,7 +379,6 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
         }
 
         getDataFromFirebase();
-        FirebaseConfig();
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
@@ -482,19 +413,9 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
             e.printStackTrace();
         }
 
-        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
-        if (pref.getBoolean("is_First_Run2", true)) {
-            pref.edit().putBoolean("is_First_Run2", false).apply();
-            who_layout.setVisibility(View.GONE);
-        }
+        icon.setOnClickListener(view -> activityAttendanceBinding.drawerLayout.openDrawer(GravityCompat.START));
 
-        icon.setOnClickListener(view -> drawerLayout.openDrawer(GravityCompat.START));
-
-        headerView.findViewById(R.id.changeTheme).setOnClickListener(view -> {
-            drawerLayout.closeDrawer(GravityCompat.START);
-            ThemeFragment fragment = ThemeFragment.newInstance();
-            fragment.show(getSupportFragmentManager(), "theme_fragment");
-        });
+        setting.setOnClickListener(view -> startActivity(new Intent(AttendanceActivity.this, SettingsActivity.class)));
 
         arrowUpDown.setOnClickListener(view -> {
             ConstraintLayout accountsLayout = headerView.findViewById(R.id.layoutAccounts);
@@ -535,11 +456,11 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
 
         share.setOnClickListener(view -> {
             if (no_attendance) {
-                Snackbar snackbar = Snackbar.make(mainLayout, "Attendance is currently unavailable", Snackbar.LENGTH_SHORT);
+                Snackbar snackbar = Snackbar.make(activityAttendanceBinding.mainLayout, "Attendance is currently unavailable", Snackbar.LENGTH_SHORT);
                 snackbar.show();
             } else {
                 try {
-                    Bitmap bitmap = ScreenshotUtils.getScreenShot(recyclerView);
+                    Bitmap bitmap = ScreenshotUtils.getScreenShot(activityAttendanceBinding.rl);
                     if (bitmap != null) {
                         Toast.makeText(this, "Taking screenshot please wait...", Toast.LENGTH_SHORT).show();
                         File save = ScreenshotUtils.getMainDirectoryName(this);
@@ -550,17 +471,17 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                             shareScreenshot_low(file);
                         }
                     } else {
-                        Snackbar snackbar = Snackbar.make(mainLayout, "Cannot take screenshot. Please try again", Snackbar.LENGTH_LONG);
+                        Snackbar snackbar = Snackbar.make(activityAttendanceBinding.mainLayout, "Cannot take screenshot. Please try again", Snackbar.LENGTH_LONG);
                         snackbar.show();
                     }
                 } catch (Exception e) {
-                    Snackbar snackbar = Snackbar.make(mainLayout, "Cannot take screenshot. Please try again", Snackbar.LENGTH_LONG);
+                    Snackbar snackbar = Snackbar.make(activityAttendanceBinding.mainLayout, "Cannot take screenshot. Please try again", Snackbar.LENGTH_LONG);
                     snackbar.show();
                 }
             }
         });
 
-        checkResult.setOnClickListener(view -> fetchResult());
+        activityAttendanceBinding.checkResult.setOnClickListener(view -> fetchResult());
     }
 
     public void getDataFromFirebase() {
@@ -578,7 +499,6 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                         showResult = documentChange.getDocument().getString(SHOW_RESULT);
                         showlectures = documentChange.getDocument().getString(SHOW_LECTURES);
                         showCustomTabs = documentChange.getDocument().getString(SHOW_CUSTOM_TABS);
-                        read_database = Integer.parseInt(Objects.requireNonNull(documentChange.getDocument().getString(FETCH_FILE)));
                         this.sharedPreference.edit().putString(SHOW_RESULT, showResult).apply();
                         this.sharedPreference.edit().putString(SHOW_LECTURES, showlectures).apply();
                         this.sharedPreference.edit().putString(SHOW_CUSTOM_TABS, showCustomTabs).apply();
@@ -587,72 +507,18 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                         AUTH_KEY = documentChange.getDocument().getString(AUTH_KEY_ONESIGNAL);
                         APP_ID = documentChange.getDocument().getString(APP_ID_ONESIGNAL);
 
-                        if (showlectures.equals("0"))
-                            navigationView.getMenu().findItem(R.id.lecture).setVisible(false);
-                        if (showCustomTabs.equals("0")) {
-                            navigationView.getMenu().findItem(R.id.customTabs).setVisible(false);
-                        } else {
-                            navigationView.getMenu().findItem(R.id.customTabs).setVisible(true);
-                        }
-
-                        if (this.sharedPreference.getInt(READ_DATABASE, 0) < read_database) {
-                            this.sharedPreference.edit().putInt(READ_DATABASE, read_database).apply();
-                            showBottomSheetDialog();
-//                        downloadFile();
-                        }
-                        downloadStats(AUTH_KEY, APP_ID);
+                        activityAttendanceBinding.navView.getMenu().findItem(R.id.customTabs).setVisible(!showCustomTabs.equals("0"));
                     }
+                    downloadStats(AUTH_KEY, APP_ID);
                 }
             });
         } catch (InvalidFirebaseResponseException e) {
-            Snackbar snackbar = Snackbar.make(mainLayout, Objects.requireNonNull(e.getMessage()), Snackbar.LENGTH_SHORT);
+            Snackbar snackbar = Snackbar.make(
+                    activityAttendanceBinding.mainLayout, Objects.requireNonNull(e.getMessage()), Snackbar.LENGTH_SHORT);
             snackbar.show();
-            navigationView.getMenu().findItem(R.id.lecture).setVisible(false);
         } catch (Exception e) {
-            Snackbar snackbar = Snackbar.make(mainLayout, "Something went wrong few things may not work properly", Snackbar.LENGTH_SHORT);
+            Snackbar snackbar = Snackbar.make(activityAttendanceBinding.mainLayout, "Something went wrong few things may not work properly", Snackbar.LENGTH_SHORT);
             snackbar.show();
-            navigationView.getMenu().findItem(R.id.lecture).setVisible(false);
-        }
-    }
-
-    public void FirebaseConfig() {
-        FirebaseConfig firebaseConfig = new FirebaseConfig();
-        String json = firebaseConfig.fetch_latest_news(this);
-        try {
-            JSONObject jsonObject = new JSONObject(json);
-            if (jsonObject.getInt("version") >= 1) {
-                if (who_layout.getVisibility() == View.GONE && this.sharedPreference.getInt("version", 0) < jsonObject.getInt("version")) {
-                    who_layout.setVisibility(View.VISIBLE);
-                }
-                this.sharedPreference.edit().putInt("version", jsonObject.getInt("version")).apply();
-                who_button.setOnClickListener(view -> {
-                    Uri uri;
-                    try {
-                        uri = Uri.parse(jsonObject.getString("link"));
-                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                        startActivity(intent);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                });
-                heading.setText(jsonObject.getString("news_title"));
-                heading_desp.setText(jsonObject.getString("news_text"));
-                Picasso.get()
-                        .load(jsonObject.getString("image_url"))
-                        .placeholder(R.drawable.ic_image)
-                        .into(logo);
-                if (this.sharedPreference.getBoolean("close", false)) {
-                    who_layout.setVisibility(View.GONE);
-                }
-                removetile.setOnClickListener(view -> {
-                    this.sharedPreference.edit().putBoolean("close", true).apply();
-                    who_layout.setVisibility(View.GONE);
-                });
-            } else {
-                who_layout.setVisibility(View.GONE);
-            }
-        } catch (JSONException e) {
-            Log.d("error_cardtile", e.toString());
         }
     }
 
@@ -666,12 +532,6 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                     Log.d("response", response.toString());
                     try {
                         download_stats_layout.setVisibility(View.VISIBLE);
-                        if (dark) {
-                            download_stats.setTextColor(getResources().getColor(R.color.white));
-                            ImageView imageView = findViewById(R.id.download_icon);
-                            imageView.setImageResource(R.drawable.eye_light);
-                        }
-
                         String s = numberFormat((double) response.getInt("players"), 0);
                         Log.d("size", String.valueOf(s.length()));
                         String word;
@@ -730,26 +590,26 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "");
             intent.putExtra(android.content.Intent.EXTRA_TEXT, getString(R.string.sharing_text));
-            intent.putExtra(Intent.EXTRA_STREAM, uri);//pass uri here
+            intent.putExtra(Intent.EXTRA_STREAM, uri);
             startActivity(Intent.createChooser(intent, getString(R.string.share_title)));
         } catch (Exception e) {
-            Snackbar snackbar = Snackbar.make(mainLayout, "Cannot take screenshot. Please try again", Snackbar.LENGTH_LONG);
+            Snackbar snackbar = Snackbar.make(activityAttendanceBinding.mainLayout, "Cannot take screenshot. Please try again", Snackbar.LENGTH_LONG);
             snackbar.show();
         }
     }
 
     public void shareScreenshot_low(File file) {
         try {
-            Uri uri = Uri.fromFile(file);//Convert file path into Uri for sharing
+            Uri uri = Uri.fromFile(file);
             Intent intent = new Intent();
             intent.setAction(Intent.ACTION_SEND);
             intent.setType("image/*");
             intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "");
             intent.putExtra(android.content.Intent.EXTRA_TEXT, getString(R.string.sharing_text));
-            intent.putExtra(Intent.EXTRA_STREAM, uri);//pass uri here
+            intent.putExtra(Intent.EXTRA_STREAM, uri);
             startActivity(Intent.createChooser(intent, getString(R.string.share_title)));
         } catch (Exception e) {
-            Snackbar snackbar = Snackbar.make(mainLayout, "Cannot take screenshot. Please try again", Snackbar.LENGTH_LONG);
+            Snackbar snackbar = Snackbar.make(activityAttendanceBinding.mainLayout, "Cannot take screenshot. Please try again", Snackbar.LENGTH_LONG);
             snackbar.show();
         }
     }
@@ -772,8 +632,8 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
 
     @Override
     public void onBackPressed() {
-        if (this.drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            this.drawerLayout.closeDrawer(GravityCompat.START);
+        if (this.activityAttendanceBinding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            this.activityAttendanceBinding.drawerLayout.closeDrawer(GravityCompat.START);
         } else {
             moveTaskToBack(true);
         }
@@ -789,75 +649,18 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                 sendIntent.setType("text/plain");
                 startActivity(sendIntent);
                 break;
-            case R.id.lecture: {
-                if (!Objects.equals(this.sharedPreference.getString(SHOW_LECTURES, "0"), "0")) {
-                    Intent intent = new Intent(AttendanceActivity.this, OnlineLectureSubjects.class);
-                    switch (Objects.requireNonNull(this.sharedPreference.getString(STUDENT_SEMESTER, "1"))) {
-                        case "1":
-                            student_semester = "1st";
-                            break;
-                        case "2":
-                            student_semester = "2nd";
-                            break;
-                        case "3":
-                            student_semester = "3rd";
-                            break;
-                        case "4":
-                            student_semester = "4th";
-                            break;
-                        case "5":
-                            student_semester = "5th";
-                            break;
-                        case "6":
-                            student_semester = "6th";
-                            break;
-                        case "7":
-                            student_semester = "7th";
-                            break;
-                        case "8":
-                            student_semester = "8th";
-                            break;
-                    }
-                    intent.putExtra(STUDENT_SEMESTER, student_semester);
-                    intent.putExtra(READ_DATABASE2, read_database);
-                    startActivity(intent);
-                }
-                break;
-            }
             case R.id.abt: {
                 Intent intent = new Intent(AttendanceActivity.this, AboutActivity.class);
                 startActivity(intent);
                 break;
             }
-            case R.id.lgout:
-                if (this.drawerLayout.isDrawerOpen(GravityCompat.START)) {
-                    this.drawerLayout.closeDrawer(GravityCompat.START);
-                }
-                MaterialAlertDialogBuilder binder = new MaterialAlertDialogBuilder(AttendanceActivity.this);
-                binder.setMessage("Do you want to logout?");
-                binder.setTitle(Html.fromHtml("<font color='#ba000d'>Are you sure?</font>"));
-                binder.setCancelable(true);
-                binder.setPositiveButton("YES", (dialog, which) -> {
-                    localDB.setStudent(sharedPreference.getString("pref_student", null), null);
-
-                    FirebaseAuth.getInstance().signOut();
-                    Intent intent3 = new Intent(getApplicationContext(), MainActivity.class);
-                    startActivity(intent3);
-                });
-                binder.setNegativeButton("NO", (dialog, which) -> dialog.cancel());
-                binder.show();
-                break;
             case R.id.result:
                 if (Objects.equals(this.sharedPreference.getString(SHOW_RESULT, ""), "0")) {
-                    Snackbar snackbar = Snackbar.make(mainLayout, "We will be back within 3-4 days", Snackbar.LENGTH_LONG);
+                    Snackbar snackbar = Snackbar.make(activityAttendanceBinding.mainLayout, "We will be back within 3-4 days", Snackbar.LENGTH_LONG);
                     snackbar.show();
                 } else {
                     fetchResult();
                 }
-                break;
-            case R.id.setting:
-                Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
-                startActivity(intent);
                 break;
             case R.id.customTabs:
                 if (!Objects.equals(this.sharedPreference.getString(SHOW_CUSTOM_TABS, "0"), "0")) {
@@ -868,7 +671,7 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                                 custom_tab(custom_tabs_link_2);
                                 Log.d("custom_link", custom_tabs_link_2);
                             } else {
-                                Snackbar snackbar = Snackbar.make(mainLayout, "Something went wrong, please try again", Snackbar.LENGTH_SHORT);
+                                Snackbar snackbar = Snackbar.make(activityAttendanceBinding.mainLayout, "Something went wrong, please try again", Snackbar.LENGTH_SHORT);
                                 snackbar.show();
                             }
                         } else {
@@ -876,12 +679,12 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
                                 custom_tab(custom_tabs_link);
                                 Log.d("custom_link", custom_tabs_link);
                             } else {
-                                Snackbar snackbar = Snackbar.make(mainLayout, "Something went wrong, please try again", Snackbar.LENGTH_SHORT);
+                                Snackbar snackbar = Snackbar.make(activityAttendanceBinding.mainLayout, "Something went wrong, please try again", Snackbar.LENGTH_SHORT);
                                 snackbar.show();
                             }
                         }
                     } else {
-                        Snackbar snackbar = Snackbar.make(mainLayout, "Something went wrong, please try again", Snackbar.LENGTH_SHORT);
+                        Snackbar snackbar = Snackbar.make(activityAttendanceBinding.mainLayout, "Something went wrong, please try again", Snackbar.LENGTH_SHORT);
                         snackbar.show();
                     }
                 }
@@ -907,7 +710,7 @@ public class AttendanceActivity extends BaseThemedActivity implements Navigation
             }
             builder.build().launchUrl(this, Uri.parse(url));
         } catch (Exception e) {
-            Snackbar snackbar = Snackbar.make(mainLayout, "Something went wrong, please try again", Snackbar.LENGTH_SHORT);
+            Snackbar snackbar = Snackbar.make(activityAttendanceBinding.mainLayout, "Something went wrong, please try again", Snackbar.LENGTH_SHORT);
             snackbar.show();
         }
     }

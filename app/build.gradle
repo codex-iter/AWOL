@@ -46,6 +46,9 @@ android {
     lintOptions {
         abortOnError false
     }
+    viewBinding {
+        enabled = true
+    }
 }
 
 dependencies {
@@ -69,18 +72,11 @@ dependencies {
     //Volley Network
     implementation 'com.android.volley:volley:1.1.1'
 
-    //Lottie Animation
-    implementation 'com.airbnb.android:lottie:3.4.0'
-    implementation 'com.google.android.play:core:1.8.3'
-
     //FireStore
-    implementation 'com.google.firebase:firebase-firestore:22.0.0'
-
-    //Database
-    implementation 'com.google.firebase:firebase-database:19.5.1'
+    implementation 'com.google.firebase:firebase-firestore:22.0.1'
 
     //firebase messaging
-    implementation 'com.google.firebase:firebase-messaging:21.0.0'
+    implementation 'com.google.firebase:firebase-messaging:21.0.1'
 
     //Multi-dex
     implementation 'androidx.multidex:multidex:2.0.1'
@@ -95,21 +91,13 @@ dependencies {
     implementation 'com.google.android.exoplayer:exoplayer:2.11.1'
 
     //Firebase Remote Config
-    implementation 'com.google.firebase:firebase-config:20.0.1'
     implementation 'com.google.firebase:firebase-analytics:18.0.0'
 
     //picasso
     implementation 'com.squareup.picasso:picasso:2.71828'
 
-    //ButterKnife
-    implementation 'com.jakewharton:butterknife:10.2.1'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.0'
-
     // Firebase Auth
     implementation 'com.google.firebase:firebase-auth:20.0.1'
-
-    //AdMob
-//    implementation 'com.google.android.gms:play-services-ads:19.4.0'
 
     // PRDownloader
     implementation 'com.mindorks.android:prdownloader:0.6.0'
@@ -118,6 +106,6 @@ dependencies {
     implementation 'com.treebo:internetavailabilitychecker:1.0.4'
 
     // Chrome Custom Tabs
-    implementation 'androidx.browser:browser:1.2.0'
+    implementation 'androidx.browser:browser:1.3.0'
 }
 apply plugin: 'com.google.gms.google-services'

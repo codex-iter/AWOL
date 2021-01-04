@@ -4,22 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorPrimaryDark"
+    android:background="@android:color/black"
     android:gravity="center_horizontal"
     android:orientation="vertical"
     android:paddingHorizontal="10dp"
-    android:paddingTop="33dp"
+    android:paddingTop="30dp"
     android:paddingBottom="10dp"
-    android:theme="@style/ThemeOverlay.AppCompat.Dark"
     tools:ignore="UnusedAttribute">
-
-    <ImageView
-        android:id="@+id/changeTheme"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_gravity="end"
-        android:layout_weight="0.1"
-        android:src="@drawable/ic_theme" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/name"

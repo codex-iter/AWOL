@@ -21,13 +21,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
-import android.widget.ScrollView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
@@ -46,10 +44,7 @@ import com.downloader.PRDownloader;
 import com.downloader.PRDownloaderConfig;
 import com.downloader.Status;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.textfield.MaterialAutoCompleteTextView;
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -70,12 +65,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import codex.codex_iter.www.awol.activity.AttendanceActivity;
-import codex.codex_iter.www.awol.activity.BaseThemedActivity;
 import codex.codex_iter.www.awol.activity.UnderMaintenance;
 import codex.codex_iter.www.awol.data.LocalDB;
+import codex.codex_iter.www.awol.databinding.ActivityMainBinding;
 import codex.codex_iter.www.awol.exceptions.InvalidFirebaseResponseException;
 import codex.codex_iter.www.awol.exceptions.InvalidResponseFetchNameException;
 import codex.codex_iter.www.awol.model.Student;
@@ -98,24 +91,7 @@ import static codex.codex_iter.www.awol.utilities.Constants.UPDATE_FILE_SIZE;
 import static codex.codex_iter.www.awol.utilities.Constants.UPDATE_MESSAGE;
 
 
-public class MainActivity extends BaseThemedActivity implements InternetConnectivityListener {
-
-    @BindView(R.id.mainLayout)
-    CoordinatorLayout mainLayout;
-    @BindView(R.id.user)
-    MaterialAutoCompleteTextView user;
-    @BindView(R.id.pass)
-    TextInputEditText pass;
-    @BindView(R.id.login_button)
-    MaterialButton login;
-    @BindView(R.id.progress_bar)
-    ProgressBar progressBar;
-    @BindView(R.id.passwordLayout)
-    TextInputLayout passLayout;
-    @BindView(R.id.bottomSheetView)
-    ConstraintLayout bottomSheetView;
-    @BindView(R.id.hello)
-    MaterialTextView welcomeMessage;
+public class MainActivity extends AppCompatActivity implements InternetConnectivityListener {
 
     private boolean track;
     private String api, new_message, academic_year;
@@ -132,14 +108,15 @@ public class MainActivity extends BaseThemedActivity implements InternetConnecti
     private LocalDB localDB;
     private SharedPreferences sharedPreferences;
     private Student preferredStudent;
+    private ActivityMainBinding activityMainBinding;
+
 
     @SuppressLint({"ClickableViewAccessibility", "SetTextI18n"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        ButterKnife.bind(this);
+        activityMainBinding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(activityMainBinding.getRoot());
 
         OneSignal.startInit(this)
                 .inFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification)
@@ -157,7 +134,7 @@ public class MainActivity extends BaseThemedActivity implements InternetConnecti
 
         mAuth = FirebaseAuth.getInstance();
         localDB = new LocalDB(this);
-        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetView);
+        bottomSheetBehavior = BottomSheetBehavior.from(activityMainBinding.bottomLogin.bottomSheetView);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -176,24 +153,23 @@ public class MainActivity extends BaseThemedActivity implements InternetConnecti
 
         setUserNameAutoFill();
 
-        login.setOnClickListener(view -> {
-            String username = Objects.requireNonNull(user.getText()).toString().trim();
-            String password = Objects.requireNonNull(pass.getText()).toString().trim();
+        activityMainBinding.bottomLogin.loginButton.setOnClickListener(view -> {
+            String username = Objects.requireNonNull(activityMainBinding.bottomLogin.user.getText()).toString().trim();
+            String password = Objects.requireNonNull(activityMainBinding.bottomLogin.pass.getText()).toString().trim();
             if (username.isEmpty() || password.isEmpty()) {
-                Snackbar snackbar = Snackbar.make(mainLayout, "Enter your Details", Snackbar.LENGTH_SHORT);
+                Snackbar snackbar = Snackbar.make(activityMainBinding.mainLayout, "Enter your Details", Snackbar.LENGTH_SHORT);
                 snackbar.show();
             } else if (api.isEmpty()) {
-                Snackbar snackbar = Snackbar.make(mainLayout, "Invalid Firebase Response", Snackbar.LENGTH_SHORT);
+                Snackbar snackbar = Snackbar.make(activityMainBinding.mainLayout, "Invalid Firebase Response", Snackbar.LENGTH_SHORT);
                 snackbar.show();
             } else {
-                progressBar.setVisibility(View.VISIBLE);
-                welcomeMessage.setVisibility(View.VISIBLE);
-                login.setVisibility(View.GONE);
-                user.setEnabled(false);
-                pass.setEnabled(false);
-                user.setFocusable(false);
-                pass.setFocusable(false);
-                passLayout.setEndIconMode(TextInputLayout.END_ICON_NONE);
+                activityMainBinding.bottomLogin.progressBar.setVisibility(View.VISIBLE);
+                activityMainBinding.bottomLogin.loginButton.setVisibility(View.GONE);
+                activityMainBinding.bottomLogin.user.setEnabled(false);
+                activityMainBinding.bottomLogin.pass.setEnabled(false);
+                activityMainBinding.bottomLogin.user.setFocusable(false);
+                activityMainBinding.bottomLogin.pass.setFocusable(false);
+                activityMainBinding.bottomLogin.passwordLayout.setEndIconMode(TextInputLayout.END_ICON_NONE);
                 getName(api, username, password);
             }
         });
@@ -207,16 +183,16 @@ public class MainActivity extends BaseThemedActivity implements InternetConnecti
         }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, regdnos);
-        user.setAdapter(adapter);
-        user.setThreshold(1);
+        activityMainBinding.bottomLogin.user.setAdapter(adapter);
+        activityMainBinding.bottomLogin.user.setThreshold(1);
 
-        user.setOnItemClickListener((adapterView, view, i, l) -> {
-            int pos = regdnos.indexOf(user.getText().toString());
-            pass.setText(students.get(pos).getPassword());
-            passLayout.setEndIconMode(TextInputLayout.END_ICON_NONE);
+        activityMainBinding.bottomLogin.user.setOnItemClickListener((adapterView, view, i, l) -> {
+            int pos = regdnos.indexOf(activityMainBinding.bottomLogin.user.getText().toString());
+            activityMainBinding.bottomLogin.pass.setText(students.get(pos).getPassword());
+            activityMainBinding.bottomLogin.passwordLayout.setEndIconMode(TextInputLayout.END_ICON_NONE);
         });
 
-        pass.addTextChangedListener(new TextWatcher() {
+        activityMainBinding.bottomLogin.pass.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -225,7 +201,7 @@ public class MainActivity extends BaseThemedActivity implements InternetConnecti
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (charSequence.length() == 0)
-                    passLayout.setEndIconMode(TextInputLayout.END_ICON_PASSWORD_TOGGLE);
+                    activityMainBinding.bottomLogin.passwordLayout.setEndIconMode(TextInputLayout.END_ICON_PASSWORD_TOGGLE);
             }
 
             @Override
@@ -281,10 +257,10 @@ public class MainActivity extends BaseThemedActivity implements InternetConnecti
                 }
             });
         } catch (InvalidFirebaseResponseException e) {
-            Snackbar snackbar = Snackbar.make(mainLayout, Objects.requireNonNull(e.getMessage()), Snackbar.LENGTH_SHORT);
+            Snackbar snackbar = Snackbar.make(activityMainBinding.mainLayout, Objects.requireNonNull(e.getMessage()), Snackbar.LENGTH_SHORT);
             snackbar.show();
         } catch (Exception e) {
-            Snackbar snackbar = Snackbar.make(mainLayout, "Something went wrong few things may not work properly", Snackbar.LENGTH_SHORT);
+            Snackbar snackbar = Snackbar.make(activityMainBinding.mainLayout, "Something went wrong few things may not work properly", Snackbar.LENGTH_SHORT);
             snackbar.show();
         }
     }
@@ -305,7 +281,7 @@ public class MainActivity extends BaseThemedActivity implements InternetConnecti
                             fetchDetails();
                         } else {
                             Log.d("SignIn", Objects.requireNonNull(task.getException()).toString());
-                            Snackbar snackbar = Snackbar.make(mainLayout, "Oops, something went wrong! Please try after sometime", Snackbar.LENGTH_SHORT);
+                            Snackbar snackbar = Snackbar.make(activityMainBinding.mainLayout, "Oops, something went wrong! Please try after sometime", Snackbar.LENGTH_SHORT);
                             snackbar.show();
                         }
                     });
@@ -321,9 +297,9 @@ public class MainActivity extends BaseThemedActivity implements InternetConnecti
     private void autoFill() {
         preferredStudent = localDB.getStudent(sharedPreferences.getString("pref_student", null));
         if (preferredStudent != null) {
-            user.setText(preferredStudent.getRedgNo());
-            pass.setText(preferredStudent.getPassword());
-            login.performClick();
+            activityMainBinding.bottomLogin.user.setText(preferredStudent.getRedgNo());
+            activityMainBinding.bottomLogin.pass.setText(preferredStudent.getPassword());
+            activityMainBinding.bottomLogin.loginButton.performClick();
         }
     }
 
@@ -345,7 +321,7 @@ public class MainActivity extends BaseThemedActivity implements InternetConnecti
                     if (response.equals("404")) {
                         processLoginViewsStatus();
                         resetUserPassViews();
-                        Snackbar snackbar = Snackbar.make(mainLayout, "Wrong Credentials", Snackbar.LENGTH_SHORT);
+                        Snackbar snackbar = Snackbar.make(activityMainBinding.mainLayout, "Wrong Credentials", Snackbar.LENGTH_SHORT);
                         snackbar.show();
                     } else if (response.equals("390")) {
                         intent.putExtra(NO_ATTENDANCE, true);
@@ -362,7 +338,7 @@ public class MainActivity extends BaseThemedActivity implements InternetConnecti
                                             startActivity(intent);
                                             finish();
                                         } else {
-                                            Snackbar snackbar = Snackbar.make(mainLayout, "Oops, something went wrong! Please try after sometime", Snackbar.LENGTH_SHORT);
+                                            Snackbar snackbar = Snackbar.make(activityMainBinding.mainLayout, "Oops, something went wrong! Please try after sometime", Snackbar.LENGTH_SHORT);
                                             snackbar.show();
                                         }
                                     });
@@ -383,7 +359,7 @@ public class MainActivity extends BaseThemedActivity implements InternetConnecti
                                             startActivity(intent);
                                             finish();
                                         } else {
-                                            Snackbar snackbar = Snackbar.make(mainLayout, "Oops, something went wrong! Please try after sometime", Snackbar.LENGTH_SHORT);
+                                            Snackbar snackbar = Snackbar.make(activityMainBinding.mainLayout, "Oops, something went wrong! Please try after sometime", Snackbar.LENGTH_SHORT);
                                             snackbar.show();
                                         }
                                     });
@@ -401,12 +377,12 @@ public class MainActivity extends BaseThemedActivity implements InternetConnecti
 
                     if (error instanceof AuthFailureError) {
                         resetUserPassViews();
-                        Snackbar snackbar = Snackbar.make(mainLayout, "Wrong Credentials!", Snackbar.LENGTH_SHORT);
+                        Snackbar snackbar = Snackbar.make(activityMainBinding.mainLayout, "Wrong Credentials!", Snackbar.LENGTH_SHORT);
                         snackbar.show();
                     } else if (error instanceof ServerError) {
                         if (preferredStudent == null) {
                             resetUserPassViews();
-                            Snackbar snackbar = Snackbar.make(mainLayout, "Cannot connect to ITER servers right now.Try again", Snackbar.LENGTH_SHORT);
+                            Snackbar snackbar = Snackbar.make(activityMainBinding.mainLayout, "Cannot connect to ITER servers right now.Try again", Snackbar.LENGTH_SHORT);
                             snackbar.show();
                         } else {
                             intent.putExtra(RESULTS, preferredStudent.getOfflineAttendance());
@@ -416,7 +392,7 @@ public class MainActivity extends BaseThemedActivity implements InternetConnecti
                     } else if (error instanceof NetworkError) {
                         if (preferredStudent == null) {
                             resetUserPassViews();
-                            Snackbar snackbar = Snackbar.make(mainLayout, "Cannot establish connection", Snackbar.LENGTH_SHORT);
+                            Snackbar snackbar = Snackbar.make(activityMainBinding.mainLayout, "Cannot establish connection", Snackbar.LENGTH_SHORT);
                             snackbar.show();
                         } else {
                             intent.putExtra(RESULTS, preferredStudent.getOfflineAttendance());
@@ -425,20 +401,19 @@ public class MainActivity extends BaseThemedActivity implements InternetConnecti
                         }
                     } else if (error instanceof TimeoutError) {
                         if (!track) {
-                            progressBar.setVisibility(View.VISIBLE);
-                            welcomeMessage.setVisibility(View.VISIBLE);
-                            login.setVisibility(View.GONE);
-                            user.setEnabled(false);
-                            pass.setEnabled(false);
-                            user.setFocusable(true);
-                            pass.setFocusable(true);
-                            passLayout.setEndIconMode(TextInputLayout.END_ICON_NONE);
+                            activityMainBinding.bottomLogin.progressBar.setVisibility(View.VISIBLE);
+                            activityMainBinding.bottomLogin.loginButton.setVisibility(View.GONE);
+                            activityMainBinding.bottomLogin.user.setEnabled(false);
+                            activityMainBinding.bottomLogin.pass.setEnabled(false);
+                            activityMainBinding.bottomLogin.user.setFocusable(true);
+                            activityMainBinding.bottomLogin.pass.setFocusable(true);
+                            activityMainBinding.bottomLogin.passwordLayout.setEndIconMode(TextInputLayout.END_ICON_NONE);
                             track = true;
-                            login.performClick();
+                            activityMainBinding.bottomLogin.loginButton.performClick();
                         } else {
                             if (preferredStudent == null) {
                                 resetUserPassViews();
-                                Snackbar snackbar = Snackbar.make(mainLayout, "Cannot connect to ITER servers right now.Try again", Snackbar.LENGTH_SHORT);
+                                Snackbar snackbar = Snackbar.make(activityMainBinding.mainLayout, "Cannot connect to ITER servers right now.Try again", Snackbar.LENGTH_SHORT);
                                 snackbar.show();
                                 track = false;
                             } else {
@@ -472,7 +447,7 @@ public class MainActivity extends BaseThemedActivity implements InternetConnecti
                         if (response.equals("404")) {
                             processLoginViewsStatus();
                             resetUserPassViews();
-                            Snackbar snackbar = Snackbar.make(mainLayout, "Wrong Credentials", Snackbar.LENGTH_SHORT);
+                            Snackbar snackbar = Snackbar.make(activityMainBinding.mainLayout, "Wrong Credentials", Snackbar.LENGTH_SHORT);
                             snackbar.show();
                         } else {
                             JSONObject jobj = new JSONObject(response);
@@ -495,12 +470,12 @@ public class MainActivity extends BaseThemedActivity implements InternetConnecti
                     } catch (JSONException | InvalidResponseFetchNameException e) {
                         processLoginViewsStatus();
                         resetUserPassViews();
-                        Snackbar snackbar = Snackbar.make(mainLayout, "Invalid API Response", Snackbar.LENGTH_SHORT);
+                        Snackbar snackbar = Snackbar.make(activityMainBinding.mainLayout, "Invalid API Response", Snackbar.LENGTH_SHORT);
                         snackbar.show();
                     } catch (Exception e) {
                         processLoginViewsStatus();
                         resetUserPassViews();
-                        Snackbar snackbar = Snackbar.make(mainLayout, "Something went wrong few things may not work properly", Snackbar.LENGTH_SHORT);
+                        Snackbar snackbar = Snackbar.make(activityMainBinding.mainLayout, "Something went wrong few things may not work properly", Snackbar.LENGTH_SHORT);
                         snackbar.show();
                     }
                 },
@@ -508,12 +483,12 @@ public class MainActivity extends BaseThemedActivity implements InternetConnecti
                     processLoginViewsStatus();
                     if (error instanceof AuthFailureError) {
                         resetUserPassViews();
-                        Snackbar snackbar = Snackbar.make(mainLayout, "Wrong Credentials!", Snackbar.LENGTH_SHORT);
+                        Snackbar snackbar = Snackbar.make(activityMainBinding.mainLayout, "Wrong Credentials!", Snackbar.LENGTH_SHORT);
                         snackbar.show();
                     } else if (error instanceof ServerError) {
                         if (preferredStudent == null) {
                             resetUserPassViews();
-                            Snackbar snackbar = Snackbar.make(mainLayout, "Cannot connect to ITER servers right now.", Snackbar.LENGTH_SHORT);
+                            Snackbar snackbar = Snackbar.make(activityMainBinding.mainLayout, "Cannot connect to ITER servers right now.", Snackbar.LENGTH_SHORT);
                             snackbar.show();
                         } else {
                             MainActivity.this.getAttendanceAPI(this.sharedPreferences.getString(API, api), param[1], param[2],
@@ -523,7 +498,7 @@ public class MainActivity extends BaseThemedActivity implements InternetConnecti
                     } else if (error instanceof NetworkError) {
                         if (preferredStudent == null) {
                             resetUserPassViews();
-                            Snackbar snackbar = Snackbar.make(mainLayout, "Cannot establish connection", Snackbar.LENGTH_SHORT);
+                            Snackbar snackbar = Snackbar.make(activityMainBinding.mainLayout, "Cannot establish connection", Snackbar.LENGTH_SHORT);
                             snackbar.show();
                         } else {
                             MainActivity.this.getAttendanceAPI(this.sharedPreferences.getString(API, api), param[1], param[2],
@@ -531,20 +506,19 @@ public class MainActivity extends BaseThemedActivity implements InternetConnecti
                         }
                     } else if (error instanceof TimeoutError) {
                         if (!track) {
-                            progressBar.setVisibility(View.VISIBLE);
-                            welcomeMessage.setVisibility(View.VISIBLE);
-                            login.setVisibility(View.GONE);
-                            user.setEnabled(false);
-                            pass.setEnabled(false);
-                            user.setFocusable(true);
-                            pass.setFocusable(true);
-                            passLayout.setEndIconMode(TextInputLayout.END_ICON_NONE);
+                            activityMainBinding.bottomLogin.progressBar.setVisibility(View.VISIBLE);
+                            activityMainBinding.bottomLogin.loginButton.setVisibility(View.GONE);
+                            activityMainBinding.bottomLogin.user.setEnabled(false);
+                            activityMainBinding.bottomLogin.pass.setEnabled(false);
+                            activityMainBinding.bottomLogin.user.setFocusable(true);
+                            activityMainBinding.bottomLogin.pass.setFocusable(true);
+                            activityMainBinding.bottomLogin.passwordLayout.setEndIconMode(TextInputLayout.END_ICON_NONE);
                             track = true;
-                            login.performClick();
+                            activityMainBinding.bottomLogin.loginButton.performClick();
                         } else {
                             if (preferredStudent == null) {
                                 resetUserPassViews();
-                                Snackbar snackbar = Snackbar.make(mainLayout, "Cannot connect to ITER servers right now.Try again", Snackbar.LENGTH_SHORT);
+                                Snackbar snackbar = Snackbar.make(activityMainBinding.mainLayout, "Cannot connect to ITER servers right now.Try again", Snackbar.LENGTH_SHORT);
                                 snackbar.show();
                                 track = false;
                             } else {
@@ -567,19 +541,18 @@ public class MainActivity extends BaseThemedActivity implements InternetConnecti
     }
 
     private void resetUserPassViews() {
-        user.setEnabled(true);
-        pass.setEnabled(true);
-        user.setFocusableInTouchMode(true);
-        user.setFocusable(true);
-        pass.setFocusableInTouchMode(true);
-        pass.setFocusable(true);
+        activityMainBinding.bottomLogin.user.setEnabled(true);
+        activityMainBinding.bottomLogin.pass.setEnabled(true);
+        activityMainBinding.bottomLogin.user.setFocusableInTouchMode(true);
+        activityMainBinding.bottomLogin.user.setFocusable(true);
+        activityMainBinding.bottomLogin.pass.setFocusableInTouchMode(true);
+        activityMainBinding.bottomLogin.pass.setFocusable(true);
     }
 
     private void processLoginViewsStatus() {
-        progressBar.setVisibility(View.INVISIBLE);
-        welcomeMessage.setVisibility(View.GONE);
-        login.setVisibility(View.VISIBLE);
-        passLayout.setEndIconMode(TextInputLayout.END_ICON_PASSWORD_TOGGLE);
+        activityMainBinding.bottomLogin.progressBar.setVisibility(View.INVISIBLE);
+        activityMainBinding.bottomLogin.loginButton.setVisibility(View.VISIBLE);
+        activityMainBinding.bottomLogin.passwordLayout.setEndIconMode(TextInputLayout.END_ICON_PASSWORD_TOGGLE);
     }
 
     private void downloadUpdatedApp(String new_message, String appLink) {
