@@ -42,7 +42,6 @@
     <string name="privacy_policy">Privacy Policy</string>
     <string name="logout">Logout</string>
     <string name="change_theme">Change Theme</string>
-    <string name="share">Share</string>
     <string name="Select_Subject">Select Subject</string>
     <string name="oops_attendance_not_available">Oops! Attendance not available!</string>
     <string name="results">Results</string>
@@ -91,5 +90,7 @@
     <string name="otp_message">Please wait, we are sending you an SMS with containing your credentials</string>
     <string name="add_account">Add Account</string>
     <string name="updated_just_now">Updated just now</string>
+    <string name="share">Share</string>
+    <string name="setting">Setting</string>
 </resources>
 

@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Vibrator;
 import android.text.format.DateUtils;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -23,6 +24,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -340,10 +342,10 @@ public class AttendanceActivity extends AppCompatActivity implements NavigationV
         setContentView(activityAttendanceBinding.getRoot());
 
         setSupportActionBar(activityAttendanceBinding.toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setElevation(0);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowHomeEnabled(true);
         Objects.requireNonNull(getSupportActionBar()).setTitle("");
-        Objects.requireNonNull(this.getSupportActionBar()).setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getSupportActionBar().setDisplayShowCustomEnabled(true);
-        Objects.requireNonNull(getSupportActionBar()).setCustomView(R.layout.activity_action_bar);
 
         localDB = new LocalDB(this);
 
@@ -352,13 +354,14 @@ public class AttendanceActivity extends AppCompatActivity implements NavigationV
         headerView = activityAttendanceBinding.navView.getHeaderView(0);
         activityAttendanceBinding.navView.setNavigationItemSelectedListener(this);
 
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, activityAttendanceBinding.drawerLayout,
+                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        activityAttendanceBinding.drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
+        activityAttendanceBinding.navView.setNavigationItemSelectedListener(this);
+
         TextView student_name = headerView.findViewById(R.id.name);
         TextView student_regdno = headerView.findViewById(R.id.reg);
-        View view_cus = getSupportActionBar().getCustomView();
-        MaterialTextView title = view_cus.findViewById(R.id.title);
-        ImageView icon = view_cus.findViewById(R.id.nav);
-        ImageView share = view_cus.findViewById(R.id.share);
-        ImageView setting = view_cus.findViewById(R.id.setting);
         ImageView arrowUpDown = headerView.findViewById(R.id.arrowDownUp);
 
         // make multiple account arrow by default true
@@ -395,12 +398,12 @@ public class AttendanceActivity extends AppCompatActivity implements NavigationV
             String[] split = Objects.requireNonNull(bundle.getString(STUDENT_NAME)).split("\\s+");
             try {
                 if (!split[0].isEmpty()) {
-                    title.setText("Hi, " + Constants.convertToTitleCaseIteratingChars(split[0]) + "!");
+                    getSupportActionBar().setTitle("Hi, " + Constants.convertToTitleCaseIteratingChars(split[0]) + "!");
                 } else {
-                    title.setText("Home");
+                    getSupportActionBar().setTitle("Home");
                 }
             } catch (Exception e) {
-                title.setText("Home");
+                getSupportActionBar().setTitle("Home");
             }
         }
 
@@ -412,10 +415,6 @@ public class AttendanceActivity extends AppCompatActivity implements NavigationV
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
-
-        icon.setOnClickListener(view -> activityAttendanceBinding.drawerLayout.openDrawer(GravityCompat.START));
-
-        setting.setOnClickListener(view -> startActivity(new Intent(AttendanceActivity.this, SettingsActivity.class)));
 
         arrowUpDown.setOnClickListener(view -> {
             ConstraintLayout accountsLayout = headerView.findViewById(R.id.layoutAccounts);
@@ -451,33 +450,6 @@ public class AttendanceActivity extends AppCompatActivity implements NavigationV
                 listAccounts.setHasFixedSize(true);
                 listAccounts.setAdapter(multipleAccountAdapter);
                 listAccounts.setLayoutManager(new LinearLayoutManager(this));
-            }
-        });
-
-        share.setOnClickListener(view -> {
-            if (no_attendance) {
-                Snackbar snackbar = Snackbar.make(activityAttendanceBinding.mainLayout, "Attendance is currently unavailable", Snackbar.LENGTH_SHORT);
-                snackbar.show();
-            } else {
-                try {
-                    Bitmap bitmap = ScreenshotUtils.getScreenShot(activityAttendanceBinding.rl);
-                    if (bitmap != null) {
-                        Toast.makeText(this, "Taking screenshot please wait...", Toast.LENGTH_SHORT).show();
-                        File save = ScreenshotUtils.getMainDirectoryName(this);
-                        File file = ScreenshotUtils.store(bitmap, "screenshot.jpg", save);
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                            shareScreenshot(file);
-                        } else {
-                            shareScreenshot_low(file);
-                        }
-                    } else {
-                        Snackbar snackbar = Snackbar.make(activityAttendanceBinding.mainLayout, "Cannot take screenshot. Please try again", Snackbar.LENGTH_LONG);
-                        snackbar.show();
-                    }
-                } catch (Exception e) {
-                    Snackbar snackbar = Snackbar.make(activityAttendanceBinding.mainLayout, "Cannot take screenshot. Please try again", Snackbar.LENGTH_LONG);
-                    snackbar.show();
-                }
             }
         });
 
@@ -577,6 +549,49 @@ public class AttendanceActivity extends AppCompatActivity implements NavigationV
             }
         };
         queue.add(jsonObjectRequest);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_share) {
+            if (no_attendance) {
+                Snackbar snackbar = Snackbar.make(activityAttendanceBinding.mainLayout, "Attendance is currently unavailable", Snackbar.LENGTH_SHORT);
+                snackbar.show();
+            } else {
+                try {
+                    Bitmap bitmap = ScreenshotUtils.getScreenShot(activityAttendanceBinding.rl);
+                    if (bitmap != null) {
+                        Toast.makeText(this, "Taking screenshot please wait...", Toast.LENGTH_SHORT).show();
+                        File save = ScreenshotUtils.getMainDirectoryName(this);
+                        File file = ScreenshotUtils.store(bitmap, "screenshot.jpg", save);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                            shareScreenshot(file);
+                        } else {
+                            shareScreenshot_low(file);
+                        }
+                    } else {
+                        Snackbar snackbar = Snackbar.make(activityAttendanceBinding.mainLayout, "Cannot take screenshot. Please try again", Snackbar.LENGTH_LONG);
+                        snackbar.show();
+                    }
+                } catch (Exception e) {
+                    Snackbar snackbar = Snackbar.make(activityAttendanceBinding.mainLayout, "Cannot take screenshot. Please try again", Snackbar.LENGTH_LONG);
+                    snackbar.show();
+                }
+            }
+            return true;
+        }
+        if (id == R.id.action_setting) {
+            startActivity(new Intent(AttendanceActivity.this, SettingsActivity.class));
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)

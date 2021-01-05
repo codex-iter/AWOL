@@ -35,7 +35,7 @@ import java.util.Objects;
 import codex.codex_iter.www.awol.R;
 import codex.codex_iter.www.awol.adapter.ResultAdapter;
 import codex.codex_iter.www.awol.data.LocalDB;
-import codex.codex_iter.www.awol.databinding.ActivityDetailresultsBinding;
+import codex.codex_iter.www.awol.databinding.ActivityResultsBinding;
 import codex.codex_iter.www.awol.exceptions.InvalidResponseException;
 import codex.codex_iter.www.awol.model.Result;
 import codex.codex_iter.www.awol.model.Student;
@@ -55,14 +55,14 @@ public class ResultActivity extends AppCompatActivity implements ResultAdapter.O
     private BottomSheetDialog dialog;
     private SharedPreferences sharedPreferences;
     private Student preferred_student;
-    private ActivityDetailresultsBinding activityDetailresultsBinding;
+    private ActivityResultsBinding activityResultsBinding;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        activityDetailresultsBinding = ActivityDetailresultsBinding.inflate(getLayoutInflater());
-        setContentView(R.layout.activity_detailresults);
-        setSupportActionBar(activityDetailresultsBinding.toolbar);
+        activityResultsBinding = ActivityResultsBinding.inflate(getLayoutInflater());
+        setContentView(activityResultsBinding.getRoot());
+        setSupportActionBar(activityResultsBinding.toolbar);
 
         LocalDB localDB = new LocalDB(this);
 
@@ -76,7 +76,7 @@ public class ResultActivity extends AppCompatActivity implements ResultAdapter.O
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         Objects.requireNonNull(getSupportActionBar()).setElevation(0);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowHomeEnabled(true);
-        activityDetailresultsBinding.toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+        activityResultsBinding.toolbar.setTitleTextColor(getResources().getColor(R.color.white));
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
@@ -122,12 +122,12 @@ public class ResultActivity extends AppCompatActivity implements ResultAdapter.O
             }
             preferred_student.setResult(resultData);
         } catch (JSONException | InvalidResponseException e) {
-            Snackbar snackbar = Snackbar.make(activityDetailresultsBinding.mainLayout, "Invalid API Response", Snackbar.LENGTH_SHORT);
+            Snackbar snackbar = Snackbar.make(activityResultsBinding.mainLayout, "Invalid API Response", Snackbar.LENGTH_SHORT);
             snackbar.show();
             if (preferred_student != null) resultData = preferred_student.getResult();
             else noResult();
         } catch (Exception e) {
-            Snackbar snackbar = Snackbar.make(activityDetailresultsBinding.mainLayout, "Something went wrong few things may not work", Snackbar.LENGTH_SHORT);
+            Snackbar snackbar = Snackbar.make(activityResultsBinding.mainLayout, "Something went wrong few things may not work", Snackbar.LENGTH_SHORT);
             snackbar.show();
             if (preferred_student != null) resultData = preferred_student.getResult();
             else noResult();
@@ -139,15 +139,15 @@ public class ResultActivity extends AppCompatActivity implements ResultAdapter.O
                 noResult();
             }
             ResultAdapter resultAdapter = new ResultAdapter(this, resultArrayList, this);
-            activityDetailresultsBinding.recyclerViewDetailedResult.setHasFixedSize(true);
-            activityDetailresultsBinding.recyclerViewDetailedResult.setAdapter(resultAdapter);
-            activityDetailresultsBinding.recyclerViewDetailedResult.setLayoutManager(new LinearLayoutManager(this));
+            activityResultsBinding.recyclerViewDetailedResult.setHasFixedSize(true);
+            activityResultsBinding.recyclerViewDetailedResult.setAdapter(resultAdapter);
+            activityResultsBinding.recyclerViewDetailedResult.setLayoutManager(new LinearLayoutManager(this));
         }
     }
 
     public void noResult() {
-        activityDetailresultsBinding.recyclerViewDetailedResult.setVisibility(View.GONE);
-        activityDetailresultsBinding.NA.setVisibility(View.VISIBLE);
+        activityResultsBinding.recyclerViewDetailedResult.setVisibility(View.GONE);
+        activityResultsBinding.NA.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -166,7 +166,7 @@ public class ResultActivity extends AppCompatActivity implements ResultAdapter.O
                 response -> {
                     hideBottomSheetDialog();
                     if (response.equals("169")) {
-                        Snackbar snackbar = Snackbar.make(activityDetailresultsBinding.mainLayout, "Results not found", Snackbar.LENGTH_SHORT);
+                        Snackbar snackbar = Snackbar.make(activityResultsBinding.mainLayout, "Results not found", Snackbar.LENGTH_SHORT);
                         snackbar.show();
                     } else {
                         Intent intent = new Intent(ResultActivity.this, DetailedResultActivity.class);
@@ -185,25 +185,25 @@ public class ResultActivity extends AppCompatActivity implements ResultAdapter.O
                     Intent intent = new Intent(ResultActivity.this, DetailedResultActivity.class);
                     intent.putExtra("Semester", String.valueOf(sem));
                     if (error instanceof AuthFailureError) {
-                        Snackbar snackbar = Snackbar.make(activityDetailresultsBinding.mainLayout, "Wrong Credentials!", Snackbar.LENGTH_SHORT);
+                        Snackbar snackbar = Snackbar.make(activityResultsBinding.mainLayout, "Wrong Credentials!", Snackbar.LENGTH_SHORT);
                         snackbar.show();
                     } else if (error instanceof ServerError) {
                         if (preferred_student == null) {
-                            Snackbar snackbar = Snackbar.make(activityDetailresultsBinding.mainLayout, "Cannot connect to ITER servers right now.Try again", Snackbar.LENGTH_SHORT);
+                            Snackbar snackbar = Snackbar.make(activityResultsBinding.mainLayout, "Cannot connect to ITER servers right now.Try again", Snackbar.LENGTH_SHORT);
                             snackbar.show();
                         } else {
                             startActivity(intent);
                         }
                     } else if (error instanceof NetworkError) {
                         if (preferred_student == null) {
-                            Snackbar snackbar = Snackbar.make(activityDetailresultsBinding.mainLayout, "Cannot establish connection", Snackbar.LENGTH_SHORT);
+                            Snackbar snackbar = Snackbar.make(activityResultsBinding.mainLayout, "Cannot establish connection", Snackbar.LENGTH_SHORT);
                             snackbar.show();
                         } else {
                             startActivity(intent);
                         }
                     } else {
                         if (preferred_student == null) {
-                            Snackbar snackbar = Snackbar.make(activityDetailresultsBinding.mainLayout, "Cannot establish connection", Snackbar.LENGTH_SHORT);
+                            Snackbar snackbar = Snackbar.make(activityResultsBinding.mainLayout, "Cannot establish connection", Snackbar.LENGTH_SHORT);
                             snackbar.show();
                         } else {
                             startActivity(intent);
