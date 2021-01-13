@@ -32,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:focusable="true"
                 android:inputType="number"
-                android:textColor="@color/black"
+                android:textColor="@android:color/black"
                 android:textCursorDrawable="@null"
                 android:textSize="14sp" />
 
@@ -48,7 +48,7 @@
             android:hint="@string/password"
             android:textColorHint="@color/grey"
             app:endIconMode="password_toggle"
-            app:endIconTint="@color/colorPrimary"
+            app:endIconTint="@color/colorAccent"
             app:layout_constraintBottom_toTopOf="@+id/button_layout"
             app:layout_constraintTop_toBottomOf="@+id/userLayout">
 
@@ -58,7 +58,7 @@
                 android:layout_height="wrap_content"
                 android:focusable="true"
                 android:inputType="textPassword"
-                android:textColor="@color/black"
+                android:textColor="@android:color/black"
                 android:textCursorDrawable="@null"
                 android:textSize="14sp" />
 
@@ -81,8 +81,9 @@
                 android:layout_height="wrap_content"
                 android:text="@string/login"
                 android:textAllCaps="true"
-                android:textColor="@color/white"
+                android:textColor="@android:color/white"
                 android:textSize="14sp"
+                android:backgroundTint="@color/colorAccent"
                 app:cornerRadius="5dp"
                 app:layout_constraintBottom_toBottomOf="parent" />
 
@@ -91,7 +92,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
-                android:indeterminateTint="?colorAccent"
+                android:indeterminateTint="@color/colorAccent"
                 android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

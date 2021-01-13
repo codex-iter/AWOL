@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
-import codex.codex_iter.www.awol.R;
 import codex.codex_iter.www.awol.adapter.DetailedResultAdapter;
 import codex.codex_iter.www.awol.databinding.ActivityDetailresultsBinding;
 import codex.codex_iter.www.awol.exceptions.InvalidResponseException;
@@ -42,13 +41,13 @@ public class DetailedResultActivity extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
 
-        setSupportActionBar(activityDetailresultsBinding.toolbar);
+//        setSupportActionBar(activityDetailresultsBinding.toolbar);
 
         Objects.requireNonNull(getSupportActionBar()).setTitle("Results");
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         Objects.requireNonNull(getSupportActionBar()).setElevation(0);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowHomeEnabled(true);
-        activityDetailresultsBinding.toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+//        activityDetailresultsBinding.toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
 
         if (bundle != null) {
             result = bundle.getString(RESULTS);

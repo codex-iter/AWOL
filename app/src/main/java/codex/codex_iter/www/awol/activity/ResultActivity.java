@@ -62,7 +62,7 @@ public class ResultActivity extends AppCompatActivity implements ResultAdapter.O
         super.onCreate(savedInstanceState);
         activityResultsBinding = ActivityResultsBinding.inflate(getLayoutInflater());
         setContentView(activityResultsBinding.getRoot());
-        setSupportActionBar(activityResultsBinding.toolbar);
+//        setSupportActionBar(activityResultsBinding.toolbar);
 
         LocalDB localDB = new LocalDB(this);
 
@@ -76,7 +76,7 @@ public class ResultActivity extends AppCompatActivity implements ResultAdapter.O
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         Objects.requireNonNull(getSupportActionBar()).setElevation(0);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowHomeEnabled(true);
-        activityResultsBinding.toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+//        activityResultsBinding.toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {

@@ -118,11 +118,6 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
         activityMainBinding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(activityMainBinding.getRoot());
 
-        OneSignal.startInit(this)
-                .inFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification)
-                .unsubscribeWhenNotificationsAreDisabled(true)
-                .init();
-
         try {
             mInternetAvailabilityChecker = InternetAvailabilityChecker.getInstance();
             mInternetAvailabilityChecker.addInternetConnectivityListener(MainActivity.this);

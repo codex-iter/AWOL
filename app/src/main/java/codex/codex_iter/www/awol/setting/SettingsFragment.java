@@ -1,5 +1,6 @@
 package codex.codex_iter.www.awol.setting;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -14,7 +15,6 @@ import android.widget.ScrollView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
@@ -32,6 +32,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
+import com.onesignal.OneSignal;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,6 +47,7 @@ import codex.codex_iter.www.awol.exceptions.InvalidResponseException;
 import codex.codex_iter.www.awol.model.Student;
 
 import static codex.codex_iter.www.awol.utilities.Constants.API;
+import static codex.codex_iter.www.awol.utilities.ThemeHelper.setAppTheme;
 
 @SuppressWarnings("ALL")
 public class SettingsFragment extends PreferenceFragmentCompat {
@@ -64,9 +66,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     private ProgressBar progressBar;
 
     @Override
-    public void onCreate(final Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        addPreferencesFromResource(R.xml.preference);
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+        setPreferencesFromResource(R.xml.preference, rootKey);
 
         localDB = new LocalDB(getContext());
 
@@ -187,26 +188,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 boolean checked = (Boolean) newValue;
-                return true;
-            }
-        });
-
-        pref_theme.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                switch (newValue.toString()) {
-                    case "Light":
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                        break;
-                    case "Dark":
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                        break;
-                    case "Follow system":
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
-                        break;
-                    default:
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.getDefaultNightMode());
-                }
+                OneSignal.setSubscription(checked);
                 return true;
             }
         });
@@ -214,12 +196,27 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         pref_sign_out.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
+                AlertDialog alertDialog = new MaterialAlertDialogBuilder(requireContext())
+                        .setCancelable(true)
+                        .setTitle("Sign Out")
+                        .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                localDB.setStudent(sharedPreference.getString("pref_student", null), null);
 
-                localDB.setStudent(sharedPreference.getString("pref_student", null), null);
-
-                FirebaseAuth.getInstance().signOut();
-                Intent intent3 = new Intent(requireContext().getApplicationContext(), MainActivity.class);
-                startActivity(intent3);
+                                FirebaseAuth.getInstance().signOut();
+                                Intent intent3 = new Intent(requireContext().getApplicationContext(), MainActivity.class);
+                                startActivity(intent3);
+                            }
+                        })
+                        .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        })
+                        .create();
+                alertDialog.show();
                 return true;
             }
         });
@@ -227,15 +224,18 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         pref_privacy.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-
+                custom_tab("https://awol-iter.flycricket.io/privacy.html");
                 return true;
             }
         });
-    }
 
-    @Override
-    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-
+//        pref_theme.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+//            @Override
+//            public boolean onPreferenceChange(Preference preference, Object newValue) {
+//                setAppTheme(String.valueOf(newValue));
+//                return true;
+//            }
+//        });
     }
 
     private void custom_tab(String url) {
@@ -244,7 +244,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             builder.setShowTitle(true);
             builder.setStartAnimations(requireActivity(), R.anim.slide_in_right, R.anim.slide_out_left);
             builder.setExitAnimations(requireActivity(), R.anim.slide_in_left, R.anim.slide_out_right);
-            builder.setToolbarColor(getResources().getColor(R.color.colorPrimary));
+            builder.setToolbarColor(getResources().getColor(R.color.colorAccent));
             builder.build().launchUrl(requireActivity(), Uri.parse(url));
         } catch (Exception e) {
             Toast.makeText(requireContext(), "Something went wrong, please try again", Toast.LENGTH_SHORT).show();

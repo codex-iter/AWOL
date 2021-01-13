@@ -4,8 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
@@ -13,26 +11,24 @@ import android.os.Bundle;
 import android.os.Vibrator;
 import android.text.format.DateUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.browser.customtabs.CustomTabsIntent;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.FileProvider;
-import androidx.core.view.GravityCompat;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
@@ -43,7 +39,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.firestore.CollectionReference;
@@ -70,6 +66,7 @@ import codex.codex_iter.www.awol.adapter.AttendanceAdapter;
 import codex.codex_iter.www.awol.adapter.MultipleAccountAdapter;
 import codex.codex_iter.www.awol.data.LocalDB;
 import codex.codex_iter.www.awol.databinding.ActivityAttendanceBinding;
+import codex.codex_iter.www.awol.databinding.ItemSwitchAccountBinding;
 import codex.codex_iter.www.awol.exceptions.InvalidFirebaseResponseException;
 import codex.codex_iter.www.awol.exceptions.InvalidResponseException;
 import codex.codex_iter.www.awol.model.Attendance;
@@ -96,8 +93,10 @@ import static codex.codex_iter.www.awol.utilities.Constants.STUDENT_BRANCH;
 import static codex.codex_iter.www.awol.utilities.Constants.STUDENT_NAME;
 import static codex.codex_iter.www.awol.utilities.Constants.STUDENT_SEMESTER;
 import static codex.codex_iter.www.awol.utilities.Constants.STUDENT_YEAR;
+import static codex.codex_iter.www.awol.utilities.ThemeHelper.FOLLOW_SYSTEM;
+import static codex.codex_iter.www.awol.utilities.ThemeHelper.setAppTheme;
 
-public class AttendanceActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, InternetConnectivityListener, MultipleAccountAdapter.OnItemClickListener {
+public class AttendanceActivity extends AppCompatActivity implements InternetConnectivityListener, MultipleAccountAdapter.OnItemClickListener {
 
     private String result;
     private Attendance[] attendanceData;
@@ -112,12 +111,12 @@ public class AttendanceActivity extends AppCompatActivity implements NavigationV
     private static final String[] suffix = new String[]{"k", "m", "b", "t"};
     private String AUTH_KEY;
     private InternetAvailabilityChecker mInternetAvailabilityChecker;
-    private View headerView;
     private static final String TOOLBAR_COLOR = "toolbar_color";
     private LocalDB localDB;
     private Student preferredStudent;
-    private boolean dropArrowDown;
     private ActivityAttendanceBinding activityAttendanceBinding;
+    private Boolean isOpen = false;
+    private Animation fab_open, fab_close, fab_clock, fab_anticlock;
 
     @Override
     protected void onResume() {
@@ -200,13 +199,6 @@ public class AttendanceActivity extends AppCompatActivity implements NavigationV
                 attendanceArrayList.addAll(Arrays.asList(attendanceData).subList(0, l));
             } catch (Exception e) {
                 noAttendance();
-            }
-
-            if (preferredStudent != null) {
-                TextView avat = headerView.findViewById(R.id.avat);
-                avat.setText(getResources().getString(R.string.average_present, preferredStudent.getAveragePresent()));
-                TextView avab = headerView.findViewById(R.id.avab);
-                avab.setText(String.valueOf(preferredStudent.getAverageAbsent()));
             }
 
             adapter = new AttendanceAdapter(this, attendanceArrayList, Integer.parseInt(Objects.requireNonNull(
@@ -341,31 +333,12 @@ public class AttendanceActivity extends AppCompatActivity implements NavigationV
         activityAttendanceBinding = ActivityAttendanceBinding.inflate(getLayoutInflater());
         setContentView(activityAttendanceBinding.getRoot());
 
-        setSupportActionBar(activityAttendanceBinding.toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(false);
         Objects.requireNonNull(getSupportActionBar()).setElevation(0);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowHomeEnabled(true);
-        Objects.requireNonNull(getSupportActionBar()).setTitle("");
 
         localDB = new LocalDB(this);
-
         sharedPreference = PreferenceManager.getDefaultSharedPreferences(this);
-
-        headerView = activityAttendanceBinding.navView.getHeaderView(0);
-        activityAttendanceBinding.navView.setNavigationItemSelectedListener(this);
-
-        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, activityAttendanceBinding.drawerLayout,
-                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        activityAttendanceBinding.drawerLayout.addDrawerListener(actionBarDrawerToggle);
-        actionBarDrawerToggle.syncState();
-        activityAttendanceBinding.navView.setNavigationItemSelectedListener(this);
-
-        TextView student_name = headerView.findViewById(R.id.name);
-        TextView student_regdno = headerView.findViewById(R.id.reg);
-        ImageView arrowUpDown = headerView.findViewById(R.id.arrowDownUp);
-
-        // make multiple account arrow by default true
-        dropArrowDown = true;
 
         preferredStudent = localDB.getStudent(this.sharedPreference.getString("pref_student", null));
         if (preferredStudent == null) {
@@ -393,12 +366,11 @@ public class AttendanceActivity extends AppCompatActivity implements NavigationV
             preferredStudent.setPassword(bundle.getString(PASSWORD));
             result = bundle.getString(RESULTS);
             preferredStudent.setOfflineAttendance(result);
-            student_name.setText(bundle.getString(STUDENT_NAME));
-            student_regdno.setText(bundle.getString(REGISTRATION_NUMBER));
-            String[] split = Objects.requireNonNull(bundle.getString(STUDENT_NAME)).split("\\s+");
+            getSupportActionBar().setSubtitle(bundle.getString(REGISTRATION_NUMBER));
+
             try {
-                if (!split[0].isEmpty()) {
-                    getSupportActionBar().setTitle("Hi, " + Constants.convertToTitleCaseIteratingChars(split[0]) + "!");
+                if (!bundle.getString(STUDENT_NAME).isEmpty()) {
+                    getSupportActionBar().setTitle(Constants.convertToTitleCaseIteratingChars(bundle.getString(STUDENT_NAME)));
                 } else {
                     getSupportActionBar().setTitle("Home");
                 }
@@ -407,53 +379,132 @@ public class AttendanceActivity extends AppCompatActivity implements NavigationV
             }
         }
 
-        try {
-            PackageInfo pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
-            String current_versionName = pInfo.versionName;
-            MaterialTextView version = findViewById(R.id.version);
-            version.setText("v" + current_versionName);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
+        activityAttendanceBinding.fabButton.fab.setOnClickListener(view -> {
+            fab_close = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
+            fab_open = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
+            fab_clock = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_rotate_clock);
+            fab_anticlock = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_rotate_anticlock);
 
-        arrowUpDown.setOnClickListener(view -> {
-            ConstraintLayout accountsLayout = headerView.findViewById(R.id.layoutAccounts);
-            RecyclerView listAccounts = headerView.findViewById(R.id.listAccount);
-            MultipleAccountAdapter multipleAccountAdapter;
-
-            if (dropArrowDown) {
-                accountsLayout.setVisibility(View.VISIBLE);
-                arrowUpDown.setImageResource(R.drawable.arrow_up);
-                dropArrowDown = false;
+            if (isOpen) {
+                closeFloatingButtonAction();
+                isOpen = false;
             } else {
-                accountsLayout.setVisibility(View.GONE);
-                arrowUpDown.setImageResource(R.drawable.arrow_down);
-                dropArrowDown = true;
+                openFloatingButtonAction();
+                isOpen = true;
             }
+        });
+
+        activityAttendanceBinding.fabButton.fab4.setOnClickListener(view -> {
+            closeFloatingButtonAction();
+            ItemSwitchAccountBinding itemSwitchAccountBinding = ItemSwitchAccountBinding.inflate(LayoutInflater.from(this));
+            AlertDialog alertDialog = new MaterialAlertDialogBuilder(this)
+                    .setCancelable(true)
+                    .setView(itemSwitchAccountBinding.getRoot())
+                    .create();
 
             ArrayList<Student> students = localDB.getStudents();
             Student addAccountCard = new Student();
             addAccountCard.setName("Add Account");
+            addAccountCard.setRedgNo("Add a different account");
             students.add(addAccountCard);
 
-            if (preferredStudent != null) {
-                for (Student student : students) {
-                    if (student.getRedgNo().equals(preferredStudent.getRedgNo())) {
-                        students.remove(student);
-                        break;
-                    }
-                }
-            }
-
             if (!students.isEmpty()) {
-                multipleAccountAdapter = new MultipleAccountAdapter(this, students, AttendanceActivity.this);
-                listAccounts.setHasFixedSize(true);
-                listAccounts.setAdapter(multipleAccountAdapter);
-                listAccounts.setLayoutManager(new LinearLayoutManager(this));
+                MultipleAccountAdapter multipleAccountAdapter = new MultipleAccountAdapter(this, students, AttendanceActivity.this);
+                itemSwitchAccountBinding.accountRecyclerView.setHasFixedSize(true);
+                itemSwitchAccountBinding.accountRecyclerView.setAdapter(multipleAccountAdapter);
+                itemSwitchAccountBinding.accountRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+            }
+            alertDialog.show();
+        });
+
+        activityAttendanceBinding.fabButton.fab1.setOnClickListener(view -> {
+            closeFloatingButtonAction();
+            if (Objects.equals(this.sharedPreference.getString(SHOW_RESULT, ""), "0")) {
+                Snackbar snackbar = Snackbar.make(activityAttendanceBinding.mainLayout, "We will be back within 3-4 days", Snackbar.LENGTH_LONG);
+                snackbar.show();
+            } else {
+                fetchResult();
             }
         });
 
-        activityAttendanceBinding.checkResult.setOnClickListener(view -> fetchResult());
+        activityAttendanceBinding.fabButton.fab2.setOnClickListener(view -> {
+            closeFloatingButtonAction();
+            if (!Objects.equals(this.sharedPreference.getString(SHOW_CUSTOM_TABS, "0"), "0")) {
+                if (preferredStudent != null) {
+                    if (preferredStudent.getAcademic_year().equals("1920")
+                            || preferredStudent.getAcademic_year().equals("2021")) {
+                        if (custom_tabs_link_2 != null && !custom_tabs_link_2.isEmpty()) {
+                            custom_tab(custom_tabs_link_2);
+                            Log.d("custom_link", custom_tabs_link_2);
+                        } else {
+                            Snackbar snackbar = Snackbar.make(activityAttendanceBinding.mainLayout, "Something went wrong, please try again", Snackbar.LENGTH_SHORT);
+                            snackbar.show();
+                        }
+                    } else {
+                        if (custom_tabs_link != null && !custom_tabs_link.isEmpty()) {
+                            custom_tab(custom_tabs_link);
+                            Log.d("custom_link", custom_tabs_link);
+                        } else {
+                            Snackbar snackbar = Snackbar.make(activityAttendanceBinding.mainLayout, "Something went wrong, please try again", Snackbar.LENGTH_SHORT);
+                            snackbar.show();
+                        }
+                    }
+                } else {
+                    Snackbar snackbar = Snackbar.make(activityAttendanceBinding.mainLayout, "Something went wrong, please try again", Snackbar.LENGTH_SHORT);
+                    snackbar.show();
+                }
+            }
+        });
+
+        activityAttendanceBinding.fabButton.fab3.setOnClickListener(view -> {
+            closeFloatingButtonAction();
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            sendIntent.putExtra(Intent.EXTRA_TEXT, "All in one app for ITER students - check your attendance, results and a lot more: https://codex-iter.github.io/AWOL/ \n\n_Developed and Maintained by CODEX_ ");
+            sendIntent.setType("text/plain");
+            startActivity(sendIntent);
+        });
+
+        activityAttendanceBinding.checkResult.setOnClickListener(view -> {
+            closeFloatingButtonAction();
+            fetchResult();
+        });
+    }
+
+    private void closeFloatingButtonAction() {
+        activityAttendanceBinding.fabButton.textViewMoodle.setVisibility(View.GONE);
+        activityAttendanceBinding.fabButton.textViewResult.setVisibility(View.GONE);
+        activityAttendanceBinding.fabButton.textViewInvite.setVisibility(View.GONE);
+        activityAttendanceBinding.fabButton.textViewAccount.setVisibility(View.GONE);
+        activityAttendanceBinding.fabButton.fab1.setVisibility(View.GONE);
+        activityAttendanceBinding.fabButton.fab2.setVisibility(View.GONE);
+        activityAttendanceBinding.fabButton.fab3.setVisibility(View.GONE);
+        activityAttendanceBinding.fabButton.fab4.setVisibility(View.GONE);
+        activityAttendanceBinding.fabButton.fab1.setAnimation(fab_close);
+        activityAttendanceBinding.fabButton.fab2.setAnimation(fab_close);
+        activityAttendanceBinding.fabButton.fab3.setAnimation(fab_close);
+        activityAttendanceBinding.fabButton.fab4.setAnimation(fab_close);
+        activityAttendanceBinding.fabButton.fab.setAnimation(fab_anticlock);
+    }
+
+    private void openFloatingButtonAction() {
+        activityAttendanceBinding.fabButton.textViewMoodle.setVisibility(View.VISIBLE);
+        activityAttendanceBinding.fabButton.textViewResult.setVisibility(View.VISIBLE);
+        activityAttendanceBinding.fabButton.textViewInvite.setVisibility(View.VISIBLE);
+        activityAttendanceBinding.fabButton.textViewAccount.setVisibility(View.VISIBLE);
+        activityAttendanceBinding.fabButton.fab1.setVisibility(View.VISIBLE);
+        activityAttendanceBinding.fabButton.fab2.setVisibility(View.VISIBLE);
+        activityAttendanceBinding.fabButton.fab3.setVisibility(View.VISIBLE);
+        activityAttendanceBinding.fabButton.fab4.setVisibility(View.VISIBLE);
+        activityAttendanceBinding.fabButton.fab1.setAnimation(fab_open);
+        activityAttendanceBinding.fabButton.fab2.setAnimation(fab_open);
+        activityAttendanceBinding.fabButton.fab3.setAnimation(fab_open);
+        activityAttendanceBinding.fabButton.fab4.setAnimation(fab_open);
+        activityAttendanceBinding.fabButton.fab1.setClickable(true);
+        activityAttendanceBinding.fabButton.fab2.setClickable(true);
+        activityAttendanceBinding.fabButton.fab3.setClickable(true);
+        activityAttendanceBinding.fabButton.fab4.setClickable(true);
+        activityAttendanceBinding.fabButton.fab.setAnimation(fab_clock);
     }
 
     public void getDataFromFirebase() {
@@ -478,8 +529,6 @@ public class AttendanceActivity extends AppCompatActivity implements NavigationV
                         custom_tabs_link_2 = String.valueOf(documentChange.getDocument().getString(CUSTOM_TABS_LINK_2));
                         AUTH_KEY = documentChange.getDocument().getString(AUTH_KEY_ONESIGNAL);
                         APP_ID = documentChange.getDocument().getString(APP_ID_ONESIGNAL);
-
-                        activityAttendanceBinding.navView.getMenu().findItem(R.id.customTabs).setVisible(!showCustomTabs.equals("0"));
                     }
                     downloadStats(AUTH_KEY, APP_ID);
                 }
@@ -591,6 +640,10 @@ public class AttendanceActivity extends AppCompatActivity implements NavigationV
             startActivity(new Intent(AttendanceActivity.this, SettingsActivity.class));
             return true;
         }
+        if (id == R.id.action_aboutUs) {
+            startActivity(new Intent(AttendanceActivity.this, AboutActivity.class));
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -647,65 +700,7 @@ public class AttendanceActivity extends AppCompatActivity implements NavigationV
 
     @Override
     public void onBackPressed() {
-        if (this.activityAttendanceBinding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            this.activityAttendanceBinding.drawerLayout.closeDrawer(GravityCompat.START);
-        } else {
-            moveTaskToBack(true);
-        }
-    }
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.sa:
-                Intent sendIntent = new Intent();
-                sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, "All in one app for ITER students - check your attendance, results and a lot more: https://codex-iter.github.io/AWOL/ \n\n_Developed and Maintained by CODEX_ ");
-                sendIntent.setType("text/plain");
-                startActivity(sendIntent);
-                break;
-            case R.id.abt: {
-                Intent intent = new Intent(AttendanceActivity.this, AboutActivity.class);
-                startActivity(intent);
-                break;
-            }
-            case R.id.result:
-                if (Objects.equals(this.sharedPreference.getString(SHOW_RESULT, ""), "0")) {
-                    Snackbar snackbar = Snackbar.make(activityAttendanceBinding.mainLayout, "We will be back within 3-4 days", Snackbar.LENGTH_LONG);
-                    snackbar.show();
-                } else {
-                    fetchResult();
-                }
-                break;
-            case R.id.customTabs:
-                if (!Objects.equals(this.sharedPreference.getString(SHOW_CUSTOM_TABS, "0"), "0")) {
-                    if (preferredStudent != null) {
-                        if (preferredStudent.getAcademic_year().equals("1920")
-                                || preferredStudent.getAcademic_year().equals("2021")) {
-                            if (custom_tabs_link_2 != null && !custom_tabs_link_2.isEmpty()) {
-                                custom_tab(custom_tabs_link_2);
-                                Log.d("custom_link", custom_tabs_link_2);
-                            } else {
-                                Snackbar snackbar = Snackbar.make(activityAttendanceBinding.mainLayout, "Something went wrong, please try again", Snackbar.LENGTH_SHORT);
-                                snackbar.show();
-                            }
-                        } else {
-                            if (custom_tabs_link != null && !custom_tabs_link.isEmpty()) {
-                                custom_tab(custom_tabs_link);
-                                Log.d("custom_link", custom_tabs_link);
-                            } else {
-                                Snackbar snackbar = Snackbar.make(activityAttendanceBinding.mainLayout, "Something went wrong, please try again", Snackbar.LENGTH_SHORT);
-                                snackbar.show();
-                            }
-                        }
-                    } else {
-                        Snackbar snackbar = Snackbar.make(activityAttendanceBinding.mainLayout, "Something went wrong, please try again", Snackbar.LENGTH_SHORT);
-                        snackbar.show();
-                    }
-                }
-                break;
-        }
-        return true;
+        moveTaskToBack(true);
     }
 
     @Override
@@ -718,11 +713,7 @@ public class AttendanceActivity extends AppCompatActivity implements NavigationV
             builder.setShowTitle(true);
             builder.setStartAnimations(this, R.anim.slide_in_right, R.anim.slide_out_left);
             builder.setExitAnimations(this, R.anim.slide_in_left, R.anim.slide_out_right);
-            if (this.getSharedPreferences("theme", 0).contains(TOOLBAR_COLOR)) {
-                builder.setToolbarColor(getResources().getColor(this.getSharedPreferences("theme", 0).getInt(TOOLBAR_COLOR, 0)));
-            } else {
-                builder.setToolbarColor(getResources().getColor(R.color.green));
-            }
+            builder.setToolbarColor(getResources().getColor(R.color.colorAccent));
             builder.build().launchUrl(this, Uri.parse(url));
         } catch (Exception e) {
             Snackbar snackbar = Snackbar.make(activityAttendanceBinding.mainLayout, "Something went wrong, please try again", Snackbar.LENGTH_SHORT);

@@ -1,12 +1,14 @@
 package codex.codex_iter.www.awol.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
@@ -21,9 +23,9 @@ import static codex.codex_iter.www.awol.utilities.Constants.convertToTitleCaseIt
 
 public class MultipleAccountAdapter extends RecyclerView.Adapter<MultipleAccountAdapter.ViewHolder> {
 
-    private Context ctx;
-    private List<Student> multipleAccountList;
-    private OnItemClickListener onItemClickListener;
+    private final Context ctx;
+    private final List<Student> multipleAccountList;
+    private final OnItemClickListener onItemClickListener;
 
     public MultipleAccountAdapter(Context ctx, List<Student> multipleAccountList, OnItemClickListener onItemClickListener) {
         this.ctx = ctx;
@@ -57,8 +59,8 @@ public class MultipleAccountAdapter extends RecyclerView.Adapter<MultipleAccount
             holder.studentImage.setImageResource(R.drawable.account_multiple_plus_outline);
             holder.nameTextView.setText(student_name);
         }
-
-        holder.materialCardView.setOnClickListener(view -> {
+        holder.idTextView.setText(multipleAccountList.get(position).getRedgNo());
+        holder.materialItem.setOnClickListener(view -> {
             // switch to particular account
             if (onItemClickListener != null) {
                 if (student_name.equals("Add Account")) {
@@ -76,15 +78,16 @@ public class MultipleAccountAdapter extends RecyclerView.Adapter<MultipleAccount
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        MaterialTextView nameTextView;
-        MaterialCardView materialCardView;
+        MaterialTextView nameTextView, idTextView;
+        ConstraintLayout materialItem;
         ImageView studentImage;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            studentImage = itemView.findViewById(R.id.studentImage);
+            studentImage = itemView.findViewById(R.id.accountImage);
             nameTextView = itemView.findViewById(R.id.accountName);
-            materialCardView = itemView.findViewById(R.id.accountCard);
+            materialItem = itemView.findViewById(R.id.accountItem);
+            idTextView = itemView.findViewById(R.id.accountId);
         }
     }
 

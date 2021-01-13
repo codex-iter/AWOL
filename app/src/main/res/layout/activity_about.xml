@@ -12,22 +12,6 @@
         tools:context="codex.codex_iter.www.awol.MainActivity"
         tools:targetApi="o">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:theme="@style/AppTheme.AppBarOverlay">
-
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?android:actionBarSize"
-                android:layout_gravity="center_horizontal"
-                tools:titleTextColor="@color/colorAccent"
-                android:theme="@style/AppTheme.Toolbar">
-
-            </com.google.android.material.appbar.MaterialToolbar>
-        </com.google.android.material.appbar.AppBarLayout>
-
         <ImageView
             android:layout_width="234dp"
             android:layout_height="224dp"
@@ -42,6 +26,7 @@
             android:gravity="center_horizontal"
             android:text="@string/follow_us"
             android:textAllCaps="true"
+            android:textColor="?android:textColorPrimary"
             android:textSize="14sp" />
 
         <LinearLayout
@@ -97,14 +82,17 @@
                 android:layout_marginTop="10dp"
                 android:gravity="center_horizontal"
                 android:text="@string/disclaimer"
+                android:textColor="?android:textColorPrimary"
                 android:textSize="14sp" />
 
             <com.google.android.material.textview.MaterialTextView
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="9dp"
                 android:gravity="center"
                 android:paddingHorizontal="15dp"
+                android:textColor="?android:textColorPrimary"
                 android:text="@string/abtAPP"
                 android:textSize="14sp"
                 tools:targetApi="o" />

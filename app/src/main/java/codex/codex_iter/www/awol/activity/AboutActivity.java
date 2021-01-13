@@ -24,7 +24,7 @@ public class AboutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         ActivityAboutBinding activityAboutBinding = ActivityAboutBinding.inflate(getLayoutInflater());
         setContentView(activityAboutBinding.getRoot());
-        setSupportActionBar(activityAboutBinding.toolbar);
+//        setSupportActionBar(activityAboutBinding.toolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle("About");
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         Objects.requireNonNull(getSupportActionBar()).setElevation(0);

@@ -1,31 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#0BBE62</color>
+    <color name="colorPrimary">#2aac4b</color>
     <color name="colorAccent">#2aac4b</color>
-    <color name="colorPrimaryDark">#087f23</color>
-    <color name="colorwhite">#ffffff</color>
-    <color name="darkColorPrimaryDark">#141414</color>
-    <color name="darkColorAccent">#2aac4b</color>
-    <color name="black">#FF0C0C0C</color>
-    <color name="white">#FFFFFF</color>
-    <color name="whiteShade">#CDFFFFFF</color>
-    <color name="transparent">#00ff001C</color>
-    <color name="greenShade">#920BBE62</color>
-    <color name="blackShade">#AB000000</color>
-
+    <color name="colorPrimaryDark_Light">#087f23</color>
+    <color name="coloPrimaryDark_Dark">#000000</color>
     <color name="grey50">#fafafa</color>
     <color name="grey">#C9777474</color>
-    <color name="red">#f44336</color>
-    <color name="redDark">#ba000d</color>
-    <color name="orange">#ff9800</color>
-    <color name="orangeDark">#c66900</color>
-    <color name="green">#4caf50</color>
-    <color name="greenDark">#087f23</color>
-
-    <color name="lightBackground">#fafafa</color>
-    <color name="darkBackground">#141414</color>
-
-    <color name="textColorDark">#141831</color>
-    <color name="progresstheme">#B7000000</color>
-
+    <color name="backArrow_Light">#000000</color>
+    <color name="backArrow_Dark">#ffffff</color>
+    <color name="toolbarBg_Light">#ffffff</color>
+    <color name="toolbarBg_Dark">#000000</color>
 </resources>

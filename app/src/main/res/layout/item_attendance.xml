@@ -5,9 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:focusable="false"
-    android:orientation="vertical"
-    android:paddingLeft="5dp"
-    android:paddingRight="5dp">
+    android:orientation="vertical">
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/card_view"
@@ -41,7 +39,7 @@
                     android:clickable="false"
                     android:gravity="center"
                     android:text="@string/_95_5"
-                    android:textColor="@color/black"
+                    android:textColor="@android:color/black"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     card_view:layout_constraintEnd_toEndOf="parent"
@@ -67,7 +65,7 @@
                     android:layout_marginStart="5sp"
                     android:gravity="start"
                     android:text="@string/number_theory"
-                    android:textColor="?colorAccent"
+                    android:textColor="@color/colorAccent"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     card_view:layout_constraintBottom_toBottomOf="@+id/ta"
@@ -125,6 +123,7 @@
                             android:layout_weight="1.1"
                             android:gravity="center_vertical"
                             android:text="@string/not_applicable"
+                            android:textColor="?android:attr/textColorPrimary"
                             android:textSize="14sp"
                             android:typeface="normal" />
                     </LinearLayout>
@@ -154,6 +153,7 @@
                             android:layout_height="match_parent"
                             android:layout_weight="1.1"
                             android:gravity="center_vertical"
+                            android:textColor="?android:attr/textColorPrimary"
                             android:text="@string/not_applicable"
                             android:textSize="14sp"
                             android:typeface="normal" />
@@ -184,6 +184,7 @@
                             android:layout_weight="1.1"
                             android:gravity="center_vertical"
                             android:text="@string/not_applicable"
+                            android:textColor="?android:attr/textColorPrimary"
                             android:textSize="14sp"
                             android:typeface="normal" />
                     </LinearLayout>
@@ -214,6 +215,7 @@
                             android:layout_weight="1.1"
                             android:gravity="center_vertical"
                             android:text="@string/not_applicable"
+                            android:textColor="?android:attr/textColorPrimary"
                             android:textSize="14sp"
                             android:typeface="normal" />
                     </LinearLayout>
@@ -225,6 +227,7 @@
                         android:layout_marginTop="5dp"
                         android:layout_marginBottom="8sp"
                         android:gravity="start"
+                        android:textColor="?android:attr/textColorPrimary"
                         android:textSize="14sp"
                         android:typeface="normal" />
                 </LinearLayout>
@@ -236,6 +239,7 @@
                     android:text="@string/updated_just_now"
                     android:textSize="14sp"
                     android:textStyle="italic"
+                    android:textColor="?android:attr/textColorPrimary"
                     android:layout_marginEnd="5sp"
                     card_view:layout_constraintBottom_toBottomOf="parent"
                     card_view:layout_constraintEnd_toEndOf="parent"

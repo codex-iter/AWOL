@@ -57,7 +57,7 @@
         app:iconSpaceReserved="false">
 
         <ListPreference
-            android:defaultValue="Light"
+            android:defaultValue="Follow system"
             android:entries="@array/preferredThemes"
             android:entryValues="@array/preferredThemes"
             android:key="pref_theme"
