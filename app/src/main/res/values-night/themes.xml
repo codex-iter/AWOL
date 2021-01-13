@@ -2,7 +2,7 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/coloPrimaryDark_Dark</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark_Light</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="appBarLayoutStyle">@style/AppTheme.AppBarOverlay</item>
         <item name="toolbarStyle">@style/AppTheme.Toolbar</item>
