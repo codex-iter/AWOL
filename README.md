@@ -1,6 +1,6 @@
 # AWOL
 (Attendance Without leave)
-Shows current attendance
+Shows current attendance and results
 
 ![](https://img.shields.io/badge/Built%20with-Android-blue.svg?longCache=true&style=for-the-badge&logo=android&colorB=00ddff)
 
