@@ -36,7 +36,6 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:configChanges="uiMode|orientation|screenLayout|screenSize"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize"
@@ -44,33 +43,27 @@
 
         <activity
             android:name=".activity.AttendanceActivity"
-            android:configChanges="uiMode|orientation|screenLayout|screenSize"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".activity.AboutActivity"
-            android:configChanges="uiMode|orientation|screenLayout|screenSize"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".setting.SettingsActivity"
-            android:configChanges="uiMode|orientation|screenLayout|screenSize"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".activity.ResultActivity"
-            android:configChanges="uiMode|orientation|screenLayout|screenSize"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".activity.DetailedResultActivity"
-            android:configChanges="uiMode|orientation|screenLayout|screenSize"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
 
         <activity
             android:name=".activity.UnderMaintenance"
-            android:configChanges="uiMode|orientation|screenLayout|screenSize"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 

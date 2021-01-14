@@ -13,7 +13,6 @@
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="88dp"
         android:layout_marginBottom="295dp"
-        android:focusable="false"
         android:visibility="gone"
         app:boxBackgroundColor="?android:attr/colorControlNormal">
 
@@ -22,7 +21,8 @@
             android:layout_height="wrap_content"
             android:padding="4dp"
             android:text="@string/moodle"
-            android:textColor="?android:attr/textColorPrimary" />
+            android:focusable="false"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -52,7 +52,6 @@
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="88dp"
         android:layout_marginBottom="167dp"
-        android:focusable="false"
         android:visibility="gone"
         app:boxBackgroundColor="?android:attr/colorControlNormal">
 
@@ -60,8 +59,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="4dp"
+            android:focusable="false"
             android:text="@string/share_app"
-            android:textColor="?android:attr/textColorPrimary" />
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -91,7 +91,6 @@
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="88dp"
         android:layout_marginBottom="230dp"
-        android:focusable="false"
         android:visibility="gone"
         app:boxBackgroundColor="?android:attr/colorControlNormal">
 
@@ -99,8 +98,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="4dp"
+            android:focusable="false"
             android:text="@string/result"
-            android:textColor="?android:attr/textColorPrimary" />
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -130,7 +130,6 @@
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="88dp"
         android:layout_marginBottom="105dp"
-        android:focusable="false"
         android:visibility="gone"
         app:boxBackgroundColor="?android:attr/colorControlNormal">
 
@@ -138,8 +137,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="4dp"
+            android:focusable="false"
             android:text="@string/switch_account"
-            android:textColor="?android:attr/textColorPrimary" />
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

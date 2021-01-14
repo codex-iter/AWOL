@@ -17,6 +17,10 @@
         <item name="android:textColorPrimary">@color/backArrow_Dark</item>
     </style>
 
+    <style name="AccountsIdTheme" parent="TextAppearance.MaterialComponents.Subtitle1">
+        <item name="android:textColor">@color/grey50</item>
+    </style>
+
     <style name="AppTheme.NoActionBar" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimaryDark">@android:color/black</item>
         <item name="colorPrimary">@color/colorPrimary</item>

@@ -43,7 +43,7 @@
     <string name="logout">Logout</string>
     <string name="change_theme">Change Theme</string>
     <string name="Select_Subject">Select Subject</string>
-    <string name="oops_attendance_not_available">Oops! Attendance not available!</string>
+    <string name="oops_attendance_not_available">Attendance is currently unavailable</string>
     <string name="results">Results</string>
     <string name="avinav">Avinaba Ray</string>
     <string name="check_result"><u>Check Results</u></string>

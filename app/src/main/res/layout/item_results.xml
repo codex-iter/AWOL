@@ -51,8 +51,8 @@
                     android:layout_column="0"
                     android:padding="2.5dp"
                     android:text="@string/semester"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                     android:textColor="@color/colorAccent"
-                    android:textSize="15sp"
                     android:textStyle="bold" />
 
                 <com.google.android.material.textview.MaterialTextView
@@ -63,10 +63,9 @@
                     android:layout_column="1"
                     android:layout_gravity="center_vertical"
                     android:paddingStart="15dp"
-                    android:textColor="?android:textColorPrimary"
                     android:paddingEnd="15dp"
                     android:text="@string/textview"
-                    android:textSize="15sp"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                     android:typeface="normal" />
 
                 <com.google.android.material.textview.MaterialTextView
@@ -76,8 +75,8 @@
                     android:layout_column="0"
                     android:padding="2.5dp"
                     android:text="@string/credits_earned"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                     android:textColor="@color/colorAccent"
-                    android:textSize="15sp"
                     android:textStyle="bold" />
 
                 <com.google.android.material.textview.MaterialTextView
@@ -89,9 +88,8 @@
                     android:layout_gravity="center_vertical"
                     android:paddingStart="15dp"
                     android:paddingEnd="15dp"
-                    android:textColor="?android:textColorPrimary"
                     android:text="@string/textview"
-                    android:textSize="15sp"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                     android:typeface="normal" />
 
                 <com.google.android.material.textview.MaterialTextView
@@ -101,8 +99,8 @@
                     android:layout_column="0"
                     android:padding="2.5dp"
                     android:text="@string/sgpa"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                     android:textColor="@color/colorAccent"
-                    android:textSize="15sp"
                     android:textStyle="bold" />
 
                 <com.google.android.material.textview.MaterialTextView
@@ -114,10 +112,9 @@
                     android:layout_gravity="center_vertical"
                     android:paddingStart="15dp"
                     android:paddingEnd="15dp"
-                    android:textColor="?android:textColorPrimary"
                     android:scrollbars="vertical"
                     android:text="@string/textview"
-                    android:textSize="15sp"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                     android:typeface="normal" />
 
                 <com.google.android.material.textview.MaterialTextView
@@ -127,8 +124,8 @@
                     android:layout_column="0"
                     android:padding="2.5dp"
                     android:text="@string/cgpa"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                     android:textColor="@color/colorAccent"
-                    android:textSize="15sp"
                     android:textStyle="bold" />
 
                 <com.google.android.material.textview.MaterialTextView
@@ -138,13 +135,12 @@
                     android:layout_row="3"
                     android:layout_column="1"
                     android:layout_gravity="center_vertical"
+                    android:maxLines="2"
                     android:paddingStart="15dp"
                     android:paddingEnd="15dp"
                     android:scrollbars="vertical"
                     android:text="TextView"
-                    android:textSize="15sp"
-                    android:textColor="?android:textColorPrimary"
-                    android:maxLines="2"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                     android:typeface="normal" />
             </GridLayout>
         </LinearLayout>

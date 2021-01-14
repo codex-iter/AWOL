@@ -26,8 +26,7 @@
             android:gravity="center_horizontal"
             android:text="@string/follow_us"
             android:textAllCaps="true"
-            android:textColor="?android:textColorPrimary"
-            android:textSize="14sp" />
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -82,20 +81,16 @@
                 android:layout_marginTop="10dp"
                 android:gravity="center_horizontal"
                 android:text="@string/disclaimer"
-                android:textColor="?android:textColorPrimary"
-                android:textSize="14sp" />
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
 
             <com.google.android.material.textview.MaterialTextView
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="9dp"
                 android:gravity="center"
                 android:paddingHorizontal="15dp"
-                android:textColor="?android:textColorPrimary"
                 android:text="@string/abtAPP"
-                android:textSize="14sp"
-                tools:targetApi="o" />
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

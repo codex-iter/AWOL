@@ -23,9 +23,8 @@
                 android:layout_height="wrap_content"
                 android:padding="3dp"
                 android:text="@string/subject_name"
-                android:textColor="@color/colorAccent"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                android:textColor="@color/colorAccent" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -66,8 +65,8 @@
                         android:layout_column="0"
                         android:padding="2.5dp"
                         android:text="@string/sub_code"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                         android:textColor="@color/colorAccent"
-                        android:textSize="15sp"
                         android:textStyle="bold" />
 
                     <com.google.android.material.textview.MaterialTextView
@@ -79,9 +78,8 @@
                         android:layout_gravity="center_vertical"
                         android:paddingStart="15dp"
                         android:paddingEnd="15sp"
-                        android:textColor="?android:textColorPrimary"
                         android:text="@string/textview"
-                        android:textSize="15sp"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                         android:typeface="normal" />
 
                     <com.google.android.material.textview.MaterialTextView
@@ -91,8 +89,8 @@
                         android:layout_column="0"
                         android:padding="2.5dp"
                         android:text="@string/grade"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                         android:textColor="@color/colorAccent"
-                        android:textSize="15sp"
                         android:textStyle="bold" />
 
                     <com.google.android.material.textview.MaterialTextView
@@ -104,9 +102,8 @@
                         android:layout_gravity="center_vertical"
                         android:paddingStart="15dp"
                         android:paddingEnd="15sp"
-                        android:textColor="?android:textColorPrimary"
                         android:text="@string/textview"
-                        android:textSize="15sp"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                         android:typeface="normal" />
 
                     <com.google.android.material.textview.MaterialTextView
@@ -116,8 +113,8 @@
                         android:layout_column="0"
                         android:padding="2.5dp"
                         android:text="@string/credits_earned"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                         android:textColor="@color/colorAccent"
-                        android:textSize="15sp"
                         android:textStyle="bold" />
 
                     <com.google.android.material.textview.MaterialTextView
@@ -128,11 +125,10 @@
                         android:layout_column="1"
                         android:layout_gravity="center_vertical"
                         android:paddingStart="15dp"
-                        android:textColor="?android:textColorPrimary"
                         android:paddingEnd="15sp"
                         android:scrollbars="vertical"
                         android:text="@string/textview"
-                        android:textSize="15sp"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                         android:typeface="normal" />
 
                 </GridLayout>

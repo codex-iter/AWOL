@@ -27,9 +27,8 @@
         android:id="@+id/accountName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="?android:attr/textColorPrimary"
-        android:textSize="15sp"
         android:paddingTop="5dp"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toEndOf="@id/accountImage"
@@ -39,9 +38,8 @@
         android:id="@+id/accountId"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="?android:attr/colorControlNormal"
-        android:textSize="15sp"
         android:paddingBottom="5dp"
+        android:textAppearance="@style/AccountsIdTheme"
         app:layout_constraintStart_toEndOf="@+id/accountImage"
         app:layout_constraintTop_toBottomOf="@id/accountName" />
 </androidx.constraintlayout.widget.ConstraintLayout>

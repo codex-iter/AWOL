@@ -24,7 +24,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.core.content.FileProvider;
 import androidx.preference.PreferenceManager;
@@ -93,8 +92,6 @@ import static codex.codex_iter.www.awol.utilities.Constants.STUDENT_BRANCH;
 import static codex.codex_iter.www.awol.utilities.Constants.STUDENT_NAME;
 import static codex.codex_iter.www.awol.utilities.Constants.STUDENT_SEMESTER;
 import static codex.codex_iter.www.awol.utilities.Constants.STUDENT_YEAR;
-import static codex.codex_iter.www.awol.utilities.ThemeHelper.FOLLOW_SYSTEM;
-import static codex.codex_iter.www.awol.utilities.ThemeHelper.setAppTheme;
 
 public class AttendanceActivity extends AppCompatActivity implements InternetConnectivityListener, MultipleAccountAdapter.OnItemClickListener {
 
@@ -387,10 +384,8 @@ public class AttendanceActivity extends AppCompatActivity implements InternetCon
 
             if (isOpen) {
                 closeFloatingButtonAction();
-                isOpen = false;
             } else {
                 openFloatingButtonAction();
-                isOpen = true;
             }
         });
 
@@ -464,11 +459,6 @@ public class AttendanceActivity extends AppCompatActivity implements InternetCon
             sendIntent.setType("text/plain");
             startActivity(sendIntent);
         });
-
-        activityAttendanceBinding.checkResult.setOnClickListener(view -> {
-            closeFloatingButtonAction();
-            fetchResult();
-        });
     }
 
     private void closeFloatingButtonAction() {
@@ -484,7 +474,12 @@ public class AttendanceActivity extends AppCompatActivity implements InternetCon
         activityAttendanceBinding.fabButton.fab2.setAnimation(fab_close);
         activityAttendanceBinding.fabButton.fab3.setAnimation(fab_close);
         activityAttendanceBinding.fabButton.fab4.setAnimation(fab_close);
+        activityAttendanceBinding.fabButton.fab1.setClickable(false);
+        activityAttendanceBinding.fabButton.fab2.setClickable(false);
+        activityAttendanceBinding.fabButton.fab3.setClickable(false);
+        activityAttendanceBinding.fabButton.fab4.setClickable(false);
         activityAttendanceBinding.fabButton.fab.setAnimation(fab_anticlock);
+        isOpen = false;
     }
 
     private void openFloatingButtonAction() {
@@ -505,6 +500,7 @@ public class AttendanceActivity extends AppCompatActivity implements InternetCon
         activityAttendanceBinding.fabButton.fab3.setClickable(true);
         activityAttendanceBinding.fabButton.fab4.setClickable(true);
         activityAttendanceBinding.fabButton.fab.setAnimation(fab_clock);
+        isOpen = true;
     }
 
     public void getDataFromFirebase() {
