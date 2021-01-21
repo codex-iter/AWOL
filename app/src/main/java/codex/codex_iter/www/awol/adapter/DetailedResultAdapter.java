@@ -14,6 +14,7 @@ import java.util.List;
 
 import codex.codex_iter.www.awol.R;
 import codex.codex_iter.www.awol.model.DetailResult;
+import codex.codex_iter.www.awol.utilities.Constants;
 
 public class DetailedResultAdapter extends RecyclerView.Adapter<DetailedResultAdapter.DetailViewHolder> {
 
@@ -35,7 +36,7 @@ public class DetailedResultAdapter extends RecyclerView.Adapter<DetailedResultAd
 
     @Override
     public void onBindViewHolder(@NonNull DetailedResultAdapter.DetailViewHolder holder, int position) {
-        holder.textViewSubName.setText(detailResultData.get(position).getSubjectdesc());
+        holder.textViewSubName.setText(Constants.convertToTitleCaseIteratingChars(detailResultData.get(position).getSubjectdesc()));
         holder.textViewSubCode.setText(detailResultData.get(position).getSubjectcode());
         holder.textViewGrade.setText(detailResultData.get(position).getGrade());
         holder.textViewIndvCredits.setText(detailResultData.get(position).getEarnedcredit());
