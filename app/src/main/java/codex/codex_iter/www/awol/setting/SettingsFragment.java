@@ -10,8 +10,8 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.ScrollView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -47,7 +47,6 @@ import codex.codex_iter.www.awol.exceptions.InvalidResponseException;
 import codex.codex_iter.www.awol.model.Student;
 
 import static codex.codex_iter.www.awol.utilities.Constants.API;
-import static codex.codex_iter.www.awol.utilities.ThemeHelper.setAppTheme;
 
 @SuppressWarnings("ALL")
 public class SettingsFragment extends PreferenceFragmentCompat {
@@ -56,7 +55,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     private boolean flag = true;
     private boolean dark = false;
     private FirebaseAnalytics firebaseAnalytics;
-    ScrollView scrollViewLayout;
+    private LinearLayout linearLayout;
     private SharedPreferences sharedPreference;
     private LocalDB localDB;
     private Student preferred_student;
@@ -75,7 +74,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         preferred_student = localDB.getStudent(sharedPreference.getString("pref_student", null));
 
-        scrollViewLayout = (ScrollView) getActivity().findViewById(R.id.bottomSheetView);
+        linearLayout = (LinearLayout) getActivity().findViewById(R.id.coordinator);
 
         final SwitchPreference notifications = (SwitchPreference) findPreference("pref_notification");
         final SwitchPreference pref_show_attendance_stats = (SwitchPreference) findPreference("pref_show_attendance_stats");
@@ -172,11 +171,11 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                             updatePasswordAPI(sharedPreference.getString(API, null), preferred_student.getRedgNo(), preferred_student.getPassword(), new_password.getText().toString());
                         } catch (InvalidResponseException e) {
                             resetPasswordDialog.dismiss();
-                            Snackbar.make(scrollViewLayout, e.getMessage(), Snackbar.LENGTH_SHORT).show();
+                            Snackbar.make(linearLayout, e.getMessage(), Snackbar.LENGTH_SHORT).show();
                         } catch (Exception e) {
                             resetPasswordDialog.dismiss();
                             Log.d("Setting", e.getMessage());
-                            Snackbar.make(scrollViewLayout, "Password not updated successfully", Snackbar.LENGTH_SHORT).show();
+                            Snackbar.make(linearLayout, "Password not updated successfully", Snackbar.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -266,17 +265,17 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             if (response.equals("404")) {
                 Log.d("Setting", response);
                 resetPasswordDialog.dismiss();
-                Snackbar.make(scrollViewLayout, "Password not updated successfully", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(linearLayout, "Password not updated successfully", Snackbar.LENGTH_SHORT).show();
             } else {
                 try {
                     JSONObject res = new JSONObject(response);
                     preferred_student.setPassword(new_password.getText().toString());
                     localDB.setStudent(sharedPreference.getString("pref_student", null), preferred_student);
-                    Snackbar.make(scrollViewLayout, res.getString("Success"), Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(linearLayout, res.getString("Success"), Snackbar.LENGTH_LONG).show();
                 } catch (JSONException e) {
                     Log.d("Setting", e.getMessage());
                     resetPasswordDialog.dismiss();
-                    Snackbar.make(scrollViewLayout, "Password not updated successfully", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(linearLayout, "Password not updated successfully", Snackbar.LENGTH_SHORT).show();
                 }
             }
         }, error -> {
@@ -285,7 +284,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             resetPasswordDialog.setCancelable(true);
             resetPasswordDialog.dismiss();
             Log.d("Setting", error.getMessage());
-            Snackbar.make(scrollViewLayout, "Password not updated successfully", Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(linearLayout, "Password not updated successfully", Snackbar.LENGTH_SHORT).show();
         }) {
             @Override
             protected Map<String, String> getParams() {

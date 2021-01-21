@@ -60,10 +60,10 @@
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/sub"
                     android:layout_width="305dp"
-                    android:layout_height="25dp"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginStart="5sp"
-                    android:gravity="start"
+                    android:gravity="center_vertical"
                     android:text="@string/number_theory"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
                     android:textColor="@color/colorAccent"

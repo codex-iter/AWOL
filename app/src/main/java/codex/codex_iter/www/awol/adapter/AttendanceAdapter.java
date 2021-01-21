@@ -21,6 +21,8 @@ import java.util.List;
 import codex.codex_iter.www.awol.R;
 import codex.codex_iter.www.awol.model.Attendance;
 
+import static codex.codex_iter.www.awol.utilities.Constants.convertToTitleCaseIteratingChars;
+
 public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.myViewHolder> {
 
     private Context ctx;
@@ -47,7 +49,7 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.my
         SharedPreferences theme = ctx.getSharedPreferences("theme", 0);
         boolean dark = theme.getBoolean("dark_theme", false);
 
-        holder.sub.setText(dataList.get(position).getSub());
+        holder.sub.setText(convertToTitleCaseIteratingChars(dataList.get(position).getSub()));
         String p = dataList.get(position).getPercent();
 
         double percent = 0;
