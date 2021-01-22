@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/NA"
@@ -47,6 +46,7 @@
             android:layout_marginTop="2dp"
             android:layout_marginEnd="2dp"
             android:layout_marginBottom="2dp"
+            android:contentDescription="@string/todo"
             android:src="@drawable/eye_light" />
 
         <com.google.android.material.textview.MaterialTextView
@@ -56,7 +56,7 @@
             android:layout_gravity="center"
             android:layout_margin="2dp"
             android:text="@string/_2_1_thousand_iterians_are_using_awol_app"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"/>
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView

@@ -26,6 +26,7 @@
     <style name="AccountsIdTheme" parent="TextAppearance.MaterialComponents.Subtitle1">
         <item name="android:textColor">@color/grey</item>
     </style>
+
     <style name="SplashTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:windowBackground">@xml/background</item>
     </style>

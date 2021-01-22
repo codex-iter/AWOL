@@ -42,7 +42,7 @@
                 android:columnCount="3"
                 android:paddingStart="15dp"
                 android:paddingEnd="15dp"
-                android:rowCount="4">
+                android:rowCount="3">
 
                 <com.google.android.material.textview.MaterialTextView
                     android:layout_width="match_parent"
@@ -117,31 +117,31 @@
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                     android:typeface="normal" />
 
-                <com.google.android.material.textview.MaterialTextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_row="3"
-                    android:layout_column="0"
-                    android:padding="2.5dp"
-                    android:text="@string/cgpa"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-                    android:textColor="@color/colorAccent"
-                    android:textStyle="bold" />
+<!--                <com.google.android.material.textview.MaterialTextView-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_row="3"-->
+<!--                    android:layout_column="0"-->
+<!--                    android:padding="2.5dp"-->
+<!--                    android:text="@string/cgpa"-->
+<!--                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"-->
+<!--                    android:textColor="@color/colorAccent"-->
+<!--                    android:textStyle="bold" />-->
 
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/textViewCGPA"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_row="3"
-                    android:layout_column="1"
-                    android:layout_gravity="center_vertical"
-                    android:maxLines="2"
-                    android:paddingStart="15dp"
-                    android:paddingEnd="15dp"
-                    android:scrollbars="vertical"
-                    android:text="TextView"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-                    android:typeface="normal" />
+<!--                <com.google.android.material.textview.MaterialTextView-->
+<!--                    android:id="@+id/textViewCGPA"-->
+<!--                    android:layout_width="100dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_row="3"-->
+<!--                    android:layout_column="1"-->
+<!--                    android:maxLines="2"-->
+<!--                    android:layout_gravity="fill"-->
+<!--                    android:paddingStart="15dp"-->
+<!--                    android:paddingEnd="15dp"-->
+<!--                    android:scrollbars="vertical"-->
+<!--                    android:text="TextView"-->
+<!--                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"-->
+<!--                    android:typeface="normal" />-->
             </GridLayout>
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>

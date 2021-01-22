@@ -67,12 +67,11 @@
                     android:text="@string/number_theory"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
                     android:textColor="@color/colorAccent"
-                    card_view:layout_constraintBottom_toBottomOf="@+id/ta"
+                    card_view:layout_constraintBottom_toBottomOf="parent"
                     card_view:layout_constraintEnd_toStartOf="@+id/up"
                     card_view:layout_constraintHorizontal_bias="0.0"
                     card_view:layout_constraintStart_toStartOf="parent"
-                    card_view:layout_constraintTop_toTopOf="parent"
-                    card_view:layout_constraintVertical_bias="0.529" />
+                    card_view:layout_constraintTop_toTopOf="parent" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -111,9 +110,9 @@
                             android:layout_weight="0.9"
                             android:gravity="center_vertical"
                             android:text="@string/theory"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                             android:textColor="@color/colorAccent"
-                            android:textStyle="bold"
-                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"/>
+                            android:textStyle="bold" />
 
                         <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/theory"
@@ -141,9 +140,9 @@
                             android:layout_weight="0.9"
                             android:gravity="center_vertical"
                             android:text="@string/practical"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                             android:textColor="@color/colorAccent"
-                            android:textStyle="bold"
-                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />
+                            android:textStyle="bold" />
 
                         <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/prac"
@@ -170,9 +169,9 @@
                             android:layout_weight="0.9"
                             android:gravity="center_vertical"
                             android:text="@string/classes"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                             android:textColor="@color/colorAccent"
-                            android:textStyle="bold"
-                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"/>
+                            android:textStyle="bold" />
 
                         <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/tc"
@@ -200,9 +199,9 @@
                             android:layout_weight="0.9"
                             android:gravity="center_vertical"
                             android:text="@string/absents"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                             android:textColor="@color/colorAccent"
-                            android:textStyle="bold"
-                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"/>
+                            android:textStyle="bold" />
 
                         <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/ab"

@@ -108,7 +108,6 @@ public class AttendanceActivity extends AppCompatActivity implements InternetCon
     private static final String[] suffix = new String[]{"k", "m", "b", "t"};
     private String AUTH_KEY;
     private InternetAvailabilityChecker mInternetAvailabilityChecker;
-    private static final String TOOLBAR_COLOR = "toolbar_color";
     private LocalDB localDB;
     private Student preferredStudent;
     private ActivityAttendanceBinding activityAttendanceBinding;
@@ -332,7 +331,7 @@ public class AttendanceActivity extends AppCompatActivity implements InternetCon
 
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(false);
         Objects.requireNonNull(getSupportActionBar()).setElevation(0);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayShowHomeEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowHomeEnabled(false);
 
         localDB = new LocalDB(this);
         sharedPreference = PreferenceManager.getDefaultSharedPreferences(this);
@@ -483,10 +482,6 @@ public class AttendanceActivity extends AppCompatActivity implements InternetCon
     }
 
     private void openFloatingButtonAction() {
-        activityAttendanceBinding.fabButton.textViewMoodle.setVisibility(View.VISIBLE);
-        activityAttendanceBinding.fabButton.textViewResult.setVisibility(View.VISIBLE);
-        activityAttendanceBinding.fabButton.textViewInvite.setVisibility(View.VISIBLE);
-        activityAttendanceBinding.fabButton.textViewAccount.setVisibility(View.VISIBLE);
         activityAttendanceBinding.fabButton.fab1.setVisibility(View.VISIBLE);
         activityAttendanceBinding.fabButton.fab2.setVisibility(View.VISIBLE);
         activityAttendanceBinding.fabButton.fab3.setVisibility(View.VISIBLE);
@@ -495,6 +490,10 @@ public class AttendanceActivity extends AppCompatActivity implements InternetCon
         activityAttendanceBinding.fabButton.fab2.setAnimation(fab_open);
         activityAttendanceBinding.fabButton.fab3.setAnimation(fab_open);
         activityAttendanceBinding.fabButton.fab4.setAnimation(fab_open);
+        activityAttendanceBinding.fabButton.textViewMoodle.setVisibility(View.VISIBLE);
+        activityAttendanceBinding.fabButton.textViewResult.setVisibility(View.VISIBLE);
+        activityAttendanceBinding.fabButton.textViewInvite.setVisibility(View.VISIBLE);
+        activityAttendanceBinding.fabButton.textViewAccount.setVisibility(View.VISIBLE);
         activityAttendanceBinding.fabButton.fab1.setClickable(true);
         activityAttendanceBinding.fabButton.fab2.setClickable(true);
         activityAttendanceBinding.fabButton.fab3.setClickable(true);
