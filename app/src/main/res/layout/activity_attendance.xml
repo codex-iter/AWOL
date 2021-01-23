@@ -33,7 +33,10 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:orientation="horizontal"
-        android:padding="2dp"
+        android:paddingStart="5dp"
+        android:paddingTop="2dp"
+        android:paddingEnd="5dp"
+        android:paddingBottom="2dp"
         android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -65,6 +68,8 @@
         android:layout_height="0dp"
         android:layout_margin="5dp"
         android:divider="@null"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/download_stats_layout"

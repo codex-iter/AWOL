@@ -2,7 +2,6 @@ package codex.codex_iter.www.awol.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,9 +24,9 @@ import static codex.codex_iter.www.awol.utilities.Constants.convertToTitleCaseIt
 
 public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.myViewHolder> {
 
-    private Context ctx;
-    private List<Attendance> dataList;
-    private int pre_minimum_attendance;
+    private final Context ctx;
+    private final List<Attendance> dataList;
+    private final int pre_minimum_attendance;
 
     public AttendanceAdapter(Context context, List<Attendance> dataList, int pref_minimum_attendance) {
         this.ctx = context;
@@ -46,9 +45,6 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.my
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull AttendanceAdapter.myViewHolder holder, int position) {
-        SharedPreferences theme = ctx.getSharedPreferences("theme", 0);
-        boolean dark = theme.getBoolean("dark_theme", false);
-
         holder.sub.setText(convertToTitleCaseIteratingChars(dataList.get(position).getSub()));
         String p = dataList.get(position).getPercent();
 
@@ -98,7 +94,7 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.my
 
         holder.th.setText(dataList.get(position).getTheory() + dataList.get(position).getThat());
         holder.prac.setText(dataList.get(position).getLab() + dataList.get(position).getLabt());
-        holder.ab.setText(dataList.get(position).getAbsent());
+        holder.ab.setText(String.valueOf(dataList.get(position).getAbsent()));
         holder.tc.setText(dataList.get(position).getClasses());
         if (dataList.get(position).getBunk_text_str() != null && !dataList.get(position).getBunk_text_str().isEmpty()) {
             holder.bunk_text.setText(dataList.get(position).getBunk_text_str());

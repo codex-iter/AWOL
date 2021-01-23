@@ -109,9 +109,8 @@ public class Attendance {
     }
 
 
-    public String getAbsent() {
-        int i = (int) Math.floor(lat + thT - thp - lap);
-        return Integer.toString(i);
+    public int getAbsent() {
+        return (int) Math.floor(lat + thT - thp - lap);
     }
 
     public String getPercent() {
@@ -128,7 +127,7 @@ public class Attendance {
         ArrayList<String> need = new ArrayList<>();
         int attendance = (int) Double.parseDouble(getPercent());
         int classes = (int) Double.parseDouble(getClasses());
-        int classesAbsent = (int) Double.parseDouble(getAbsent());
+        int classesAbsent = getAbsent();
         int classesPresent = classes - classesAbsent;
         int lastDays;
         int approxTotalClasses = 55;

@@ -156,7 +156,7 @@ public class AttendanceActivity extends AppCompatActivity implements InternetCon
                 attendanceData[i] = new Attendance();
 
                 if (!jObj.has("subjectcode") || !jObj.has("subject") || !jObj.has("Latt") || !jObj.has("Patt")
-                        || !jObj.has("TotalAttandence") || attendanceData[i].getAbsent().isEmpty() || attendanceData[i].getAbsent() == null) {
+                        || !jObj.has("TotalAttandence")) {
                     throw new InvalidResponseException();
                 }
                 Updated(jObj, localDB.getStudent(this.sharedPreference.getString("pref_student", null)), i);
@@ -168,7 +168,7 @@ public class AttendanceActivity extends AppCompatActivity implements InternetCon
                 attendanceData[i].setBunk(Integer.parseInt(Objects.requireNonNull(this.sharedPreference.getString("pref_minimum_attendance", "75"))),
                         this.sharedPreference.getBoolean("pref_extended_stats", false), this.sharedPreference.getBoolean("pref_show_attendance_stats", true));
                 avgat += jObj.getDouble("TotalAttandence");
-                avgab += Integer.parseInt(attendanceData[i].getAbsent());
+                avgab += attendanceData[i].getAbsent();
                 String student_semester = jObj.getString(STUDENT_SEMESTER);
                 preferredStudent.setSemester(student_semester);
             }

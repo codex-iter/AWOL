@@ -51,7 +51,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.onesignal.OneSignal;
 import com.treebo.internetavailabilitychecker.InternetAvailabilityChecker;
 import com.treebo.internetavailabilitychecker.InternetConnectivityListener;
 
@@ -232,6 +231,7 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                             finish();
                             return;
                         }
+
                         if (updated_version > current_version && current_version > 0 && Utils.isNetworkAvailable(MainActivity.this)) {
                             downloadUpdatedApp(this.new_message, appLink);
                         } else {

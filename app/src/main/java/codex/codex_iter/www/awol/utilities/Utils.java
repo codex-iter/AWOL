@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Environment;
-import android.text.Html;
 import android.util.Log;
 
 import androidx.appcompat.app.AlertDialog;
@@ -45,7 +44,7 @@ public class Utils {
         File file = new File(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/" + "awol.apk");
         Log.d("path", file.getPath());
         alertDialog
-                .setTitle(Html.fromHtml("<font color='black'>Update Available</font>"))
+                .setTitle("Update Available")
                 .setMessage("What's new : \n" + sharedPreferences.getString("MESSAGE", "Bug fix"))
                 .setCancelable(false)
                 .setPositiveButton("UPDATE NOW", (d, which) -> {
