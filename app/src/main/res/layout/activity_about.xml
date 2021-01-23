@@ -90,7 +90,7 @@
                 android:gravity="center"
                 android:paddingHorizontal="15dp"
                 android:text="@string/abtAPP"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

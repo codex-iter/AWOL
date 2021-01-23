@@ -1,20 +1,15 @@
 package codex.codex_iter.www.awol.activity;
 
 import android.content.Intent;
-import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
-import com.google.android.material.appbar.MaterialToolbar;
 
 import java.util.Objects;
 
-import codex.codex_iter.www.awol.R;
 import codex.codex_iter.www.awol.databinding.ActivityAboutBinding;
 
 public class AboutActivity extends AppCompatActivity {
@@ -24,7 +19,6 @@ public class AboutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         ActivityAboutBinding activityAboutBinding = ActivityAboutBinding.inflate(getLayoutInflater());
         setContentView(activityAboutBinding.getRoot());
-//        setSupportActionBar(activityAboutBinding.toolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle("About");
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         Objects.requireNonNull(getSupportActionBar()).setElevation(0);

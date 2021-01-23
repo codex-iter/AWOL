@@ -4,12 +4,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark_Light</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="appBarLayoutStyle">@style/AppTheme.AppBarOverlay</item>
         <item name="toolbarStyle">@style/AppTheme.Toolbar</item>
-    </style>
-
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.ActionBar">
-        <item name="android:background">@color/toolbarBg_Light</item>
     </style>
 
     <style name="AppTheme.Toolbar" parent="Widget.MaterialComponents.Toolbar.Surface">
