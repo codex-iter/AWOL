@@ -5,10 +5,13 @@ Shows current attendance and results
 ![](https://img.shields.io/badge/Built%20with-Android-blue.svg?longCache=true&style=for-the-badge&logo=android&colorB=00ddff)
 
 ## Login
-<img src="./screenshots/login.png" width=30%>
+<img src="./screenshots/login.png" width=30%>   
 
 ## Attendance
-<img src="./screenshots/main_dark.png" width=30%>
+Dark theme                                        |     Light theme
+:-----------------------------------------------: | :-----------------------------------------------:
+<img src="./screenshots/main_dark.png" width=70%> |  <img src="./screenshots/main_light.png" width=70%>
+
 
 ## Result
 <img src="./screenshots/results.png" width=30%>
