@@ -206,6 +206,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                                 FirebaseAuth.getInstance().signOut();
                                 Intent intent3 = new Intent(requireContext().getApplicationContext(), MainActivity.class);
                                 startActivity(intent3);
+                                Toast.makeText(getContext(), "Successfully signed out", Toast.LENGTH_SHORT).show();
+                                requireActivity().finish();
                             }
                         })
                         .setNegativeButton("NO", new DialogInterface.OnClickListener() {
