@@ -273,20 +273,22 @@ public class AttendanceActivity extends AppCompatActivity implements InternetCon
     private void Updated(JSONObject newAttendance, Student oldAttendance, int i) throws JSONException {
         if (oldAttendance != null) {
             for (Attendance student : oldAttendance.getAttendances()) {
-                if (student.getCode().equals(newAttendance.getString("subjectcode"))) {
-                    if ((!student.getTheory().equals(newAttendance.getString("Latt")))
-                            || (!student.getLab().equals(newAttendance.getString("Patt")))) {
-                        attendanceData[i].setLastAttendanceUpdateTime(new Date().getTime());
-                        attendanceData[i].setOld(student.getPercent());
-                        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                        if (v != null) {
-                            v.vibrate(200);
+                if (student != null) {
+                    if (student.getCode().equals(newAttendance.getString("subjectcode"))) {
+                        if ((!student.getTheory().equals(newAttendance.getString("Latt")))
+                                || (!student.getLab().equals(newAttendance.getString("Patt")))) {
+                            attendanceData[i].setLastAttendanceUpdateTime(new Date().getTime());
+                            attendanceData[i].setOld(student.getPercent());
+                            Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                            if (v != null) {
+                                v.vibrate(200);
+                            }
+                            attendanceData[i].setUpd("just now");
+                            break;
+                        } else {
+                            attendanceData[i].setLastAttendanceUpdateTime(student.getLastAttendanceUpdateTime());
+                            attendanceData[i].setUpd(DateUtils.getRelativeTimeSpanString(student.getLastAttendanceUpdateTime(), new Date().getTime(), 0).toString());
                         }
-                        attendanceData[i].setUpd("just now");
-                        break;
-                    } else {
-                        attendanceData[i].setLastAttendanceUpdateTime(student.getLastAttendanceUpdateTime());
-                        attendanceData[i].setUpd(DateUtils.getRelativeTimeSpanString(student.getLastAttendanceUpdateTime(), new Date().getTime(), 0).toString());
                     }
                 }
             }
@@ -365,7 +367,7 @@ public class AttendanceActivity extends AppCompatActivity implements InternetCon
             getSupportActionBar().setSubtitle(bundle.getString(REGISTRATION_NUMBER));
 
             try {
-                if (!bundle.getString(STUDENT_NAME).isEmpty()) {
+                if (!Objects.requireNonNull(bundle.getString(STUDENT_NAME)).isEmpty()) {
                     getSupportActionBar().setTitle(Constants.convertToTitleCaseIteratingChars(bundle.getString(STUDENT_NAME)));
                 } else {
                     getSupportActionBar().setTitle("Home");
@@ -530,7 +532,7 @@ public class AttendanceActivity extends AppCompatActivity implements InternetCon
             });
         } catch (InvalidFirebaseResponseException e) {
             Snackbar snackbar = Snackbar.make(
-                    activityAttendanceBinding.mainLayout, Objects.requireNonNull(e.getMessage()), Snackbar.LENGTH_SHORT);
+                    activityAttendanceBinding.mainLayout, e.getMessage(), Snackbar.LENGTH_SHORT);
             snackbar.show();
         } catch (Exception e) {
             Snackbar snackbar = Snackbar.make(activityAttendanceBinding.mainLayout, "Something went wrong few things may not work properly", Snackbar.LENGTH_SHORT);

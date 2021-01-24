@@ -93,7 +93,7 @@ import static codex.codex_iter.www.awol.utilities.Constants.UPDATE_MESSAGE;
 public class MainActivity extends AppCompatActivity implements InternetConnectivityListener {
 
     private boolean track;
-    private String api, new_message, academic_year;
+    private String api = "", new_message, academic_year;
     private BottomSheetBehavior<View> bottomSheetBehavior;
     private int updated_version;
     private int current_version;
@@ -150,10 +150,10 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
         activityMainBinding.bottomLogin.loginButton.setOnClickListener(view -> {
             String username = Objects.requireNonNull(activityMainBinding.bottomLogin.user.getText()).toString().trim();
             String password = Objects.requireNonNull(activityMainBinding.bottomLogin.pass.getText()).toString().trim();
-            if (username.isEmpty() || password.isEmpty()) {
+            if (username.isEmpty() || password.isEmpty() || username == null || password == null) {
                 Snackbar snackbar = Snackbar.make(activityMainBinding.mainLayout, "Enter your Details", Snackbar.LENGTH_SHORT);
                 snackbar.show();
-            } else if (api.isEmpty()) {
+            } else if (api.isEmpty() || api == null) {
                 Snackbar snackbar = Snackbar.make(activityMainBinding.mainLayout, "Invalid Firebase Response", Snackbar.LENGTH_SHORT);
                 snackbar.show();
             } else {
@@ -252,7 +252,7 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                 }
             });
         } catch (InvalidFirebaseResponseException e) {
-            Snackbar snackbar = Snackbar.make(activityMainBinding.mainLayout, Objects.requireNonNull(e.getMessage()), Snackbar.LENGTH_SHORT);
+            Snackbar snackbar = Snackbar.make(activityMainBinding.mainLayout, "Invalid firebase response", Snackbar.LENGTH_SHORT);
             snackbar.show();
         } catch (Exception e) {
             Snackbar snackbar = Snackbar.make(activityMainBinding.mainLayout, "Something went wrong few things may not work properly", Snackbar.LENGTH_SHORT);
@@ -677,7 +677,6 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
             return;
         }
 
-        // https://drive.google.com/uc?export=download&id=" + fileID
         downloadId = PRDownloader.download(appLink, String.valueOf(awolAppUpdateFilePath), "awol.apk")
                 .build()
                 .setOnStartOrResumeListener(() -> {
@@ -697,29 +696,33 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                 .start(new OnDownloadListener() {
                     @Override
                     public void onDownloadComplete() {
-                        mAlertDialog.dismiss();
-                        isDownloading = false;
-                        Toast.makeText(MainActivity.this, "Downloaded Successfully", Toast.LENGTH_SHORT).show();
-                        Utils.updateAvailable(MainActivity.this, new_message);
+                        if (!isFinishing()) {
+                            mAlertDialog.dismiss();
+                            isDownloading = false;
+                            Toast.makeText(MainActivity.this, "Downloaded Successfully", Toast.LENGTH_SHORT).show();
+                            Utils.updateAvailable(MainActivity.this, new_message);
+                        }
                     }
 
                     @Override
                     public void onError(Error error) {
-                        Log.d("PRDownload Error", String.valueOf(error.getResponseCode()));
-                        if (isDownloading && (Status.QUEUED == PRDownloader.getStatus(downloadId) ||
-                                Status.FAILED == PRDownloader.getStatus(downloadId) ||
-                                Status.CANCELLED == PRDownloader.getStatus(downloadId)) && !Utils.isNetworkAvailable(MainActivity.this)) {
-                            Toast.makeText(MainActivity.this, "Download Paused", Toast.LENGTH_SHORT).show();
+                        if (!isFinishing()) {
+                            Log.d("PRDownload Error", String.valueOf(error.getResponseCode()));
+                            if (isDownloading && (Status.QUEUED == PRDownloader.getStatus(downloadId) ||
+                                    Status.FAILED == PRDownloader.getStatus(downloadId) ||
+                                    Status.CANCELLED == PRDownloader.getStatus(downloadId)) && !Utils.isNetworkAvailable(MainActivity.this)) {
+                                Toast.makeText(MainActivity.this, "Download Paused", Toast.LENGTH_SHORT).show();
+                                mAlertDialog.dismiss();
+                                PRDownloader.pause(downloadId);
+                                return;
+                            }
                             mAlertDialog.dismiss();
-                            PRDownloader.pause(downloadId);
-                            return;
+                            downloadId = 0;
+                            progressBar.setProgress(0);
+                            Toast.makeText(MainActivity.this, "Downloaded Failed", Toast.LENGTH_SHORT).show();
+                            progressBar.setIndeterminate(false);
+                            autoFill();
                         }
-                        mAlertDialog.dismiss();
-                        downloadId = 0;
-                        progressBar.setProgress(0);
-                        Toast.makeText(MainActivity.this, "Downloaded Failed", Toast.LENGTH_SHORT).show();
-                        progressBar.setIndeterminate(false);
-                        autoFill();
                     }
                 });
     }
