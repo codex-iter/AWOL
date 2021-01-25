@@ -1,18 +1,14 @@
 package codex.codex_iter.www.awol;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
@@ -23,11 +19,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
 
 import com.android.volley.AuthFailureError;
@@ -97,7 +90,6 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
     private BottomSheetBehavior<View> bottomSheetBehavior;
     private int updated_version;
     private int current_version;
-    private static final int EXTERNAL_STORAGE_PERMISSION_CODE = 1002;
     private String appLink;
     private FirebaseAuth mAuth;
     private int downloadId;
@@ -150,10 +142,10 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
         activityMainBinding.bottomLogin.loginButton.setOnClickListener(view -> {
             String username = Objects.requireNonNull(activityMainBinding.bottomLogin.user.getText()).toString().trim();
             String password = Objects.requireNonNull(activityMainBinding.bottomLogin.pass.getText()).toString().trim();
-            if (username.isEmpty() || password.isEmpty() || username == null || password == null) {
+            if (username.isEmpty() || password.isEmpty()) {
                 Snackbar snackbar = Snackbar.make(activityMainBinding.mainLayout, "Enter your Details", Snackbar.LENGTH_SHORT);
                 snackbar.show();
-            } else if (api.isEmpty() || api == null) {
+            } else if (api == null || api.isEmpty()) {
                 Snackbar snackbar = Snackbar.make(activityMainBinding.mainLayout, "Invalid Firebase Response", Snackbar.LENGTH_SHORT);
                 snackbar.show();
             } else {
@@ -455,8 +447,7 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                                 if (!jobj1.getString("academicyear").isEmpty()) {
                                     academic_year = jobj1.getString("academicyear");
                                 }
-                            }  //TODO to be removed
-                            academic_year = "2021";
+                            }
 
                             String studentName = jobj1.getString("name");
                             String student_branch = jobj1.getString(STUDENT_BRANCH);
@@ -551,102 +542,20 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
     }
 
     private void downloadUpdatedApp(String new_message, String appLink) {
-        if (hasPermission()) {
-            try {
-                if (!awolAppUpdateFile.exists())
-                    FileDownloader(new_message, appLink);
-                else
-                    Utils.updateAvailable(MainActivity.this, new_message);
-            } catch (Exception e) {
-                Log.e("downloadError", e.toString());
-                autoFill();
-            }
-        } else {
-            askPermission();
+        try {
+            if (!awolAppUpdateFile.exists())
+                FileDownloader(new_message, appLink);
+            else
+                Utils.updateAvailable(MainActivity.this, new_message);
+        } catch (Exception e) {
+            Log.e("downloadError", e.toString());
+            autoFill();
         }
     }
 
     @Override
     public void onBackPressed() {
         moveTaskToBack(true);
-    }
-
-    private void askPermission() {
-        if (!hasPermission()) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                new android.app.AlertDialog.Builder(this)
-                        .setTitle("Permission needed")
-                        .setMessage("Please allow to access storage")
-                        .setCancelable(false)
-                        .setPositiveButton("OK", (dialog, which) -> {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                        Manifest.permission.READ_EXTERNAL_STORAGE}, EXTERNAL_STORAGE_PERMISSION_CODE);
-                            }
-                        })
-                        .setNegativeButton("Cancel", (dialog, which) -> {
-                            dialog.dismiss();
-                            finish();
-                        }).create().show();
-            } else {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                            Manifest.permission.READ_EXTERNAL_STORAGE}, EXTERNAL_STORAGE_PERMISSION_CODE);
-                }
-            }
-
-        }
-    }
-
-    private boolean hasPermission() {
-        return (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == EXTERNAL_STORAGE_PERMISSION_CODE) {
-
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                downloadUpdatedApp(this.new_message, appLink);
-            } else {
-                if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) || !ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                    new android.app.AlertDialog.Builder(this)
-                            .setTitle("Permission needed")
-                            .setMessage("Please allow to access storage. Press OK to enable in settings.")
-                            .setCancelable(false)
-                            .setPositiveButton("OK", (dialog, which) -> {
-                                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                                Uri uri = Uri.fromParts("package", getPackageName(), null);
-                                intent.setData(uri);
-                                startActivityForResult(intent, EXTERNAL_STORAGE_PERMISSION_CODE);
-                            })
-                            .setNegativeButton("Cancel", (dialog, which) -> {
-                                dialog.dismiss();
-                                finish();
-                            }).create().show();
-
-
-                } else {
-                    new android.app.AlertDialog.Builder(this)
-                            .setTitle("Permission needed")
-                            .setMessage("Please allow to access storage")
-                            .setCancelable(false)
-                            .setPositiveButton("OK", (dialog, which) -> {
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                            Manifest.permission.READ_EXTERNAL_STORAGE}, EXTERNAL_STORAGE_PERMISSION_CODE);
-                                }
-                            })
-                            .setNegativeButton("Cancel", (dialog, which) -> {
-                                dialog.dismiss();
-                                finish();
-                            }).create().show();
-                }
-            }
-        }
     }
 
     private void FileDownloader(String new_message, String appLink) {

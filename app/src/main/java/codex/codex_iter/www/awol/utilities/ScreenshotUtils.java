@@ -18,7 +18,7 @@ import java.util.Objects;
 
 public class ScreenshotUtils {
     //TODO refactor ScreenShotUtils
-    /*  Method which will return Bitmap after taking screenshot. We have to pass the view which we want to take screenshot.  */
+
     public static Bitmap getScreenShot(View view) {
         RecyclerView recyclerView = (RecyclerView) view;
         RecyclerView.Adapter adapter = recyclerView.getAdapter();
@@ -30,7 +30,6 @@ public class ScreenshotUtils {
             int iHeight = 0;
             final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
 
-            // Use 1/8th of the available memory for this memory cache.
             final int cacheSize = maxMemory / 8;
             LruCache<String, Bitmap> bitmaCache = new LruCache<>(cacheSize);
             try {
@@ -74,15 +73,10 @@ public class ScreenshotUtils {
         return bigBitmap;
     }
 
-
-    /*  Create Directory where screenshot will save for sharing screenshot  */
     public static File getMainDirectoryName(Context context) {
-        //Here we will use getExternalFilesDir and inside that we will make our Demo folder
-        //benefit of getExternalFilesDir is that whenever the app uninstalls the images will get deleted automatically.
         File mainDir = new File(
-                context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "Demo");
+                Objects.requireNonNull(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)).toString());
 
-        //If File is not present create directory
         if (!mainDir.exists()) {
             if (mainDir.mkdir())
                 Log.e("Create Directory", "Main Directory Created : " + mainDir);
@@ -90,7 +84,6 @@ public class ScreenshotUtils {
         return mainDir;
     }
 
-    /*  Store taken screenshot into above created path  */
     public static File store(Bitmap bm, String fileName, File saveFilePath) {
         File dir = new File(saveFilePath.getAbsolutePath());
         if (!dir.exists())

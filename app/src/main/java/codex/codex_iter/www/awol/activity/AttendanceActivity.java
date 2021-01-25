@@ -532,7 +532,7 @@ public class AttendanceActivity extends AppCompatActivity implements InternetCon
             });
         } catch (InvalidFirebaseResponseException e) {
             Snackbar snackbar = Snackbar.make(
-                    activityAttendanceBinding.mainLayout, e.getMessage(), Snackbar.LENGTH_SHORT);
+                    activityAttendanceBinding.mainLayout, "Invalid firebase response", Snackbar.LENGTH_SHORT);
             snackbar.show();
         } catch (Exception e) {
             Snackbar snackbar = Snackbar.make(activityAttendanceBinding.mainLayout, "Something went wrong few things may not work properly", Snackbar.LENGTH_SHORT);
