@@ -40,15 +40,10 @@ public class DetailedResultActivity extends AppCompatActivity {
         setContentView(activityDetailresultsBinding.getRoot());
 
         Bundle bundle = getIntent().getExtras();
-
-//        setSupportActionBar(activityDetailresultsBinding.toolbar);
-
         Objects.requireNonNull(getSupportActionBar()).setTitle("Results");
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         Objects.requireNonNull(getSupportActionBar()).setElevation(0);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowHomeEnabled(true);
-//        activityDetailresultsBinding.toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
-
         if (bundle != null) {
             result = bundle.getString(RESULTS);
             msem = bundle.getString("Semester");

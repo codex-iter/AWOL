@@ -23,7 +23,7 @@ android {
         targetSdkVersion 30
         multiDexEnabled true
         versionCode 16
-        versionName "1.1.3"
+        versionName "1.1.4"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         manifestPlaceholders = [
@@ -54,29 +54,25 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'com.google.android.material:material:1.2.1'
+    implementation 'com.google.android.material:material:1.3.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
-    implementation 'com.github.judemanutd:autostarter:1.0.3'
     testImplementation 'junit:junit:4.13.1'
     androidTestImplementation 'androidx.test:runner:1.3.0'
     implementation "androidx.preference:preference:1.1.1"
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
     //Firebase Crashlytics
-    implementation 'com.google.firebase:firebase-crashlytics:17.3.0'
+    implementation 'com.google.firebase:firebase-crashlytics:17.4.1'
 
     //Recycler View and CardView
-    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation 'androidx.recyclerview:recyclerview:1.2.0'
     implementation 'androidx.cardview:cardview:1.0.0'
 
     //Volley Network
-    implementation 'com.android.volley:volley:1.1.1'
+    implementation 'com.android.volley:volley:1.2.0'
 
     //FireStore
-    implementation 'com.google.firebase:firebase-firestore:22.0.1'
-
-    //firebase messaging
-    implementation 'com.google.firebase:firebase-messaging:21.0.1'
+    implementation 'com.google.firebase:firebase-firestore:22.1.2'
 
     //Multi-dex
     implementation 'androidx.multidex:multidex:2.0.1'
@@ -87,14 +83,11 @@ dependencies {
     //GSon
     implementation 'com.google.code.gson:gson:2.8.6'
 
-    //Firebase Remote Config
-    implementation 'com.google.firebase:firebase-analytics:18.0.1'
-
     //picasso
     implementation 'com.squareup.picasso:picasso:2.71828'
 
     // Firebase Auth
-    implementation 'com.google.firebase:firebase-auth:20.0.2'
+    implementation 'com.google.firebase:firebase-auth:20.0.4'
 
     // PRDownloader
     implementation 'com.mindorks.android:prdownloader:0.6.0'

@@ -44,8 +44,6 @@ import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.treebo.internetavailabilitychecker.InternetAvailabilityChecker;
-import com.treebo.internetavailabilitychecker.InternetConnectivityListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -93,7 +91,7 @@ import static codex.codex_iter.www.awol.utilities.Constants.STUDENT_NAME;
 import static codex.codex_iter.www.awol.utilities.Constants.STUDENT_SEMESTER;
 import static codex.codex_iter.www.awol.utilities.Constants.STUDENT_YEAR;
 
-public class AttendanceActivity extends AppCompatActivity implements InternetConnectivityListener, MultipleAccountAdapter.OnItemClickListener {
+public class AttendanceActivity extends AppCompatActivity implements MultipleAccountAdapter.OnItemClickListener {
 
     private String result;
     private Attendance[] attendanceData;
@@ -107,7 +105,6 @@ public class AttendanceActivity extends AppCompatActivity implements InternetCon
     private BottomSheetDialog dialog;
     private static final String[] suffix = new String[]{"k", "m", "b", "t"};
     private String AUTH_KEY;
-    private InternetAvailabilityChecker mInternetAvailabilityChecker;
     private LocalDB localDB;
     private Student preferredStudent;
     private ActivityAttendanceBinding activityAttendanceBinding;
@@ -303,7 +300,7 @@ public class AttendanceActivity extends AppCompatActivity implements InternetCon
     }
 
     public void noAttendance() {
-        localDB.setStudent(sharedPreference.getString("pref_student", null), null);
+        localDB.setStudent(this.sharedPreference.getString("pref_student", null), preferredStudent);
         activityAttendanceBinding.rl.setVisibility(View.GONE);
         activityAttendanceBinding.NA.setVisibility(View.VISIBLE);
     }
@@ -341,15 +338,6 @@ public class AttendanceActivity extends AppCompatActivity implements InternetCon
         preferredStudent = localDB.getStudent(this.sharedPreference.getString("pref_student", null));
         if (preferredStudent == null) {
             preferredStudent = new Student();
-        }
-
-        try {
-            mInternetAvailabilityChecker = InternetAvailabilityChecker.getInstance();
-            mInternetAvailabilityChecker.addInternetConnectivityListener(AttendanceActivity.this);
-        } catch (IllegalStateException e) {
-            InternetAvailabilityChecker.init(this);
-            mInternetAvailabilityChecker = InternetAvailabilityChecker.getInstance();
-            mInternetAvailabilityChecker.addInternetConnectivityListener(AttendanceActivity.this);
         }
 
         getDataFromFirebase();
@@ -416,7 +404,7 @@ public class AttendanceActivity extends AppCompatActivity implements InternetCon
         activityAttendanceBinding.fabButton.fab1.setOnClickListener(view -> {
             closeFloatingButtonAction();
             if (Objects.equals(this.sharedPreference.getString(SHOW_RESULT, ""), "0")) {
-                Snackbar snackbar = Snackbar.make(activityAttendanceBinding.mainLayout, "We will be back within 3-4 days", Snackbar.LENGTH_LONG);
+                Snackbar snackbar = Snackbar.make(activityAttendanceBinding.mainLayout, "Result is currently unavailable", Snackbar.LENGTH_LONG);
                 snackbar.show();
             } else {
                 fetchResult();
@@ -700,10 +688,6 @@ public class AttendanceActivity extends AppCompatActivity implements InternetCon
         moveTaskToBack(true);
     }
 
-    @Override
-    public void onInternetConnectivityChanged(boolean isConnected) {
-    }
-
     private void custom_tab(String url) {
         try {
             CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
@@ -716,13 +700,6 @@ public class AttendanceActivity extends AppCompatActivity implements InternetCon
             Snackbar snackbar = Snackbar.make(activityAttendanceBinding.mainLayout, "Something went wrong, please try again", Snackbar.LENGTH_SHORT);
             snackbar.show();
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mInternetAvailabilityChecker
-                .removeInternetConnectivityChangeListener(this);
     }
 
     @Override

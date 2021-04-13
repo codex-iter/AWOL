@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -68,8 +69,14 @@ public class ResultActivity extends AppCompatActivity implements ResultAdapter.O
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         preferred_student = localDB.getStudent(sharedPreferences.getString("pref_student", null));
-        if (preferred_student == null)
-            throw new InvalidResponseException();
+        try {
+            if (preferred_student == null)
+                throw new InvalidResponseException();
+        } catch (InvalidResponseException e) {
+            Toast.makeText(this, "Something went wrong. Please try again after sometime", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(ResultActivity.this, AttendanceActivity.class));
+            finish();
+        }
 
         Objects.requireNonNull(getSupportActionBar()).setTitle("Results");
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);

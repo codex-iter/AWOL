@@ -30,7 +30,6 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.onesignal.OneSignal;
 
@@ -54,7 +53,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     private static final String PREF_DARK_THEME = "dark_theme";
     private boolean flag = true;
     private boolean dark = false;
-    private FirebaseAnalytics firebaseAnalytics;
     private LinearLayout linearLayout;
     private SharedPreferences sharedPreference;
     private LocalDB localDB;

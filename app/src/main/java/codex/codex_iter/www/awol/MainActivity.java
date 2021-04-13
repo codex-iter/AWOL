@@ -86,13 +86,10 @@ import static codex.codex_iter.www.awol.utilities.Constants.UPDATE_MESSAGE;
 public class MainActivity extends AppCompatActivity implements InternetConnectivityListener {
 
     private boolean track;
-    private String api = "", new_message, academic_year;
+    private String api = "", new_message, academic_year, appLink;
     private BottomSheetBehavior<View> bottomSheetBehavior;
-    private int updated_version;
-    private int current_version;
-    private String appLink;
+    private int updated_version, current_version, downloadId;
     private FirebaseAuth mAuth;
-    private int downloadId;
     private boolean isDownloading;
     private File awolAppUpdateFile;
     private InternetAvailabilityChecker mInternetAvailabilityChecker;
@@ -145,18 +142,21 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
             if (username.isEmpty() || password.isEmpty()) {
                 Snackbar snackbar = Snackbar.make(activityMainBinding.mainLayout, "Enter your Details", Snackbar.LENGTH_SHORT);
                 snackbar.show();
-            } else if (api == null || api.isEmpty()) {
-                Snackbar snackbar = Snackbar.make(activityMainBinding.mainLayout, "Invalid Firebase Response", Snackbar.LENGTH_SHORT);
-                snackbar.show();
+            } else if (api != null) {
+                if (api.isEmpty())
+                    Snackbar.make(activityMainBinding.mainLayout, "Invalid Firebase Response", Snackbar.LENGTH_SHORT).show();
+                else {
+                    activityMainBinding.bottomLogin.progressBar.setVisibility(View.VISIBLE);
+                    activityMainBinding.bottomLogin.loginButton.setVisibility(View.GONE);
+                    activityMainBinding.bottomLogin.user.setEnabled(false);
+                    activityMainBinding.bottomLogin.pass.setEnabled(false);
+                    activityMainBinding.bottomLogin.user.setFocusable(false);
+                    activityMainBinding.bottomLogin.pass.setFocusable(false);
+                    activityMainBinding.bottomLogin.passwordLayout.setEndIconMode(TextInputLayout.END_ICON_NONE);
+                    getName(api, username, password);
+                }
             } else {
-                activityMainBinding.bottomLogin.progressBar.setVisibility(View.VISIBLE);
-                activityMainBinding.bottomLogin.loginButton.setVisibility(View.GONE);
-                activityMainBinding.bottomLogin.user.setEnabled(false);
-                activityMainBinding.bottomLogin.pass.setEnabled(false);
-                activityMainBinding.bottomLogin.user.setFocusable(false);
-                activityMainBinding.bottomLogin.pass.setFocusable(false);
-                activityMainBinding.bottomLogin.passwordLayout.setEndIconMode(TextInputLayout.END_ICON_NONE);
-                getName(api, username, password);
+                Snackbar.make(activityMainBinding.mainLayout, "Invalid Firebase Response", Snackbar.LENGTH_SHORT).show();
             }
         });
     }
@@ -202,12 +202,18 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
             apiCollection.addSnapshotListener((queryDocumentSnapshots, e) -> {
                 if (queryDocumentSnapshots != null) {
                     for (DocumentChange documentChange : queryDocumentSnapshots.getDocumentChanges()) {
-                        if (!documentChange.getDocument().contains(API) || !documentChange.getDocument().contains(UPDATE_AVAILABLE) ||
-                                !documentChange.getDocument().contains(UNDER_MAINTENANCE) || !documentChange.getDocument().contains(UPDATE_FILE_SIZE) ||
-                                !documentChange.getDocument().contains(APP_LINK) || !documentChange.getDocument().contains(UPDATE_MESSAGE) ||
-                                !documentChange.getDocument().contains(DRIVE_APP_ID)) {
-                            throw new InvalidFirebaseResponseException();
+                        try {
+                            if (!documentChange.getDocument().contains(API) || !documentChange.getDocument().contains(UPDATE_AVAILABLE) ||
+                                    !documentChange.getDocument().contains(UNDER_MAINTENANCE) || !documentChange.getDocument().contains(UPDATE_FILE_SIZE) ||
+                                    !documentChange.getDocument().contains(APP_LINK) || !documentChange.getDocument().contains(UPDATE_MESSAGE) ||
+                                    !documentChange.getDocument().contains(DRIVE_APP_ID)) {
+                                throw new InvalidFirebaseResponseException();
+                            }
+                        } catch (InvalidFirebaseResponseException e1) {
+                            Toast.makeText(this, "Please try after sometime", Toast.LENGTH_SHORT).show();
+                            return;
                         }
+
                         api = documentChange.getDocument().getString(API);
                         updated_version = Integer.parseInt(Objects.requireNonNull(documentChange.getDocument().getString(UPDATE_AVAILABLE)));
                         int check = Integer.parseInt(Objects.requireNonNull(documentChange.getDocument().getString(UNDER_MAINTENANCE)));
@@ -243,9 +249,6 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                     }
                 }
             });
-        } catch (InvalidFirebaseResponseException e) {
-            Snackbar snackbar = Snackbar.make(activityMainBinding.mainLayout, "Invalid firebase response", Snackbar.LENGTH_SHORT);
-            snackbar.show();
         } catch (Exception e) {
             Snackbar snackbar = Snackbar.make(activityMainBinding.mainLayout, "Something went wrong few things may not work properly", Snackbar.LENGTH_SHORT);
             snackbar.show();
@@ -312,7 +315,7 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                         snackbar.show();
                     } else if (response.equals("390")) {
                         intent.putExtra(NO_ATTENDANCE, true);
-
+                        intent.putExtra(RESULTS, "");
                         if (mAuth.getCurrentUser() != null) {
                             this.sharedPreferences.edit().putString("pref_student", param[1]).apply();
                             startActivity(intent);
@@ -447,6 +450,8 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                                 if (!jobj1.getString("academicyear").isEmpty()) {
                                     academic_year = jobj1.getString("academicyear");
                                 }
+                            } else {
+                                academic_year = "";
                             }
 
                             String studentName = jobj1.getString("name");
@@ -642,6 +647,8 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
             if (isDownloading) {
                 FileDownloader(new_message, appLink);
             }
+        } else {
+            Toast.makeText(this, "No connection found", Toast.LENGTH_SHORT).show();
         }
     }
 
